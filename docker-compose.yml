@@ -1,0 +1,44 @@
+# the syntax version of this file, 3.8 is good for docker 2 and above
+version: "3"
+# tell what volumnes we need to use
+# the volumes are created autoamtically before they are used later
+volumes:
+  # and a second volume for the Django uploaded files storage
+  my-django-data:
+# create a network where both services should be located in
+networks:
+  my-network:
+# tell what services you want to run
+services:
+  web:
+    # this service container should be build in the current context directory 
+    # according to the Dockerfile we already have created before
+    build:
+      context: .
+      dockerfile: django/Dockerfile
+    
+    # env_file: .env
+    # environment:
+    #   ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+    #   # use the defined volume and mount it to /media
+    volumes:
+    - my-django-data:/media
+    # the django service depends on a healthy running MySQL service
+    # it will wait and starts when the MySQL service is up and healthy
+
+
+    # the working directory is /code
+    working_dir: "/code"
+    
+    # the port mapping
+    ports:
+    - "8000:8000"
+
+    # the command that will be executed on start:
+    # command: >
+    #   sh -c "runserver", "0.0.0.0:8000"
+
+    # use the same network as the MySQL service
+    networks:
+    - my-network
+
