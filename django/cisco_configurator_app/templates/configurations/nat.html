@@ -1,0 +1,84 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu4">
+    <h2 class="font-extrabold text-2xl pb-5">NAT Configuration</h2>
+
+    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
+
+      <h3 class="config_item flex items-center gap-3" id="">
+        <input class="toggle toggle-accent" type="checkbox" name="nat_state" id="nat_status"
+          onchange="updateStateDescription('nat_status', 'nat_state_description'), checkInterfacesNat()" checked>Enabled<span
+          id="nat_state_description">(off)</span>
+      </h3>
+    </div>
+
+    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
+      <div class="config_item">
+        <div class="relative flex items-center gap-3">
+          <label
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            for="ipAdresse">Ingoing Interface:</label>
+          <select name="nat_ingoing" id="nat_ingoing"
+            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs"
+            onchange="checkInterfacesNat()">
+            {% for interface in interfaces %}
+            <option name=" {{ interface }}nat_ingoing" value="{{ interface }}">{{ interface }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="config_item" id="">
+        <div class="relative flex items-center gap-3">
+          <label
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            for="nat_outgoing">Outgoing Interface:</label>
+          <select name="nat_outgoing" id="nat_outgoing"
+            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs"
+            onchange="checkInterfacesNat()">
+            {% for interface in interfaces %}
+            <option name="{{ interface }}nat_outgoing" value="{{ interface }}">{{ interface }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div id="nat_interface_info" class="config_item"></div>
+      </div>
+    </div>
+
+    <div class="bg-base-300 p-4 rounded-2xl flex flex-col gap-3">
+      <h3 class="config_item"><b>Access-List Networks</b></h3>
+      <h1></h1>
+
+      <div class="config_item" id="ip-form">
+        <div class="relative flex items-center gap-3">
+          <label
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            for="description">IP Address:</label>
+          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="nat_ip"
+            id="nat_ip" placeholder="e.g. 10.1.0.0" oninput="ValidateIPaddressNat('nat_ip','nat_ip_info')">
+          <span id="nat_ip_info"></span>
+        </div>
+      </div>
+      <div class="config_item" id="ip-form">
+        <div class="relative flex items-center gap-3">
+          <label
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            for="description">Wildcard Mask:</label>
+          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="nat_wm"
+            id="nat_wm" placeholder="e.g. 0.255.255.255" oninput="ValidateIPaddressNat('nat_wm','nat_wm_info')">
+          <span id="nat_wm_info"></span>
+        </div>
+      </div>
+      <button type="button" disabled="true" class="config_item btn max-w-xs" id="add_nat_ip_button"
+        onclick="addNatIp()">add
+        Network</button>
+      <div id="added_nat_networks" class="config_item">
+        added permitted Networks:</div>
+      <div class="config_item" id="nat_info"></div>
+      <input name="nat_info" id="nat_info_for_transfer"></input>
+
+    </div>
+  </div>
+{% endblock content %}

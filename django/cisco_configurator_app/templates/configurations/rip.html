@@ -1,0 +1,63 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+
+<div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
+    <h2 class="font-extrabold text-2xl pb-5">Routing Configuration</h2>
+    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
+      <h3 class="config_item flex items-center gap-3" id="">
+        <input class="toggle toggle-accent" type="checkbox" name="rip_state" id="rip_state"
+          onchange="updateStateDescription('rip_state', 'rip_state_description')" checked>
+        Dynamic Routing - RIP<span id="rip_state_description">
+          (off)</span>
+      </h3>
+      <h1></h1>
+
+      <div class="config_item" id="ip-form">
+        <div class="relative flex items-center gap-3">
+          <label
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            for="description">Network/s:</label>
+          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text"
+            name="networks_input_routing" id="networks_input_routing"
+            placeholder="seperate multiple networks with ( , )"
+            oninput="ValidateIPaddressesDynamicRouting('networks_input_routing','networks_input_routing_info')">
+        </div>
+        <span id="networks_input_routing_info"></span>
+      </div>
+
+
+      <div class="config_item" id="ip-form">
+        <div class="relative flex items-center gap-3">
+          <label for="dropdown"
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">Version:</label>
+          <select name="dropdown_rip_version"
+            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" id="dropdown"
+            onchange="handleDropdownChange()">
+            <option name="version1" value="version2">Version 2</option>
+            <option name="version2" value="version1">Version 1</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-2">
+      <div class="config_item flex items-center gap-3" id="ip-form">
+        <input class="toggle toggle-accent" type="checkbox" name="sum_state" id="sum_state"
+          onchange="updateStateDescription('sum_state', 'sum_state_description')">
+        Auto summarization
+        <span id="sum_state_description">
+          (off)</span>
+      </div>
+      <div class="config_item flex items-center gap-3" id="ip-form">
+        <input class="toggle toggle-accent" type="checkbox" name="originate_state" id="originate_state"
+          onchange="updateStateDescription('originate_state', 'originate_state_description')">
+        Broadcast default route
+        <span id="originate_state_description">
+          (off)</span>
+      </div>
+    </div>
+
+
+{% endblock content %}

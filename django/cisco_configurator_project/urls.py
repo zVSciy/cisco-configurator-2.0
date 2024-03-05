@@ -16,7 +16,25 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.shortcuts import redirect
+from cisco_configurator_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('index/', views.index, name='index_route'),
+    path('', lambda request: redirect('index_route', permanent=False)),
+    # routing of config pages
+    path('basic-config/', views.basic_config, name='basic_config_route'),
+    path('interface/', views.interface, name='interface_route'),
+    path('etherchannel/', views.etherchannel, name='etherchannel_route'),
+    path('vlan/', views.vlan, name='vlan_route'),
+    path('ospf/', views.ospf, name='ospf_route'),
+    path('rip/', views.rip, name='rip_route'),
+    path('static-routing/', views.static_routing, name='static_routing_route'),
+    path('nat/', views.nat, name='nat_route'),
+    path('dhcp/', views.dhcp, name='dhcp_route'),
+    path('acl-basic/', views.acl_basic, name='acl_basic_route'),
+    path('acl-extended/', views.acl_extended, name='acl_extended_route'),
+    path('vtp-dtp/', views.vtp_dtp, name='vtp_dtp_route'),
+    path('stp/', views.stp, name='stp_route'),
 ]
