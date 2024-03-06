@@ -35,7 +35,7 @@ urlpatterns = [
     path('nat/', views.nat, name='nat_route'),
     path('dhcp/', views.dhcp, name='dhcp_route'),
     path('acl-basic/', views.acl_basic, name='acl_basic_route'),
-    path('acl-extended/', views.acl_extended, name='acl_basic_extended'),
+    path('acl-extended/', views.acl_extended, name='acl_extended_route'),
     path('vtp-dtp/', views.vtp_dtp, name='vtp_dtp_route'),
     path('stp/', views.stp, name='stp_route'),
 ]
