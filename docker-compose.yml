@@ -23,9 +23,6 @@ services:
     #   # use the defined volume and mount it to /media
     volumes:
     - my-django-data:/media
-    # the django service depends on a healthy running MySQL service
-    # it will wait and starts when the MySQL service is up and healthy
-
 
     # the working directory is /code
     working_dir: "/code"
