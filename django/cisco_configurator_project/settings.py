@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,10 @@ SECRET_KEY = 'django-insecure-yl*i6lc&!q0#*+c^ra(6f=r1nf+1rfzv6sbz0xvmwnk(g#soi!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'cisco_configurator_app/static'),
+]
 
 
 # Application definition
