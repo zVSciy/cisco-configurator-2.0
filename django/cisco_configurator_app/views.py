@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import Router_Interfaces
 
 # Create your views here.
 
@@ -8,8 +9,10 @@ def index(request):
 def basic_config(request):
     return render(request, 'configurations/basic_config.html')
 
+routerID = 1
 def interface(request):
-    return render(request, 'configurations/interface.html')
+    interfaces = Router_Interfaces.objects.filter(router_id=routerID)
+    return render(request, 'configurations/interface.html', {'interfaces': interfaces})
 
 def etherchannel(request):
     return render(request, 'configurations/etherchannel.html')
