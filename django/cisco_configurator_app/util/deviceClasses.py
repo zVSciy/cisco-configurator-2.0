@@ -115,3 +115,8 @@ class nat:
         else:
             raise TypeError()
 
+class dhcp:
+    def __init__(self, ) -> None:
+        pass
+
+
