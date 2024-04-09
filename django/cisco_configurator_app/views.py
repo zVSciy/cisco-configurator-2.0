@@ -62,10 +62,10 @@ def static_routing(request):
  
 def nat(request):
     config_option = {
-        "device_type": request.POST.get('deviceType')
+        "device_type": request.POST.get('deviceType'),
+        "interfaces": Router_Interfaces.objects.filter(router_id=routerID)
     }
-    interfaces = Router_Interfaces.objects.filter(router_id=routerID)
-    return render(request, 'configurations/nat.html', {'interfaces': interfaces}, config_option)
+    return render(request, 'configurations/nat.html', config_option)
 
  
 def dhcp(request):
