@@ -71,6 +71,9 @@ class configEditor:
             line = line.lstrip()    # Remove leading whitespace
             returnContent.append(line)
         return returnContent
+    
+    def getContentOnIndex(self, index: int) -> str:
+        return self.fileContent[index].replace("\n", "").lstrip()
 
 
     def removeContentBetweenIndexes(self, startIndex: int, endIndex: int, fileContent: list) -> list:
