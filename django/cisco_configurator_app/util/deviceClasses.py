@@ -19,13 +19,15 @@ class interfaces:
     def __init__(self, interface:str = None, ip:str = None, sm:str = None, description:str = None, shutdown:str = None ) -> None:
         #Überprüft ob die Eingabe ein String ist und speichert die Werte
         if type(interface) == str:
-            self.interface = interface
+            self.interface = interface #FastEthernet0/0
         else:
             raise TypeError()
         
     def __repr__(self) -> str:
         return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown
 
+    def toConfig(self) -> list:
+        return [self.interface, f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n']
 
 class StaticRouting:
     def __init__(self, staticRouting:str = None ) -> None:

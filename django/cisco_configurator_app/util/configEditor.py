@@ -1,7 +1,10 @@
+import os
 class configEditor:
     def __init__(self, filePath: str):
         self.filePath = filePath
-        
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+        # Join the script directory with the file path
+        self.filePath = os.path.join(script_dir, filePath)
         self.fileContent, self.fileLength = self.readFile()
         
 
@@ -34,7 +37,8 @@ class configEditor:
         foundIndexes = []
         foundTarget = False
         for i in range(0, self.fileLength):
-            if self.fileContent[i].startswith(startsWith) and foundTarget == False:
+
+            if self.fileContent[i].lower().startswith(startsWith.lower()) and foundTarget == False:
                 foundIndexes.append(i)
                 foundTarget = True
             elif endsWith in self.fileContent[i] and foundTarget == True:
@@ -47,7 +51,7 @@ class configEditor:
         foundTarget = False
         currentFinds = [] #The indexes of the currently found content (indexes of E0/0)
         for i in range(0, self.fileLength):
-            if self.fileContent[i].startswith(startsWith) and foundTarget == False:
+            if self.fileContent[i].lower().startswith(startsWith.lower()) and foundTarget == False:
                 currentFinds.append(i)
                 foundTarget = True
             elif endsWith in self.fileContent[i] and foundTarget == True:
@@ -60,7 +64,13 @@ class configEditor:
 
 
     def getContentBetweenIndexes(self, startIndex: int, endIndex: int) -> list:
-        return self.fileContent[startIndex:endIndex+1]
+        content = self.fileContent[startIndex:endIndex+1]
+        returnContent = []
+        for line in content:
+            line = line.replace("\n", "") # Remove newline characters
+            line = line.lstrip()    # Remove leading whitespace
+            returnContent.append(line)
+        return returnContent
 
 
     def removeContentBetweenIndexes(self, startIndex: int, endIndex: int, fileContent: list) -> list:
