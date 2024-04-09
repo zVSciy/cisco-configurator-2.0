@@ -1,49 +1,103 @@
 from django.shortcuts import render
 from .models import Router_Interfaces
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
-
+ 
 def index(request):
     return render(request, 'index.html')
 
+@csrf_exempt
 def basic_config(request):
-    return render(request, 'configurations/basic_config.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    print(config_option)
+    return render(request, 'configurations/basic_config.html', config_option)
 
 routerID = 1
+ 
 def interface(request):
-    interfaces = Router_Interfaces.objects.filter(router_id=routerID)
-    return render(request, 'configurations/interface.html', {'interfaces': interfaces})
+    config_option = {
+        "device_type": request.POST.get('deviceType'),
+        "interfaces": Router_Interfaces.objects.filter(router_id=routerID)
+    }
+    return render(request, 'configurations/interface.html', config_option)
 
+ 
 def etherchannel(request):
-    return render(request, 'configurations/etherchannel.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    return render(request, 'configurations/etherchannel.html', config_option)
 
+ 
 def vlan(request):
-    return render(request, 'configurations/vlan.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    return render(request, 'configurations/vlan.html', config_option)
 
+ 
 def ospf(request):
-    return render(request, 'configurations/ospf.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    return render(request, 'configurations/ospf.html', config_option)
 
+ 
 def rip(request):
-    return render(request, 'configurations/rip.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    return render(request, 'configurations/rip.html', config_option)
 
+ 
 def static_routing(request):
-    return render(request, 'configurations/static_routing.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    return render(request, 'configurations/static_routing.html', config_option)
 
+ 
 def nat(request):
-    interfaces = Router_Interfaces.objects.filter(router_id=routerID)
-    return render(request, 'configurations/nat.html', {'interfaces': interfaces})
+    config_option = {
+        "device_type": request.POST.get('deviceType'),
+        "interfaces": Router_Interfaces.objects.filter(router_id=routerID)
+    }
+    return render(request, 'configurations/nat.html', config_option)
 
+ 
 def dhcp(request):
-    return render(request, 'configurations/dhcp.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    return render(request, 'configurations/dhcp.html', config_option)
 
+ 
 def acl_basic(request):
-    return render(request, 'configurations/acl_basic.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    return render(request, 'configurations/acl_basic.html', config_option)
 
+ 
 def acl_extended(request):
-    return render(request, 'configurations/acl_extendet.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    return render(request, 'configurations/acl_extendet.html', config_option)
 
+ 
 def vtp_dtp(request):
-    return render(request, 'configurations/vtp_dtp.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    return render(request, 'configurations/vtp_dtp.html', config_option)
 
+ 
 def stp(request):
-    return render(request, 'configurations/stp.html')
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    return render(request, 'configurations/stp.html', config_option)

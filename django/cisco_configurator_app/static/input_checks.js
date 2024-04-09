@@ -237,3 +237,40 @@ function checkmultipleIPs(string) {
   }
   return true;
 }
+
+
+// Static Routing
+
+function addRoute() {
+  let targetIP = document.getElementById('target_ip').value;
+  let subnetMask = document.getElementById('static_routing_subnet_mask').value;
+  let nextHopIP = document.getElementById('next_hop_ip').value;
+
+  let routeInfo = "Target IP: " + targetIP + "<br>Subnet Mask: " +
+    subnetMask + "<br>Next hop IP: " + nextHopIP + "<br><br>";
+
+  document.getElementById('staticRouting_info').innerHTML += routeInfo;
+  document.getElementById('staticRouting_info_for_transfer').value += targetIP + ',' + subnetMask + ',' + nextHopIP + ';';
+}
+
+function ValidateIPaddressStaticRouting(ipaddress, info) {
+  let message = document.getElementById(info);
+  let ip = document.getElementById(ipaddress);
+  let TButton = document.getElementById("add_StaticRoute_button");
+  if (isValidIpAddress(document.getElementById('target_ip').value) && isValidIpAddress(document.getElementById('static_routing_subnet_mask').value) && isValidIpAddress(document.getElementById('next_hop_ip').value)) {
+    message.textContent = "";
+    TButton.disabled = false;
+    return true;
+  } else if (isValidIpAddress(ip.value)) {
+    message.textContent = "";
+    return true;
+  } else if (ip.value == "") {
+    message.textContent = "";
+    TButton.disabled = true;
+    return true;
+  } else {
+    message.textContent = "You have entered an invalid IP address!";
+    TButton.disabled = true;
+    // TButton.style.backgroundColor = "#f44336";
+  }
+}
