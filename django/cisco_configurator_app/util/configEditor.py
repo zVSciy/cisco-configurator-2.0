@@ -6,6 +6,7 @@ class configEditor:
         # Join the script directory with the file path
         self.filePath = os.path.join(script_dir, filePath)
         self.fileContent, self.fileLength = self.readFile()
+        self.editedContent = self.fileContent.copy()
         
 
 
@@ -18,7 +19,7 @@ class configEditor:
 
 
     # This function takes a config in the form of a list of lines and writes it to a fil
-    def writeConfig(self, updatedContent: list) -> None:
+    def writeConfig(self) -> None:
         outputPath = self.filePath.split(".")  # Split the file name by the period
         for i in range(0, len(outputPath)): # check if we are at the end of the string before the file type addon (.txt)
             if (i < len(outputPath)-2):
@@ -30,7 +31,7 @@ class configEditor:
         outputPath = ''.join(outputPath)
 
         with open(outputPath, 'w')as outputFile:  # write the file
-            outputFile.writelines(updatedContent)
+            outputFile.writelines(self.fileContent)
 
 
     def findContentIndexes(self, startsWith: str, endsWith: str = "!") -> list:
@@ -76,12 +77,12 @@ class configEditor:
         return self.fileContent[index].replace("\n", "").lstrip()
 
 
-    def removeContentBetweenIndexes(self, startIndex: int, endIndex: int, fileContent: list) -> list:
-        return fileContent[:startIndex] + fileContent[endIndex+1:]
+    def removeContentBetweenIndexes(self, startIndex: int, endIndex: int) -> list:
+        self.fileContent = self.fileContent[:startIndex] + self.fileContent[endIndex+1:]
 
 
-    def appendContentToFile(self, content: list, fileContent: list) -> list:
-        return fileContent[:-1] + content + fileContent[-1:]
+    def appendContentToFile(self, content: list) -> list:
+        self.fileContent = self.fileContent[:-1] + content + self.fileContent[-1:]
 
 
 
