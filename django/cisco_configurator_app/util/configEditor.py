@@ -1,26 +1,3 @@
-# filePath = "exampleConfig.txt"
-
-
-# fileContent = []
-# fileLength = 0
-
-
-
-
-
-# fileContent, fileLength = readFile()
-# writeConfig(fileContent)
-# print(fileContent)
-# print(fileLength)
-# foundIndexes = findContentIndexes(
-#     "interface FastEthernet0/0", fileContent=fileContent)
-# print(foundIndexes)
-# content = getContentBetweenIndexes(foundIndexes[0], foundIndexes[-1], fileContent)
-
-# print(removeContentBetweenIndexes(foundIndexes[0], foundIndexes[-1], fileContent))
-# returnContent = appendContentToFile(content, fileContent)
-# print(returnContent)
-
 class configEditor:
     def __init__(self, filePath: str):
         self.filePath = filePath
