@@ -45,10 +45,9 @@ class interfaces:
     def toConfig(self) -> list:
         return [self.interface, f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n']
 
-class StaticRouting:
-    def __init__(self, staticRouting:str = "0.0.0.0,0.0.0.0,0.0.0.0;1.1.1.1,1.1.1.1,1.1.1.1" ) -> None:
+class StaticRoute:
+    def __init__(self, staticRouting:str = None ) -> None:
         self.routes = []
-        self.routes_str = None
         self.getRoutes(staticRouting)
 
     def getRoutes(self, staticRouting:str) -> list:
@@ -59,15 +58,6 @@ class StaticRouting:
                 self.routes.append({'targetNw': targetNw, 'targetSm': targetSm, 'nextHop': nextHop})
         return self.routes
 
-    def getString(self) -> str:
-        if self.routes_str is None:
-            routes_str = []
-            for route in self.routes:
-                route_str = ','.join([route['targetNw'], route['targetSm'], route['nextHop']])
-                routes_str.append(route_str)
-            self.routes_str = ';'.join(routes_str)
-        return self.routes_str
-
     def toConfig(self) -> list:
         config = []
         for route in self.routes:
@@ -76,20 +66,20 @@ class StaticRouting:
 
 
 class ripRouting:
-    def __init__(self, ripVersion:str = None, ripSumState:str = None, ripOriginate:str = None, ripNetworks:str = None) -> None:
+    def __init__(self, ripVersion:str = None, ripSumState:bool = None, ripOriginate:bool = None, ripNetworks:str = None) -> None:
         #Überprüft ob die Eingabe ein String ist und speichert die Werte
         if type(ripVersion) == str:
             self.ripVersion = ripVersion
         else:
             raise TypeError()
 
-        if type(ripSumState) == str:
-            self.ripSumState = ripSumState
+        if type(ripSumState) == bool:
+            self.ripSumState = "no-auto summary" if ripSumState else None
         else: 
             raise TypeError()
         
-        if type(ripOriginate) == str:
-            self.ripOriginate = ripOriginate
+        if type(ripOriginate) == bool:
+            self.ripOriginate = "default-information originate" if ripOriginate else None
         else:
             raise TypeError()
         
@@ -100,51 +90,21 @@ class ripRouting:
 
     # Teilt den String in die einzelnen Netzwerke auf und speichert sie in einer Liste
     def getNetworks(self, ripNetworks:str) -> list:
-        if ripNetworks:
-            networks = ripNetworks.split(',')
-            return networks
-        return []
-    
-class nat:
-    # Teilt den String in die einzelnen Werte auf und speichert sie in einer Liste
-    def splitNatPool(self) -> list:
-        if ',' in self.natPool:
-            accessNw, accessSm = self.natPool.split(',')
-            return [accessNw, accessSm]
-        else:
-            raise ValueError("natPool should contain a ','")
-    #Überprüft ob die Eingabe ein String ist und speichert die Werte
-    def __init__(self, natInside:str = "defaultInside", natOutside:str = "defaultOutside", natPool:str = "192.168.16.0,0.0.0.255") -> None:
-        #Überprüft ob die Eingabe ein String ist und speichert die Werte
-        if type(natInside) == str:
-            self.natInside = natInside
-        else:
-            raise TypeError()
+        return ripNetworks.split(';')
 
-        if type(natOutside) == str:
-            self.natOutside = natOutside
-        else:
-            raise TypeError()
-        
-        if type(natPool) == str:
-            self.natPool = natPool
-            self.accessList = self.splitNatPool()
-        else:
-            raise TypeError()
+    def toConfig(self) -> list:
+        config = []
+        config.append(f" version {self.ripVersion}")
+        if self.ripSumState:
+            config.append(f" {self.ripSumState}")
+        if self.ripOriginate:
+            config.append(f" {self.ripOriginate}")
+        for network in self.ripNetworks:
+            config.append(f" network {network}")
+        return config
 
 class dhcp:
-    def __init__(self, state:str = "off", dhcpPoolName:str = "pool1", dhcpNetwork:str = "0.0.0.0", dhcpGateway:str = "0.0.0.0", dhcpDNS:str = "0.0.0.0", dhcpPool:str = "0.0.0.0,0.0.0.0" ) -> None:
-        #Überprüft ob die Eingabe ein String ist und speichert die Werte
-        if type(state) == str:
-            self.state = state
-        else:
-            raise TypeError()
-
-        if type(dhcpPoolName) == str:
-            self.dhcpPoolName = dhcpPoolName
-        else:
-            raise TypeError()
-        
+    def __init__(self, dhcpNetwork:str = None, dhcpGateway:str = None, dhcpDNS:str = None, dhcpPool:str = None) -> None:
         if type(dhcpNetwork) == str:
             self.dhcpNetwork = dhcpNetwork
         else:
@@ -175,6 +135,48 @@ class dhcp:
             raise ValueError("dhcpPool must be two IP addresses separated by a comma")
 
         return split_pool
+
+    def toConfig(self) -> list:
+        config = []
+        config.append(f"DHCP Network: {self.dhcpNetwork}")
+        config.append(f"DHCP Gateway: {self.dhcpGateway}")
+        config.append(f"DHCP DNS: {self.dhcpDNS}")
+        config.append(f"DHCP Pool: {self.dhcpPool}")
+        config.append(f"DHCP Pool List: {self.dhcpPoolList}")
+        return config
+
+class nat:
+    def splitNatPool(self):
+        if ',' in self.natPool:
+            accessNw, accessSm = self.natPool.split(',')
+            return [accessNw, accessSm]
+        else:
+            raise ValueError("natPool should contain a ','")
+
+    def __init__(self, natInside:str = "defaultInside", natOutside:str = "defaultOutside", natPool:str = "192.168.16.0,0.0.0.255") -> None:
+        if type(natInside) == str:
+            self.natInside = natInside
+        else:
+            raise TypeError()
+
+        if type(natOutside) == str:
+            self.natOutside = natOutside
+        else:
+            raise TypeError()
+        
+        if type(natPool) == str:
+            self.natPool = natPool
+            self.accessList = self.splitNatPool()
+        else:
+            raise TypeError()
+
+    def toConfig(self) -> list:
+        config = []
+        config.append(f" access list {self.natPool}")
+        config.append(f"access list {self.accessList}")
+        return config
+    
+
     
 
 
