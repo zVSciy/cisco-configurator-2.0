@@ -1,5 +1,5 @@
 from configEditor import configEditor
-from deviceClasses import interfaces, StaticRouting
+from deviceClasses import interfaces, StaticRouting, ripRouting
 
 filePath = "./exampleConfig.txt"
 class configManager:
@@ -44,11 +44,17 @@ class configManager:
             elif intLine.startswith("shutdown") or intLine.startswith("no shutdown"):
                 shut = intLine
         return interfaces(intName, ip, sm, desc, shut)
+    
+    def writeInterface(self, interface: interfaces) -> None:
+        interfaceLines = self.configEditor.findContentIndexes("interface " + interface.interface, "!")
+        self.configEditor.removeContentBetweenIndexes(interfaceLines[0], interfaceLines[-1])
+        self.configEditor.appendContentToFile(interface.toConfig())
+        self.configEditor.writeConfig()
 
     def getStaticRoutes(self) -> StaticRouting:
-        staticRoutes = self.configEditor.findContentIndexes("ip route ")
+        staticRoutesLines = self.configEditor.findContentIndexes("ip route ")
         returnStaticRoutes = ""
-        for routeIndex in staticRoutes:
+        for routeIndex in staticRoutesLines:
             routeText = self.configEditor.getContentOnIndex(routeIndex).split(" ")
             targetNw = routeText[2]
             targetSm = routeText[3]
@@ -57,7 +63,21 @@ class configManager:
                 returnStaticRoutes += ";"
             returnStaticRoutes += targetNw + "," + targetSm + "," + nextHop
         return StaticRouting(returnStaticRoutes)
+    
+    def writeStaticRoutes(self, staticRoutes: StaticRouting) -> None:
+        staticRouteLines = self.configEditor.findContentIndexes("ip route ")
+        self.configEditor.removeContentBetweenIndexes(staticRouteLines[0], staticRouteLines[-1])
+        self.configEditor.appendContentToFile(staticRoutes.toConfig())
+        self.configEditor.writeConfig()
 
+    # def getRIPConfig(self) -> ripRouting:
+    #     ripLines = self.configEditor.findContentIndexes("router rip", "!")
+    #     ripText = self.configEditor.getContentBetweenIndexes(ripLines[0], ripLines[-1])
+    #     ripNetworks = []
+    #     for ripLine in ripText:
+    #         if ripLine.startswith("network"):
+    #             ripNetworks.append(ripLine.split(" ")[1])
+    #     return ripRouting(ripNetworks)
 
 cM = configManager(filePath)
 
@@ -66,3 +86,10 @@ cM = configManager(filePath)
 # print(cM.getAllInterfaces())
 # print(cM.getInterface("Fast"))
 # print(cM.getStaticRoutes().toConfig())
+
+# interface = cM.getInterface("FastEthernet0/1")
+# interface.ip = '10.10.23.11'
+# cM.writeInterface(interface)
+
+staticRoutes = cM.getStaticRoutes()
+cM.writeStaticRoutes(staticRoutes)
