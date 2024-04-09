@@ -102,6 +102,7 @@ class ripRouting:
 
     def toConfig(self) -> list:
         config = []
+        config.append("router rip\n")
         config.append(f" version {self.ripVersion}\n")
         if self.ripSumState:
             config.append(f" {self.ripSumState}\n")
