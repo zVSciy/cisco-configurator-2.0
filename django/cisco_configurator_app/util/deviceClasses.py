@@ -16,7 +16,7 @@ class deviceInfo:
         return "Hostname: " + self.hostname + "\n" + "MOTD: " + self.motd
 
 class interfaces:
-    def __init__(self, interface:str = None, ip:str = None, sm:str = None, description:str = None, shutdown:str = None ) -> None:
+    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = None, shutdown:str = None ) -> None:
         #Überprüft ob die Eingabe ein String ist und speichert die Werte
         if type(interface) == str:
             self.interface = interface #FastEthernet0/0
@@ -38,9 +38,17 @@ class interfaces:
             self.shutdown = shutdown
         else:
             raise TypeError()
+        if type(ipNatInside) == bool:
+            self.ipNatInside = "ip nat inside" if ipNatInside else None
+        else:
+            raise TypeError()
+        if type(ipNatOutside) == bool:
+            self.ipNatOutside = "ip nat outside" if ipNatOutside else None
+        else:
+            raise TypeError()
         
     def __repr__(self) -> str:
-        return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown
+        return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + self.ipNatInside + "\n" + + self.ipNatOutside + "\n"
 
     def toConfig(self) -> list:
         return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n']
@@ -134,47 +142,19 @@ class dhcp:
         config.append(f"dns-server {self.dhcpDNS}\n")
         return config
 
-def read_config(device):
-    return device.toConfig()
-
-# create an instance of the class with test values
-device = dhcp(dhcpNetwork="192.168.1.0,255.255.255.0", dhcpGateway="192.168.1.1", dhcpDNS="8.8.8.8", dhcpPool="192.168.1.2,192.168.1.254")
-
-# read the config list and print it
-config = read_config(device)
-print(config)
-
 class nat:
-    def splitNatPool(self):
-        if ',' in self.natPool:
-            accessNw, accessSm = self.natPool.split(',')
-            return [accessNw, accessSm]
-        else:
-            raise ValueError("natPool should contain a ','")
-
-    def __init__(self, natInside:str = "defaultInside", natOutside:str = "defaultOutside", natPool:str = "192.168.16.0,0.0.0.255") -> None:
-        if type(natInside) == str:
-            self.natInside = natInside
-        else:
-            raise TypeError()
-
-        if type(natOutside) == str:
-            self.natOutside = natOutside
-        else:
-            raise TypeError()
-        
+    def __init__(self, natPool:str = "192.168.16.0,0.0.0.255") -> None:
         if type(natPool) == str:
-            self.natPool = natPool
-            self.accessList = self.splitNatPool()
+            self.natPool = natPool.split(',')
         else:
             raise TypeError()
 
     def toConfig(self) -> list:
         config = []
-        config.append(f" access list {self.natPool}")
-        config.append(f"access list {self.accessList}")
+        config.append(f"ip nat inside source list 1 interface {self.interface} overload\n")
+        config.append(f"access list 1 permit {', '.join(self.natPool)}\n")
         return config
-    
+        
 
     
 
