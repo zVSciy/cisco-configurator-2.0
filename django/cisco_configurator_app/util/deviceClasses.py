@@ -22,6 +22,22 @@ class interfaces:
             self.interface = interface #FastEthernet0/0
         else:
             raise TypeError()
+        if type(ip) == str:
+            self.ip = ip
+        else:
+            raise TypeError()
+        if type(sm) == str:
+            self.sm = sm
+        else:
+            raise TypeError()
+        if type(description) == str:
+            self.description = description
+        else:
+            raise TypeError()
+        if type(shutdown) == str:
+            self.shutdown = shutdown
+        else:
+            raise TypeError()
         
     def __repr__(self) -> str:
         return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown
@@ -30,12 +46,11 @@ class interfaces:
         return [self.interface, f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n']
 
 class StaticRouting:
-    def __init__(self, staticRouting:str = None ) -> None:
+    def __init__(self, staticRouting:str = "0.0.0.0,0.0.0.0,0.0.0.0;1.1.1.1,1.1.1.1,1.1.1.1" ) -> None:
         self.routes = []
         self.routes_str = None
         self.getRoutes(staticRouting)
 
-    #Teilt den String in die einzelnen Routen auf und speichert sie in einer Liste
     def getRoutes(self, staticRouting:str) -> list:
         if staticRouting:
             routes = staticRouting.split(';')
@@ -44,7 +59,6 @@ class StaticRouting:
                 self.routes.append({'targetNw': targetNw, 'targetSm': targetSm, 'nextHop': nextHop})
         return self.routes
 
-    # Gibt den String aus den einzelnen Routen zurück
     def getString(self) -> str:
         if self.routes_str is None:
             routes_str = []
@@ -54,10 +68,11 @@ class StaticRouting:
             self.routes_str = ';'.join(routes_str)
         return self.routes_str
 
-    # Printet die einzelnen Routen aus der Liste
-    def print_routes(self):
+    def toConfig(self) -> list:
+        config = []
         for route in self.routes:
-            print(f"targetNw: {route['targetNw']}, targetSm: {route['targetSm']}, nextHop: {route['nextHop']}")
+            config.append(f"ip route {route['targetNw']} {route['targetSm']} {route['nextHop']}")
+        return config
 
 
 class ripRouting:
