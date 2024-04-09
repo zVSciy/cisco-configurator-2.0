@@ -43,7 +43,7 @@ class interfaces:
         return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown
 
     def toConfig(self) -> list:
-        return [self.interface, f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n']
+        return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n']
 
 class StaticRoute:
     def __init__(self, staticRouting:str = None ) -> None:
@@ -61,7 +61,7 @@ class StaticRoute:
     def toConfig(self) -> list:
         config = []
         for route in self.routes:
-            config.append(f"ip route {route['targetNw']} {route['targetSm']} {route['nextHop']}")
+            config.append(f"ip route {route['targetNw']} {route['targetSm']} {route['nextHop']}\n")
         return config
 
 
@@ -94,19 +94,19 @@ class ripRouting:
 
     def toConfig(self) -> list:
         config = []
-        config.append(f" version {self.ripVersion}")
+        config.append(f" version {self.ripVersion}\n")
         if self.ripSumState:
-            config.append(f" {self.ripSumState}")
+            config.append(f" {self.ripSumState}\n")
         if self.ripOriginate:
-            config.append(f" {self.ripOriginate}")
+            config.append(f" {self.ripOriginate}\n")
         for network in self.ripNetworks:
-            config.append(f" network {network}")
+            config.append(f" network {network}\n")
         return config
 
 class dhcp:
     def __init__(self, dhcpNetwork:str = None, dhcpGateway:str = None, dhcpDNS:str = None, dhcpPool:str = None) -> None:
         if type(dhcpNetwork) == str:
-            self.dhcpNetwork = dhcpNetwork
+            self.dhcpNetwork = dhcpNetwork.split(',')
         else:
             raise TypeError()
         
@@ -121,29 +121,28 @@ class dhcp:
             raise TypeError()
         
         if type(dhcpPool) == str:
-            self.dhcpPool = dhcpPool
-            self.dhcpPoolList = self.splitDhcpPool()
+            self.dhcpPool = dhcpPool.split(',')
         else:
             raise TypeError()
 
-    def splitDhcpPool(self):
-        # split the dhcpPool string at the comma
-        split_pool = self.dhcpPool.split(',')
-
-        # check if the split operation resulted in exactly two elements
-        if len(split_pool) != 2:
-            raise ValueError("dhcpPool must be two IP addresses separated by a comma")
-
-        return split_pool
-
     def toConfig(self) -> list:
         config = []
-        config.append(f"DHCP Network: {self.dhcpNetwork}")
-        config.append(f"DHCP Gateway: {self.dhcpGateway}")
-        config.append(f"DHCP DNS: {self.dhcpDNS}")
-        config.append(f"DHCP Pool: {self.dhcpPool}")
-        config.append(f"DHCP Pool List: {self.dhcpPoolList}")
+        config.append(f"ip dhcp excluded-address {', '.join(self.dhcpPool)}\n")
+        config.append("ip dhcp pool defaultPool\n")
+        config.append(f"network {', '.join(self.dhcpNetwork)}\n")
+        config.append(f"default-router {self.dhcpGateway}\n")
+        config.append(f"dns-server {self.dhcpDNS}\n")
         return config
+
+def read_config(device):
+    return device.toConfig()
+
+# create an instance of the class with test values
+device = dhcp(dhcpNetwork="192.168.1.0,255.255.255.0", dhcpGateway="192.168.1.1", dhcpDNS="8.8.8.8", dhcpPool="192.168.1.2,192.168.1.254")
+
+# read the config list and print it
+config = read_config(device)
+print(config)
 
 class nat:
     def splitNatPool(self):
