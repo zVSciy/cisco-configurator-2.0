@@ -1,9 +1,17 @@
-{% extends 'master.html' %}
-
-{% block content %}
-
-<p></p>
-<h1>Index Site not finished yet. In future -> Select Router/Switch model here</h1>
-<p></p>
-
-{% endblock content %}
+<h1>Home </h1>
+<form id="configForm" method="post" action="{% url 'basic_config_route' %}">
+    <h2>Select Router or Switch:</h2>
+    <select name="deviceType" id="deviceType">
+        <option value="router">Router</option>
+        <option value="switch">Switch</option>
+    </select>
+    
+    <h2>Select New Config or Load from Switch/Router:</h2>
+    <select name="configType" id="configType">
+        <option value="new">New Config</option>
+        <option value="load" disabled>Load from Switch/Router</option>
+    </select>
+    
+    <br><br>
+    <button type="submit">Start Configuring</button>
+</form>

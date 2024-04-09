@@ -16,34 +16,200 @@
       <h1 id="heading" class="p-2 px-3 font-bold">Cisco GUI Konfigurator</h1>
     </a>
     <div class="flex gap-2">
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300"
-      href="{%  url 'index_route' %}">Index</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300"
-        href="{%  url 'basic_config_route' %}">Hostname & Banner (Basic Config)</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300"
-        href="{%  url 'interface_route' %}">Interfaces</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300" 
-        href="{%  url 'nat_route' %}">NAT</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300" 
-        href="{%  url 'dhcp_route' %}">DHCP</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300"
-        href="{%  url 'etherchannel_route' %}">Etherchannel</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300" 
-        href="{%  url 'vlan_route' %}">VLAN</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300" 
-        href="{%  url 'ospf_route' %}">OSPF</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300" 
-        href="{%  url 'rip_route' %}">RIP</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300"
-        href="{%  url 'static_routing_route' %}">Static Routing</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300"
-        href="{%  url 'acl_basic_route' %}">Basic ACL</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300"
-        href="{%  url 'acl_extended_route' %}">Extendet ACL</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300" 
-        href="{%  url 'vtp_dtp_route' %}">VTP & DTP</a>
-      <a class="menu-button btn min-h-0 h-[2.5rem]  bg-base-300 border-base-300" 
-        href="{%  url 'stp_route' %}">STP</a>
+      {% if device_type == "router" %}
+      <form method="post" action="{% url 'index_route' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            Return to start
+        </button>
+    </form>
+    
+    <form method="post" action="{% url 'basic_config_route' %}" class="menu-form">
+      {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            Hostname & Banner (Basic Config)
+        </button>
+    </form>
+    
+    <form method="post" action="{% url 'interface_route' %}" class="menu-form">
+      {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            Interfaces
+        </button>
+    </form>
+    
+    <form method="post" action="{% url 'nat_route' %}" class="menu-form">
+      {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            NAT
+        </button>
+    </form>
+    
+    <form method="post" action="{% url 'dhcp_route' %}" class="menu-form">
+      {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            DHCP
+        </button>
+    </form>
+    
+    <form method="post" action="{% url 'etherchannel_route' %}" class="menu-form">
+      {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            Etherchannel
+        </button>
+    </form>
+    
+    <form method="post" action="{% url 'ospf_route' %}" class="menu-form">
+      {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            OSPF
+        </button>
+    </form>
+    
+    <form method="post" action="{% url 'rip_route' %}" class="menu-form">
+      {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            RIP
+        </button>
+    </form>
+    
+    <form method="post" action="{% url 'static_routing_route' %}" class="menu-form">
+      {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            Static Routing
+        </button>
+    </form>
+    
+    <form method="post" action="{% url 'acl_basic_route' %}" class="menu-form">
+      {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            Basic ACL
+        </button>
+    </form>
+    
+    <form method="post" action="{% url 'acl_extended_route' %}" class="menu-form">
+      {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+            <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+            Extended ACL
+        </button>
+    </form>
+    
+      
+      {% elif device_type == "switch" %}
+      <form method="post" action="{% url 'index_route' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="switch">Switch</option>
+        </select>
+          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+              Return to start
+          </button>
+      </form>
+
+      <form method="post" action="{% url 'basic_config_route' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="switch">Switch</option>
+        </select>
+          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+              Hostname & Banner (Basic Config)
+          </button>
+      </form>
+
+      <form method="post" action="{% url 'etherchannel_route' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="switch">Switch</option>
+        </select>
+          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+              Etherchannel
+          </button>
+      </form>
+
+      <form method="post" action="{% url 'vlan_route' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="switch">Switch</option>
+        </select>
+          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+              VLAN
+          </button>
+      </form>
+
+      <form method="post" action="{% url 'acl_basic_route' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="switch">Switch</option>
+        </select>
+          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+              Basic ACL
+          </button>
+      </form>
+
+      <form method="post" action="{% url 'acl_extended_route' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="switch">Switch</option>
+        </select>
+          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+              Extended ACL
+          </button>
+      </form>
+
+      <form method="post" action="{% url 'vtp_dtp_route' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="switch">Switch</option>
+        </select>
+          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+              VTP & DTP
+          </button>
+      </form>
+
+      <form method="post" action="{% url 'stp_route' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="switch">Switch</option>
+        </select>
+          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+              STP
+          </button>
+      </form>
+
+      {% endif %}
 
       <label class="flex cursor-pointer items-center gap-2 bg-base-300 rounded-xl p-2">
         <input type="checkbox" value="light" class="toggle theme-controller" />
