@@ -11,7 +11,7 @@
         <h3 class="config_item flex font-bold items-center gap-3" id="">
           <input type="checkbox" class="toggle toggle-accent" name="{{ interface }}_shutdown"
             id="{{ interface }}_shutdown"
-            onchange="updateInterfaceDescription('{{ interface }}_shutdown', '{{ interface }}_shutdown_description')" checked/>
+            onchange="updateInterfaceDescription('{{ interface }}_shutdown', '{{ interface }}_shutdown_description')"/>
           {{ interface }}:
           <span id="{{ interface }}_shutdown_description">
             (shutdown)
@@ -37,7 +37,7 @@
             </label>
             <input placeholder="ip address or dhcp" class="input !pl-3 !outline-offset-0 input-bordered !w-full"
               type="text" id="{{ interface }}_ip" name="{{ interface }}_ip"
-              oninput="checkIpAddress('{{ interface }}_ip', '{{ interface }}_sm', 'result_{{ interface }}')">
+              oninput="checkIpAddress('{{ interface }}_ip', '{{ interface }}_sm', 'result_{{ interface }}'), 'transferButton'">
           </div>
 
           <div class="relative" id="ip-form">
@@ -46,7 +46,7 @@
               for="subnetMask">Subnet mask:</label>
             <input class="input !pl-3 !outline-offset-0 input-bordered !w-full" type="text" name="{{ interface }}_sm"
               id="{{ interface }}_sm" placeholder="leave empty if ip is dhcp"
-              oninput="checkIpAddress('{{ interface }}_ip', '{{ interface }}_sm', 'result_{{ interface }}')">
+              oninput="checkIpAddress('{{ interface }}_ip', '{{ interface }}_sm', 'result_{{ interface }}', 'transferButton')">
             <div id="result_{{ interface }}"></div>
           </div>
         </div>

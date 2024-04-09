@@ -9,7 +9,7 @@
 
       <h3 class="config_item flex items-center gap-3" id="">
         <input class="toggle toggle-accent" type="checkbox" name="nat_state" id="nat_status"
-          onchange="updateStateDescription('nat_status', 'nat_state_description'), checkInterfacesNat()" checked>Enabled<span
+          onchange="updateStateDescription('nat_status', 'nat_state_description'), checkInterfacesNat()">Enabled<span
           id="nat_state_description">(off)</span>
       </h3>
     </div>
@@ -81,4 +81,7 @@
 
     </div>
   </div>
+  <script>
+    document.getElementById('nat_info_for_transfer').style.display = 'none'
+  </script>
 {% endblock content %}

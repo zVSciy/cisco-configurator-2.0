@@ -8,7 +8,7 @@
     <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
       <h3 class="config_item flex items-center gap-3" id="">
         <input class="toggle toggle-accent" type="checkbox" name="dhcp_state" id="dhcp_status"
-          onchange="updateStateDescription('dhcp_status', 'dhcp_state_description')" checked>
+          onchange="updateStateDescription('dhcp_status', 'dhcp_state_description')">
         State<span id="dhcp_state_description">
           (off)</span>
       </h3>
@@ -105,4 +105,7 @@
     </div>
   </div>
   </div>
+  <script>
+      document.getElementById('dhcp_info_for_transfer').style.display = 'none';
+  </script>
 {% endblock content %}

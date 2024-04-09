@@ -30,7 +30,8 @@ def static_routing(request):
     return render(request, 'configurations/static_routing.html')
 
 def nat(request):
-    return render(request, 'configurations/nat.html')
+    interfaces = Router_Interfaces.objects.filter(router_id=routerID)
+    return render(request, 'configurations/nat.html', {'interfaces': interfaces})
 
 def dhcp(request):
     return render(request, 'configurations/dhcp.html')
