@@ -1,31 +1,12 @@
-# filePath = "exampleConfig.txt"
-
-
-# fileContent = []
-# fileLength = 0
-
-
-
-
-
-# fileContent, fileLength = readFile()
-# writeConfig(fileContent)
-# print(fileContent)
-# print(fileLength)
-# foundIndexes = findContentIndexes(
-#     "interface FastEthernet0/0", fileContent=fileContent)
-# print(foundIndexes)
-# content = getContentBetweenIndexes(foundIndexes[0], foundIndexes[-1], fileContent)
-
-# print(removeContentBetweenIndexes(foundIndexes[0], foundIndexes[-1], fileContent))
-# returnContent = appendContentToFile(content, fileContent)
-# print(returnContent)
-
+import os
 class configEditor:
     def __init__(self, filePath: str):
         self.filePath = filePath
-        
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+        # Join the script directory with the file path
+        self.filePath = os.path.join(script_dir, filePath)
         self.fileContent, self.fileLength = self.readFile()
+        self.editedContent = self.fileContent.copy()
         
 
 
@@ -38,7 +19,7 @@ class configEditor:
 
 
     # This function takes a config in the form of a list of lines and writes it to a fil
-    def writeConfig(self, updatedContent: list) -> None:
+    def writeConfig(self) -> None:
         outputPath = self.filePath.split(".")  # Split the file name by the period
         for i in range(0, len(outputPath)): # check if we are at the end of the string before the file type addon (.txt)
             if (i < len(outputPath)-2):
@@ -50,14 +31,15 @@ class configEditor:
         outputPath = ''.join(outputPath)
 
         with open(outputPath, 'w')as outputFile:  # write the file
-            outputFile.writelines(updatedContent)
+            outputFile.writelines(self.fileContent)
 
 
     def findContentIndexes(self, startsWith: str, endsWith: str = "!") -> list:
         foundIndexes = []
         foundTarget = False
         for i in range(0, self.fileLength):
-            if self.fileContent[i].startswith(startsWith) and foundTarget == False:
+
+            if self.fileContent[i].lower().startswith(startsWith.lower()) and foundTarget == False:
                 foundIndexes.append(i)
                 foundTarget = True
             elif endsWith in self.fileContent[i] and foundTarget == True:
@@ -70,7 +52,7 @@ class configEditor:
         foundTarget = False
         currentFinds = [] #The indexes of the currently found content (indexes of E0/0)
         for i in range(0, self.fileLength):
-            if self.fileContent[i].startswith(startsWith) and foundTarget == False:
+            if self.fileContent[i].lower().startswith(startsWith.lower()) and foundTarget == False:
                 currentFinds.append(i)
                 foundTarget = True
             elif endsWith in self.fileContent[i] and foundTarget == True:
@@ -83,15 +65,24 @@ class configEditor:
 
 
     def getContentBetweenIndexes(self, startIndex: int, endIndex: int) -> list:
-        return self.fileContent[startIndex:endIndex+1]
+        content = self.fileContent[startIndex:endIndex+1]
+        returnContent = []
+        for line in content:
+            line = line.replace("\n", "") # Remove newline characters
+            line = line.lstrip()    # Remove leading whitespace
+            returnContent.append(line)
+        return returnContent
+    
+    def getContentOnIndex(self, index: int) -> str:
+        return self.fileContent[index].replace("\n", "").lstrip()
 
 
-    def removeContentBetweenIndexes(self, startIndex: int, endIndex: int, fileContent: list) -> list:
-        return fileContent[:startIndex] + fileContent[endIndex+1:]
+    def removeContentBetweenIndexes(self, startIndex: int, endIndex: int) -> list:
+        self.fileContent = self.fileContent[:startIndex] + self.fileContent[endIndex+1:]
 
 
-    def appendContentToFile(self, content: list, fileContent: list) -> list:
-        return fileContent[:-1] + content + fileContent[-1:]
+    def appendContentToFile(self, content: list) -> list:
+        self.fileContent = self.fileContent[:-1] + content + self.fileContent[-1:]
 
 
 
