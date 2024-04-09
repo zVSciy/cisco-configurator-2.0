@@ -116,7 +116,48 @@ class nat:
             raise TypeError()
 
 class dhcp:
-    def __init__(self, ) -> None:
-        pass
+    def __init__(self, state:str = "off", dhcpPoolName:str = "pool1", dhcpNetwork:str = "0.0.0.0", dhcpGateway:str = "0.0.0.0", dhcpDNS:str = "0.0.0.0", dhcpPool:str = "0.0.0.0,0.0.0.0" ) -> None:
+        #Überprüft ob die Eingabe ein String ist und speichert die Werte
+        if type(state) == str:
+            self.state = state
+        else:
+            raise TypeError()
+
+        if type(dhcpPoolName) == str:
+            self.dhcpPoolName = dhcpPoolName
+        else:
+            raise TypeError()
+        
+        if type(dhcpNetwork) == str:
+            self.dhcpNetwork = dhcpNetwork
+        else:
+            raise TypeError()
+        
+        if type(dhcpGateway) == str:
+            self.dhcpGateway = dhcpGateway
+        else:
+            raise TypeError()
+        
+        if type(dhcpDNS) == str:
+            self.dhcpDNS = dhcpDNS
+        else:
+            raise TypeError()
+        
+        if type(dhcpPool) == str:
+            self.dhcpPool = dhcpPool
+            self.dhcpPoolList = self.splitDhcpPool()
+        else:
+            raise TypeError()
+
+    def splitDhcpPool(self):
+        # split the dhcpPool string at the comma
+        split_pool = self.dhcpPool.split(',')
+
+        # check if the split operation resulted in exactly two elements
+        if len(split_pool) != 2:
+            raise ValueError("dhcpPool must be two IP addresses separated by a comma")
+
+        return split_pool
+    
 
 
