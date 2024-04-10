@@ -5,9 +5,7 @@ class configEditor:
         script_dir = os.path.dirname(os.path.realpath(__file__))
         # Join the script directory with the file path
         self.filePath = os.path.join(script_dir, filePath)
-        self.fileContent, self.fileLength = self.readFile()
-        self.editedContent = self.fileContent.copy()
-        
+        self.fileContent, self.fileLength = self.readFile()        
 
 
     # Reads the input file and returns the content and length of the file
@@ -77,7 +75,7 @@ class configEditor:
         return self.fileContent[index].replace("\n", "").lstrip()
 
 
-    def removeContentBetweenIndexes(self, startIndex: int, endIndex: int) -> list:
+    def removeContentBetweenIndexes(self, startIndex: int, endIndex: int) -> None:
         self.fileContent = self.fileContent[:startIndex] + self.fileContent[endIndex+1:]
 
 
