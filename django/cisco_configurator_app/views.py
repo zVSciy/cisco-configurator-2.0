@@ -101,3 +101,13 @@ def stp(request):
         "device_type": request.POST.get('deviceType')
     }
     return render(request, 'configurations/stp.html', config_option)
+
+def get_inputs(request):
+    config_option = {
+        "device_type": request.POST.get('deviceType')
+    }
+    forward_to = request.POST.get('hidden_forward_to')
+    hostname = request.POST.get('hidden_hostname')
+    banner = request.POST.get('hidden_banner')
+    
+    return render(request, 'configurations/'+forward_to+'.html', config_option)

@@ -274,3 +274,14 @@ function ValidateIPaddressStaticRouting(ipaddress, info) {
     // TButton.style.backgroundColor = "#f44336";
   }
 }
+
+
+
+function add_to_config() {
+    let hostname_to_set = document.getElementById('hostname').value 
+    let banner_to_set = document.getElementById('banner').value
+
+    // Setze die Werte in die versteckten Felder
+    document.getElementById('hidden_hostname').value = hostname_to_set;
+    document.getElementById('hidden_banner').value = banner_to_set;
+}

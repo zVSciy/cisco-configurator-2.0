@@ -4,19 +4,19 @@
 <div class="menu-content bg-base-200 rounded-lg mb-4 p-8" id="menu1">
     <h2 class="font-extrabold text-2xl pb-5">Hostname & Banner Configuration</h2>
       <div class="relative flex items-center gap-3">
-        <label id="hostname"
+        <label id="Hostname"
           class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">Hostname:</label>
         <input placeholder="e.g. router-0137" class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs"
-          type="text" size="15" id="Hostname" name="hostname">
+          type="text" size="15" id="hostname" name="hostname" oninput="add_to_config()">
       </div>
       <br>
       <div class="relative flex items-center gap-3">
         <label
           class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-          id="banner">Banner message:</label>
+          id="Banner">Banner message:</label>
         <input placeholder="e.g. permitted access only"
           class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="textarea" size="50" height="10"
-          id="banner" name="banner">
+          id="banner" name="banner" oninput="add_to_config()">
       </div>
   </div>
 {% endblock content %}

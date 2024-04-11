@@ -38,4 +38,5 @@ urlpatterns = [
     path('acl-extended/', views.acl_extended, name='acl_extended_route'),
     path('vtp-dtp/', views.vtp_dtp, name='vtp_dtp_route'),
     path('stp/', views.stp, name='stp_route'),
+    path('config/', views.get_inputs, name='get_inputs_route')
 ]
