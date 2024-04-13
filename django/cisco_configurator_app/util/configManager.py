@@ -40,7 +40,7 @@ class configManager:
     def getInterface(self, interfaceName: str) -> interfaces:
         InterfaceLines = self.configEditor.findContentIndexes("interface " + interfaceName, "!") #Finds the indexes of the interface in the config list
         interfaceText = self.configEditor.getContentBetweenIndexes(InterfaceLines[0], InterfaceLines[-1])
-        intName, ip, sm, desc, natInside, natOutside, shut = None, None, None, "Default", None, None, "no shutdown"
+        intName, ip, sm, desc, natInside, natOutside, shut = None, None, None, "Default", None, None, True
         for intLine in interfaceText: #Iterates over the lines of the interface
             if intLine.startswith("interface "):
                 intName = intLine.split(" ")[1]
@@ -54,7 +54,7 @@ class configManager:
             elif intLine.startswith("description"):
                 desc = intLine.split(" ")[1]
             elif intLine.startswith("shutdown") or intLine.startswith("no shutdown"):
-                shut = True if intLine == "shutdown" else False
+                shut = False if intLine == "shutdown" else True
             if natInside == None: natInside = False
             if natOutside == None: natOutside = False
         return interfaces(intName, ip, sm, natInside, natOutside, desc, shut)
