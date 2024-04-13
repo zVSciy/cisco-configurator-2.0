@@ -54,7 +54,7 @@ class configManager:
             elif intLine.startswith("description"):
                 desc = intLine.split(" ")[1]
             elif intLine.startswith("shutdown") or intLine.startswith("no shutdown"):
-                shut = intLine
+                shut = True if intLine == "shutdown" else False
             if natInside == None: natInside = False
             if natOutside == None: natOutside = False
         return interfaces(intName, ip, sm, natInside, natOutside, desc, shut)
