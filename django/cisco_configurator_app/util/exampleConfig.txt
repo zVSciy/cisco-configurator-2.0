@@ -71,6 +71,7 @@ interface FastEthernet0/1
  duplex auto
  ip nat outside
  speed auto
+ shutdown
 !
 router ospf 1
  router-id 1.1.1.1

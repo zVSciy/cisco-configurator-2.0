@@ -22,7 +22,7 @@ class deviceInfo:
 #region Interfaces
 
 class interfaces:
-    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = None, shutdown:str = None ) -> None:
+    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = None, shutdown:bool = None ) -> None:
         #Überprüft ob die Eingabe ein String ist und speichert die Werte
         if type(interface) == str:
             self.interface = interface #FastEthernet0/0
@@ -40,25 +40,31 @@ class interfaces:
             self.description = description
         else:
             raise TypeError()
-        if type(shutdown) == str:
-            self.shutdown = shutdown
+        if type(shutdown) == bool:
+            self.shutdown = "no shutdown\n" if shutdown else "shutdown\n"
         else:
             raise TypeError()
         if type(ipNatInside) == bool:
-            self.ipNatInside = "\nip nat inside" if ipNatInside else ''
+            self.ipNatInside = "ip nat inside\n" if ipNatInside else ''
         else:
             raise TypeError()
         if type(ipNatOutside) == bool:
-            self.ipNatOutside = "\nip nat outside" if ipNatOutside else ''
+            self.ipNatOutside = "ip nat outside\n" if ipNatOutside else ''
         else:
             raise TypeError()
         
     def __repr__(self) -> str:
-        return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + self.ipNatInside + self.ipNatOutside
+        return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + "\n" + self.ipNatInside + self.ipNatOutside 
 
     def toConfig(self) -> list:
-        return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n', f'{self.ipNatInside}', f'{self.ipNatOutside}']
-    
+        return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n', f' {self.ipNatInside}', f'{self.ipNatOutside}' + "!\n"]
+
+# Erstellen Sie eine Instanz der Klasse
+interface_instance = interfaces(interface="FastEthernet0/0", ip="192.168.1.1", sm="255.255.255.0", description="Main Interface", shutdown=True, ipNatInside=True, ipNatOutside=False)
+
+config = interface_instance.toConfig()
+print(config)
+
 #endregion
 #region StaticRoute
 
