@@ -16,7 +16,7 @@ class deviceInfo:
             raise TypeError()
         
     def __repr__(self) -> str:
-        return "Hostname: " + self.hostname + "\n" + "MOTD: " + self.motd
+        return "Hostname: " + self.hostname + "\n" + "MOTD: " + self.motd + "!\n"
     
 #endregion
 #region Interfaces
@@ -57,7 +57,7 @@ class interfaces:
         return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + "\n" + self.ipNatInside + self.ipNatOutside 
 
     def toConfig(self) -> list:
-        return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n', f' {self.ipNatInside}', f'{self.ipNatOutside}' + "!\n"]
+        return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}', f' {self.ipNatInside}', f'{self.ipNatOutside}' + "!\n"]
 
 # Erstellen Sie eine Instanz der Klasse
 interface_instance = interfaces(interface="FastEthernet0/0", ip="192.168.1.1", sm="255.255.255.0", description="Main Interface", shutdown=True, ipNatInside=True, ipNatOutside=False)
@@ -85,7 +85,7 @@ class StaticRoute:
     def toConfig(self) -> list:
         config = []
         for route in self.routes:
-            config.append(f"ip route {route['targetNw']} {route['targetSm']} {route['nextHop']}\n")
+            config.append(f"ip route {route['targetNw']} {route['targetSm']} {route['nextHop']}\n" + "!\n")
         return config
 
 #endregion
@@ -128,6 +128,7 @@ class ripRouting:
             config.append(f" {self.ripOriginate}\n")
         for network in self.ripNetworks:
             config.append(f" network {network}\n")
+        config.append("!\n")
         return config
 
 #endregion
@@ -162,6 +163,7 @@ class dhcp:
         config.append(f"network {', '.join(self.dhcpNetwork)}\n")
         config.append(f"default-router {self.dhcpGateway}\n")
         config.append(f"dns-server {self.dhcpDNS}\n")
+        config.append("!\n")
         return config
 
 #endregion
@@ -182,6 +184,7 @@ class nat:
         config = []
         config.append(f"ip nat inside source list 1 interface {self.interface} overload\n")
         config.append(f"access list 1 permit {', '.join(self.natPool)}\n")
+        config.append("!\n")
         return config
 
 #endregion
