@@ -44,11 +44,11 @@ class interfaces:
         else:
             raise TypeError()
         if type(ipNatInside) == bool:
-            self.ipNatInside = "ip nat inside \n" if ipNatInside else ''
+            self.ipNatInside = "\nip nat inside" if ipNatInside else ''
         else:
             raise TypeError()
         if type(ipNatOutside) == bool:
-            self.ipNatOutside = "ip nat outside \n" if ipNatOutside else ''
+            self.ipNatOutside = "\nip nat outside" if ipNatOutside else ''
         else:
             raise TypeError()
         
@@ -56,7 +56,7 @@ class interfaces:
         return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + self.ipNatInside + self.ipNatOutside
 
     def toConfig(self) -> list:
-        return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n']
+        return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n', f'{self.ipNatInside}', f'{self.ipNatOutside}']
     
 
 #MARK: Static Routing
@@ -157,9 +157,13 @@ class dhcp:
 #MARK: NAT
 
 class nat:
-    def __init__(self, natPool:str = "192.168.16.0,0.0.0.255") -> None:
+    def __init__(self, natPool:str = "192.168.16.0,0.0.0.255", interfaceName:str = None) -> None:
         if type(natPool) == str:
             self.natPool = natPool.split(',')
+        else:
+            raise TypeError()
+        if type(interfaceName) == str:
+            self.interface = interfaceName
         else:
             raise TypeError()
 
