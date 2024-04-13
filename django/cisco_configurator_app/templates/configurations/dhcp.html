@@ -8,7 +8,7 @@
     <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
       <h3 class="config_item flex items-center gap-3" id="">
         <input class="toggle toggle-accent" type="checkbox" name="dhcp_state" id="dhcp_status"
-          onchange="updateStateDescription('dhcp_status', 'dhcp_state_description')">
+          onchange="updateStateDescription('dhcp_status', 'dhcp_state_description'); add_to_config('dhcp')">
         State<span id="dhcp_state_description">
           (off)</span>
       </h3>
@@ -27,7 +27,7 @@
               id="hostname" for="dhcp_poolName">DHCP Pool Name:</label>
             <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" size="15"
               id="dhcp_poolName" name="dhcp_poolName" placeholder="e.g. pool1"
-              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result')">
+              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')">
           </div>
         </div>
 
@@ -40,7 +40,7 @@
             <!--TODO currently ' ' is used for seperating -->
             <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" size="20"
               id="dhcp_Network" name="dhcp_Network" placeholder="seperate IP and SM by ( , )"
-              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result')">
+              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')">
           </div>
         </div>
 
@@ -51,7 +51,7 @@
               id="hostname">Default Gateway:</label>
             <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" size="15"
               id="dhcp_dG" name="dhcp_dG" placeholder="e.g. 10.0.0.1"
-              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result')">
+              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')">
           </div>
         </div>
 
@@ -62,7 +62,7 @@
               id="hostname">DNS Server:</label>
             <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" size="15"
               id="dhcp_dnsServer" name="dhcp_dnsServer" placeholder="e.g. 8.8.8.8"
-              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result')">
+              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')">
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@
         <div id="dhcp_pool_info"></div>
         <div class="relative flex flex-col gap-3">
           <button type="button" disabled="true" class="config_item btn max-w-xs mt-3" id="add_dhcp_button"
-            onclick="addDhcpIp()">Add Address</button>
+            onclick="addDhcpIp(); add_to_config('dhcp')">Add Address</button>
           <div id="added_nat_networks" class="config_item">
             added excluded Addresses:</div>
           <div class="config_item" id="dhcp_pool_result"></div>

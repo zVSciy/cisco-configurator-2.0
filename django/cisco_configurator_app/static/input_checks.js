@@ -58,7 +58,7 @@ function updateInterfaceDescription(checkbox_value, checkbox_description) {
 }
 
 
-function checkIpAddress(Int_ip, Int_sm, Int_result, transferButton) {
+function checkIpAddress(Int_ip, Int_sm, Int_result) {
   let ip = document.getElementById(Int_ip);
   let sm = document.getElementById(Int_sm);
   let resultElement = document.getElementById(Int_result);
@@ -238,6 +238,22 @@ function checkmultipleIPs(string) {
   return true;
 }
 
+function handleDropdownChange() {
+  let dropdown = document.getElementById('dropdown_rip_version');
+  let checkbox = document.getElementById('sum_state');
+
+  if (dropdown.value === 'version1') {
+    checkbox.disabled = true;
+    document
+      .getElementById('sum_state_description')
+      .innerText = ' (off)';
+    checkbox.checked = false;
+  } else {
+    checkbox.disabled = false;
+  }
+}
+
+
 
 // Static Routing
 
@@ -277,11 +293,95 @@ function ValidateIPaddressStaticRouting(ipaddress, info) {
 
 
 
-function add_to_config() {
+function add_to_config(page) {
+
+  if (page == "basic_config"){
+    //get the inputs
     let hostname_to_set = document.getElementById('hostname').value 
     let banner_to_set = document.getElementById('banner').value
 
-    // Setze die Werte in die versteckten Felder
+    // enter the values into the hidden fields
     document.getElementById('hidden_hostname').value = hostname_to_set;
     document.getElementById('hidden_banner').value = banner_to_set;
+  }
+
+  if (page == "interface"){
+    //get the inputs
+      let FastEthernet00_shutdown_to_set = document.getElementById('FastEthernet0/0_shutdown').checked 
+      let FastEthernet00_description_to_set = document.getElementById('FastEthernet0/0_description').value;
+      let FastEthernet00_ip_to_set = document.getElementById('FastEthernet0/0_ip').value 
+      let FastEthernet00_sm_to_set = document.getElementById('FastEthernet0/0_sm').value 
+
+      let FastEthernet01_shutdown_to_set = document.getElementById('FastEthernet0/1_shutdown').checked 
+      let FastEthernet01_description_to_set = document.getElementById('FastEthernet0/1_description').value;
+      let FastEthernet01_ip_to_set = document.getElementById('FastEthernet0/1_ip').value 
+      let FastEthernet01_sm_to_set = document.getElementById('FastEthernet0/1_sm').value 
+
+      // enter the values into the hidden fields
+      document.getElementById('hidden_FastEthernet0/0_shutdown').value = FastEthernet00_shutdown_to_set;
+      document.getElementById('hidden_FastEthernet0/0_description').value = FastEthernet00_description_to_set;
+      document.getElementById('hidden_FastEthernet0/0_ip').value = FastEthernet00_ip_to_set;
+      document.getElementById('hidden_FastEthernet0/0_sm').value = FastEthernet00_sm_to_set;
+
+      document.getElementById('hidden_FastEthernet0/1_shutdown').value = FastEthernet01_shutdown_to_set;
+      document.getElementById('hidden_FastEthernet0/1_description').value = FastEthernet01_description_to_set;
+      document.getElementById('hidden_FastEthernet0/1_ip').value = FastEthernet01_ip_to_set;
+      document.getElementById('hidden_FastEthernet0/1_sm').value = FastEthernet01_sm_to_set;
+
+  }
+  if (page == "nat"){
+      let nat_status_to_set = document.getElementById('nat_status').checked 
+      let nat_ingoing_to_set = document.getElementById('nat_ingoing').value 
+      let nat_outgoing_to_set = document.getElementById('nat_outgoing').value 
+      let nat_info_for_transfer_to_set = document.getElementById('nat_info_for_transfer').value 
+
+
+      document.getElementById('hidden_nat_status').value = nat_status_to_set; //true = on | false = off
+      document.getElementById('hidden_nat_ingoing').value = nat_ingoing_to_set;
+      document.getElementById('hidden_nat_outgoing').value = nat_outgoing_to_set;
+      document.getElementById('hidden_nat_info_for_transfer').value = nat_info_for_transfer_to_set;
+
+  }
+
+  if (page == "dhcp"){
+    let dhcp_status_to_set = document.getElementById('dhcp_status').checked 
+    let dhcp_poolName_to_set = document.getElementById('dhcp_poolName').value 
+    let dhcp_Network_to_set = document.getElementById('dhcp_Network').value 
+    let dhcp_dG_to_set = document.getElementById('dhcp_dG').value 
+    let dhcp_dnsServer_to_set = document.getElementById('dhcp_dnsServer').value 
+    let dhcp_info_for_transfer_to_set = document.getElementById('dhcp_info_for_transfer').value
+
+
+    document.getElementById('hidden_dhcp_status').value = dhcp_status_to_set; //true = on | false = off
+    document.getElementById('hidden_dhcp_poolName').value = dhcp_poolName_to_set;
+    document.getElementById('hidden_dhcp_Network').value = dhcp_Network_to_set;
+    document.getElementById('hidden_dhcp_dG').value = dhcp_dG_to_set;
+    document.getElementById('hidden_dhcp_dnsServer').value = dhcp_dnsServer_to_set;
+    document.getElementById('hidden_dhcp_info_for_transfer').value = dhcp_info_for_transfer_to_set;
+
+  }
+
+  if (page == "rip"){
+    let rip_state_to_set = document.getElementById('rip_state').checked
+    let networks_input_routing_to_set = document.getElementById('networks_input_routing').value
+    let dropdown_rip_version_to_set = document.getElementById('dropdown_rip_version').value
+    let sum_state_to_set = document.getElementById('sum_state').checked
+    let originate_state_to_set = document.getElementById('originate_state').checked
+
+    document.getElementById('hidden_rip_state').value = rip_state_to_set; //true = on | false = off
+    document.getElementById('hidden_networks_input_routing').value = networks_input_routing_to_set;
+    document.getElementById('hidden_dropdown_rip_version').value = dropdown_rip_version_to_set;
+    document.getElementById('hidden_sum_state').value = sum_state_to_set;
+    document.getElementById('hidden_originate_state').value = originate_state_to_set;
+
+  }
+
+  if (page == "static_routing"){
+    let staticRouting_info_for_transfer_to_set = document.getElementById('staticRouting_info_for_transfer').value
+
+    document.getElementById('hidden_staticRouting_info_for_transfer').value = staticRouting_info_for_transfer_to_set;
+  }
+
+
+
 }

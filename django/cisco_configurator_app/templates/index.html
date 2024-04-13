@@ -1,5 +1,5 @@
 <h1>Home </h1>
-<form id="configForm" method="post" action="{% url 'basic_config_route' %}">
+<form id="configForm" method="post" action="{% url 'basic_config_route' device_type='router' %}">
     <h2>Select Router or Switch:</h2>
     <select name="deviceType" id="deviceType">
         <option value="router">Router</option>

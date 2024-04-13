@@ -9,7 +9,7 @@
 
       <h3 class="config_item flex items-center gap-3" id="">
         <input class="toggle toggle-accent" type="checkbox" name="nat_state" id="nat_status"
-          onchange="updateStateDescription('nat_status', 'nat_state_description'), checkInterfacesNat()">Enabled<span
+          onchange="updateStateDescription('nat_status', 'nat_state_description'); checkInterfacesNat(); add_to_config('nat')">Enabled<span
           id="nat_state_description">(off)</span>
       </h3>
     </div>
@@ -22,7 +22,7 @@
             for="ipAdresse">Ingoing Interface:</label>
           <select name="nat_ingoing" id="nat_ingoing"
             class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs"
-            onchange="checkInterfacesNat()">
+            onchange="checkInterfacesNat(); add_to_config('nat')">
             {% for interface in interfaces %}
             <option name=" {{ interface }}nat_ingoing" value="{{ interface }}">{{ interface }}</option>
             {% endfor %}
@@ -37,7 +37,7 @@
             for="nat_outgoing">Outgoing Interface:</label>
           <select name="nat_outgoing" id="nat_outgoing"
             class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs"
-            onchange="checkInterfacesNat()">
+            onchange="checkInterfacesNat(); add_to_config('nat')">
             {% for interface in interfaces %}
             <option name="{{ interface }}nat_outgoing" value="{{ interface }}">{{ interface }}</option>
             {% endfor %}
@@ -72,7 +72,7 @@
         </div>
       </div>
       <button type="button" disabled="true" class="config_item btn max-w-xs" id="add_nat_ip_button"
-        onclick="addNatIp()">add
+        onclick="addNatIp(); add_to_config('nat')">add
         Network</button>
       <div id="added_nat_networks" class="config_item">
         added permitted Networks:</div>

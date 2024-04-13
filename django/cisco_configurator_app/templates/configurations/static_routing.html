@@ -42,12 +42,12 @@
         </div>
       </div>
       <button type="button" disabled="true" class="config_item btn max-w-xs" id="add_StaticRoute_button"
-        onclick="addRoute()">
+        onclick="addRoute(); add_to_config('static_routing')">
         Add Route</button>
       <div id="added_routes" class="config_item">
         added Routes:</div>
       <div class="config_item" id="staticRouting_info"></div>
-      <input name="staticRouting_info" id="staticRouting_info_for_transfer" style="display: none;"></input>
+      <input name="staticRouting_info_for_transfer" id="staticRouting_info_for_transfer" style="display: none;"></input>
     </div>
   </div>
 
