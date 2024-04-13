@@ -166,8 +166,8 @@ class dhcp:
         else:
             raise TypeError()
     def __repr__(self) -> str:
-        return "DHCP Network: " + self.dhcpNetwork + "\n" + "DHCP Gateway: " + self.dhcpGateway + "\n" + "DHCP DNS: " + self.dhcpDNS + "\n" + "DHCP Excluded Areas: " + ', '.join(self.dhcpExcludedAreas) + "\n" + "DHCP Pool Name: " + self.dhcpPoolName + "\n"
-
+        return "Network IP: " + self.dhcpNetworkIP + "\n" + "Network Subnet Mask: " + self.dhcpNetworkSM + "\n" + "Gateway: " + self.dhcpGateway + "\n" + "DNS: " + self.dhcpDNS + "\n" + "Excluded Areas: " + ', '.join(self.dhcpExcludedAreas) + "\n" + "Pool Name: " + self.dhcpPoolName + "\n"
+    
     def toConfig(self) -> list:
         config = []
         config.append(f"ip dhcp excluded-address {', '.join(self.dhcpExcludedAreas)}\n" + "!\n")
