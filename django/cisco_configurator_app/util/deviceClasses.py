@@ -135,12 +135,18 @@ class ripRouting:
 #region DHCP
 
 class dhcp:
-    def __init__(self, dhcpNetwork:str = None, dhcpGateway:str = None, dhcpDNS:str = None, dhcpPool:str = None) -> None:
-        if type(dhcpNetwork) == str:
-            self.dhcpNetwork = dhcpNetwork.split(',')
+    def __init__(self, dhcpNetworkIP:str = None,dhcpNetworkSM:str = None, dhcpGateway:str = None, dhcpDNS:str = None, dhcpExcludedAreas:str = None, dhcpPoolName:str = None) -> None:
+        
+        if type(dhcpNetworkIP) == str:
+            self.dhcpNetwork = dhcpNetworkIP
         else:
             raise TypeError()
         
+        if type(dhcpNetworkSM) == str:
+            self.dhcpNetwork = dhcpNetworkSM
+        else:
+            raise TypeError()
+
         if type(dhcpGateway) == str:
             self.dhcpGateway = dhcpGateway
         else:
@@ -151,18 +157,22 @@ class dhcp:
         else:
             raise TypeError()
         
-        if type(dhcpPool) == str:
-            self.dhcpPool = dhcpPool.split(',')
+        if type(dhcpExcludedAreas) == str:
+            self.dhcpExcludedAreas = dhcpExcludedAreas.split(',')
+        else:
+            raise TypeError()
+        if type(dhcpPoolName) == str:
+            self.dhcpPoolName = dhcpPoolName
         else:
             raise TypeError()
 
     def toConfig(self) -> list:
         config = []
-        config.append(f"ip dhcp excluded-address {', '.join(self.dhcpPool)}\n")
-        config.append("ip dhcp pool defaultPool\n")
-        config.append(f"network {', '.join(self.dhcpNetwork)}\n")
-        config.append(f"default-router {self.dhcpGateway}\n")
-        config.append(f"dns-server {self.dhcpDNS}\n")
+        config.append(f"ip dhcp excluded-address {', '.join(self.dhcpExcludedAreas)}\n" + "!\n")
+        config.append(f"ip dhcp pool {self.dhcpPoolName}\n")
+        config.append(f"   network {', '.join(self.dhcpNetwork)}\n")
+        config.append(f"   default-router {self.dhcpGateway}\n")
+        config.append(f"   dns-server {self.dhcpDNS}\n")
         config.append("!\n")
         return config
 
@@ -182,8 +192,8 @@ class nat:
 
     def toConfig(self) -> list:
         config = []
-        config.append(f"ip nat inside source list 1 interface {self.interface} overload\n")
-        config.append(f"access list 1 permit {', '.join(self.natPool)}\n")
+        config.append(f"ip nat inside source list 1 interface {self.interface} overload\n" + "!\n")
+        config.append(f"access list 1 permit {', '.join(self.natPool)}\n" + "!\n")
         config.append("!\n")
         return config
 
