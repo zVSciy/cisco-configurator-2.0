@@ -66,33 +66,33 @@
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="router">Router</option>
         </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+        <button type="submit" class="btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
           Return to start
         </button>
       </form>
 
 
-      <button type="button" id="basic-config-button" name="basic-config-button" onclick="submitForm('basic_config')">
+      <button type="button" class="menu-button" id="basic-config-button" name="basic-config-button" onclick="submitForm('basic_config')">
         Hostname & Banner (Basic Config)
       </button>
 
-      <button type="button" onclick="submitForm('interface')">
+      <button type="button" class="menu-button" onclick="submitForm('interface')">
         Interfaces
       </button>
 
-      <button type="submit" onclick="submitForm('nat')">
+      <button type="button" class="menu-button" onclick="submitForm('nat')">
         NAT
       </button>
 
-      <button type="submit" onclick="submitForm('dhcp')">
+      <button type="button" class="menu-button" onclick="submitForm('dhcp')">
         DHCP
       </button>
       
-      <button type="submit" onclick="submitForm('rip')">
+      <button type="button" class="menu-button" onclick="submitForm('rip')">
         RIP
       </button>
 
-      <button type="submit" onclick="submitForm('static_routing')">
+      <button type="button" class="menu-button" onclick="submitForm('static_routing')">
         Static Routing
       </button>
 
