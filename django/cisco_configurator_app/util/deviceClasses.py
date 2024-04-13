@@ -1,4 +1,7 @@
 import json
+
+#MARK: DeviceInfo
+
 class deviceInfo:
     def __init__(self, hostname:str = None, motd:str = None) -> None:
         #Überprüft ob die Eingabe ein String ist und speichert die Werte
@@ -14,6 +17,8 @@ class deviceInfo:
         
     def __repr__(self) -> str:
         return "Hostname: " + self.hostname + "\n" + "MOTD: " + self.motd
+
+#MARK: Interfaces
 
 class interfaces:
     def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = None, shutdown:str = None ) -> None:
@@ -53,6 +58,8 @@ class interfaces:
     def toConfig(self) -> list:
         return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n']
 
+#MARK: Static Routing
+
 class StaticRoute:
     def __init__(self, staticRouting:str = None ) -> None:
         self.routes = []
@@ -72,6 +79,7 @@ class StaticRoute:
             config.append(f"ip route {route['targetNw']} {route['targetSm']} {route['nextHop']}\n")
         return config
 
+#MARK: RIP
 
 class ripRouting:
     def __init__(self, ripVersion:str = None, ripSumState:bool = None, ripOriginate:bool = None, ripNetworks:str = None) -> None:
@@ -112,6 +120,8 @@ class ripRouting:
             config.append(f" network {network}\n")
         return config
 
+#MARK: DHCP
+
 class dhcp:
     def __init__(self, dhcpNetwork:str = None, dhcpGateway:str = None, dhcpDNS:str = None, dhcpPool:str = None) -> None:
         if type(dhcpNetwork) == str:
@@ -142,6 +152,8 @@ class dhcp:
         config.append(f"default-router {self.dhcpGateway}\n")
         config.append(f"dns-server {self.dhcpDNS}\n")
         return config
+
+#MARK: NAT
 
 class nat:
     def __init__(self, natPool:str = "192.168.16.0,0.0.0.255") -> None:
