@@ -81,7 +81,8 @@ class StaticRoute:
     def toConfig(self) -> list:
         config = []
         for route in self.routes:
-            config.append(f"ip route {route['targetNw']} {route['targetSm']} {route['nextHop']}\n" + "!\n")
+            config.append(f"ip route {route['targetNw']} {route['targetSm']} {route['nextHop']}\n")
+        config.append("!\n")
         return config
 
 #endregion
