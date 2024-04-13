@@ -4,6 +4,20 @@ function isValidIpAddress(ip) {
   return ipRegex.test(ip);
 }
 
+function disableNavigation() {
+  let buttons = document.getElementsByClassName("menu-button");
+  for (let i = 0; i < buttons.length; i++) {
+      buttons[i].disabled = true;
+  }
+}
+
+function enableNavigation() {
+  let buttons = document.getElementsByClassName("menu-button");
+  for (let i = 0; i < buttons.length; i++) {
+      buttons[i].disabled = false;
+  }
+}
+
 
 function ValidateFooter(ipaddress, info, transfer_button, option_button) {
   let message = document.getElementById(info);
@@ -17,31 +31,37 @@ function ValidateFooter(ipaddress, info, transfer_button, option_button) {
     message.textContent = "";
     TButton.disabled = false;
     TButton.style.backgroundColor = background_color;
+    enableNavigation()
     return true;
   } else if (ip.value == "" && option == 'download') {
     TButton.disabled = false;
     message.textContent = "";
     TButton.disabled = false;
     TButton.style.backgroundColor = background_color;
+    enableNavigation()
     return true;
   } else if (ip.value == "" && option == 'transfer') {
     TButton.disabled = true;
     message.textContent = "Please enter an IP Address";
     TButton.style.backgroundColor = "#f44336";
+    disableNavigation();
   } else if (isValidIpAddress(ip.value) && TButton.disabled === true) {
     TButton.disabled = false;
     message.textContent = "";
     TButton.style.backgroundColor = background_color;
+    disableNavigation();
   } else if (isValidIpAddress(ip.value) == false && option == 'download') {
     TButton.disabled = false;
     message.textContent = "";
     TButton.disabled = false;
     TButton.style.backgroundColor = background_color;
+    enableNavigation()
     return true;
   } else {
     message.textContent = "You have entered an invalid IP address!";
     TButton.disabled = true;
     TButton.style.backgroundColor = "#f44336";
+    disableNavigation();
   }
 }
 
@@ -70,17 +90,20 @@ function checkIpAddress(Int_ip, Int_sm, Int_result) {
     //re-able the buttons if they got disabled
     TButton.disabled = false;
     TButton.style.backgroundColor = background_color;
+    enableNavigation();
   } else if (ip.value === "dhcp" && sm.value !== "") {
     resultElement.textContent = "Leave Subnet Mask field empty if IP is dhcp!";
     //disable the buttons
     TButton.disabled = true;
     TButton.style.backgroundColor = "#f44336";
+    disableNavigation();
   } else {
     resultElement.style.color = "#f44336";
     resultElement.textContent = "Invalid IP and/or Subnet Mask.";
     //disable the buttons
     TButton.disabled = true;
     TButton.style.backgroundColor = "#f44336";
+    disableNavigation();
   }
 }
 
@@ -126,7 +149,6 @@ function ValidateIPaddressNat(ipaddress, info) {
   } else {
     message.textContent = "You have entered an invalid IP address!";
     TButton.disabled = true;
-    // TButton.style.backgroundColor = "#f44336";
   }
 }
 
@@ -141,10 +163,12 @@ function checkInterfacesNat() {
     resultElement.textContent = "Ingoing and Outgoing Interfaces must be a different one.";
     Button.disabled = true;
     Button.style.backgroundColor = "#f44336";
+    disableNavigation();
   } else {
     resultElement.textContent = "";
     Button.disabled = false;
     Button.style.backgroundColor = "#4CAF50";
+    enableNavigation();
   }
 }
 
@@ -164,14 +188,17 @@ function checkDhcpInput(Network_Input, Dg_input, dns_input, result) {
     resultElement.textContent = "";
     Button.disabled = false;
     Button.style.backgroundColor = "#4CAF50";
+    enableNavigation();
   } else if (Network == "" && Dg == "" && Dns == "" && pool_name == "") {
     resultElement.textContent = "";
     Button.disabled = false;
     Button.style.backgroundColor = "#4CAF50";
+    enableNavigation();
   } else {
     resultElement.textContent = "Please fill out all fields correctly";
     Button.disabled = true;
     Button.style.backgroundColor = "#f44336";
+    disableNavigation();
   }
 }
 
@@ -219,10 +246,12 @@ function ValidateIPaddressesDynamicRouting(ipaddresses, info) {
     message.textContent = "";
     TButton.disabled = false;
     TButton.style.backgroundColor = "#4CAF50";
+    enableNavigation();
   } else {
     message.textContent = "You have entered an invalid IP address!";
     TButton.disabled = true;
     TButton.style.backgroundColor = "#f44336";
+    disableNavigation();
   }
 }
 
@@ -244,9 +273,7 @@ function handleDropdownChange() {
 
   if (dropdown.value === 'version1') {
     checkbox.disabled = true;
-    document
-      .getElementById('sum_state_description')
-      .innerText = ' (off)';
+    document.getElementById('sum_state_description').innerText = ' (off)';
     checkbox.checked = false;
   } else {
     checkbox.disabled = false;
@@ -287,7 +314,6 @@ function ValidateIPaddressStaticRouting(ipaddress, info) {
   } else {
     message.textContent = "You have entered an invalid IP address!";
     TButton.disabled = true;
-    // TButton.style.backgroundColor = "#f44336";
   }
 }
 
