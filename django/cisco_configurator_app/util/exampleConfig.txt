@@ -15,6 +15,12 @@ memory-size iomem 5
 ip cef
 !
 !
+ip dhcp excluded-address 172.16.11.0 172.16.11.10
+!
+ip dhcp pool 172
+ network 172.16.11.0 255.255.255.0
+ default-router 172.16.11.1
+ dns-server 8.8.8.8
 !
 !
 !
@@ -57,12 +63,15 @@ interface Loopback1
 interface FastEthernet0/0
  ip address 192.168.2.1 255.255.255.0
  duplex auto
+ ip nat inside
  speed auto
 !
 interface FastEthernet0/1
  ip address 192.168.1.1 255.255.255.0
  duplex auto
+ ip nat outside
  speed auto
+ shutdown
 !
 router ospf 1
  router-id 1.1.1.1

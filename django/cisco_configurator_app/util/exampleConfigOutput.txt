@@ -15,6 +15,12 @@ memory-size iomem 5
 ip cef
 !
 !
+ip dhcp excluded-address 172.16.11.0 172.16.11.10
+!
+ip dhcp pool 172
+ network 172.16.11.0 255.255.255.0
+ default-router 172.16.11.1
+ dns-server 8.8.8.8
 !
 !
 !
@@ -51,18 +57,8 @@ archive
 !
 !
 !
-interface Loopback1
- ip address 1.1.1.1 255.255.255.255
 !
-interface FastEthernet0/0
- ip address 192.168.2.1 255.255.255.0
- duplex auto
- speed auto
 !
-interface FastEthernet0/1
- ip address 192.168.1.1 255.255.255.0
- duplex auto
- speed auto
 !
 router ospf 1
  router-id 1.1.1.1
@@ -72,7 +68,21 @@ router ospf 1
  default-information originate
 !
 ip forward-protocol nd
+ip route 192.168.1.0 255.255.255.0 192.168.1.1
+ip route 192.168.1.0 255.255.255.0 192.168.1.2
+ip route 192.168.1.0 255.255.255.0 192.168.1.3
+ip route 192.168.1.0 255.255.255.0 192.168.1.4
+ip route 192.168.1.0 255.255.255.0 192.168.1.5
+ip route 192.168.1.0 255.255.255.0 192.168.1.6
+ip route 192.168.1.0 255.255.255.0 192.168.1.7
+ip route 192.168.5.0 255.255.255.0 192.168.1.5
 !
+router rip 
+ version 2 
+ default-information originate
+ network 192.168.0.1
+ netowrk 192.168.0.2
+ network 192.168.0.3
 !
 ip http server
 no ip http secure-server
@@ -103,4 +113,21 @@ line aux 0
 line vty 0 4
 !
 !
-ip route 192.168.1.0 255.255.255.0 192.168.1.1ip route 192.168.1.0 255.255.255.0 192.168.1.2ip route 192.168.1.0 255.255.255.0 192.168.1.3ip route 192.168.1.0 255.255.255.0 192.168.1.4ip route 192.168.1.0 255.255.255.0 192.168.1.5ip route 192.168.1.0 255.255.255.0 192.168.1.6ip route 192.168.1.0 255.255.255.0 192.168.1.7ip route 192.168.5.0 255.255.255.0 192.168.1.5end
+Loopback1
+ ip address 1.1.1.1 255.255.255.255
+ description Default
+ no shutdown
+ !
+FastEthernet0/0
+ ip address 192.168.2.1 255.255.255.0
+ description Default
+ no shutdown
+ ip nat inside
+!
+FastEthernet0/1
+ ip address 192.168.1.1 255.255.255.0
+ description Default
+ shutdown
+ ip nat outside
+!
+end
