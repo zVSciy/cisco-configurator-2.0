@@ -191,40 +191,65 @@ class dhcp:
         config.append("!\n")
         return config
 
-## Erstellen Sie eine Instanz der dhcp Klasse
-dhcp_instance = dhcp("192.168.1.1", "255.255.255.0", "192.168.1.254", "8.8.8.8", "192.168.1.100,192.168.1.200;192.168.0.0,0.0.0.0", "MyPool")
-
-# Rufen Sie die toConfig Funktion auf und speichern Sie das Ergebnis
-config = dhcp_instance.toConfig()
-
-# Drucken Sie das Ergebnis
-for line in config:
-    print(line)
-
 #endregion
 #region NAT
 
 class nat:
-    def __init__(self, natPool:str = "192.168.16.0,0.0.0.255", interfaceName:str = None) -> None:
-        if type(natPool) == str:
-            self.natPool = natPool.split(',')
-        else:
-            raise TypeError()
+    def __init__(self, interfaceName:str = None, accessListName:str = None) -> None:
+        # Permit Any und 0.0.0.0 0.0.0.255
         if type(interfaceName) == str:
             self.interface = interfaceName
         else:
             raise TypeError()
+        if type(accessListName) == str:
+            self.accessList = accessListName
+        else:
+            raise TypeError()
     def __repr__(self) -> str:
-        return "NAT Pool: " + ', '.join(self.natPool) + "\n" + "Interface: " + self.interface + "\n"
+        return "Interface: " + self.interface + "\n" + "Access List: " + self.accessList + "\n"
     
     def toConfig(self) -> list:
         config = []
-        config.append(f"ip nat inside source list 1 interface {self.interface} overload\n" + "!\n")
-        config.append(f"access list 1 permit {', '.join(self.natPool)}\n" + "!\n")
-        config.append("!\n")
+        config.append(f"ip nat inside source list {self.acccesListName} interface {self.interface} overload\n" + "!\n")
         return config
 
 #endregion
+#region ACL
+
+class aclStandard:
+    def __init__(self, accessListName:str = None, accessListAllowed:str = None, accessListDeny:str = None) -> None:
+        if type(accessListName) == str:
+            self.accessListName = accessListName
+        else:
+            raise TypeError()
+        if type(accessListAllowed) == str:
+            self.allowed = []
+            self.getAllowed(accessListAllowed)
+        else:
+            raise TypeError()
+        if type(accessListDeny) == str:
+            self.denied = []
+            self.getDenied(accessListDeny)
+        else:
+            raise TypeError()  
+        
+    def getAllowed(self, accessListAllowed:str) -> list:
+        if accessListAllowed:
+            allowed = accessListAllowed.split(';')
+            for allow in allowed:
+                ip, sm = allow.split(',')
+                self.allowed.append({'ip': ip, 'sm': sm})
+        return self.allowed
+
+    def getDenied(self, accessListDeny:str) -> list:
+        if accessListDeny:
+            denied = accessListDeny.split(';')
+            for deny in denied:
+                ip, sm = deny.split(',')
+                self.denied.append({'ip': ip, 'sm': sm})
+        return self.denied                                                                     
+
+#endregion	
 
 
 
