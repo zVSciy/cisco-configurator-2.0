@@ -59,13 +59,6 @@ class interfaces:
     def toConfig(self) -> list:
         return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}', f' {self.ipNatInside}', f'{self.ipNatOutside}' + "!\n"]
 
-# Erstellen Sie eine Instanz der Klasse
-interface_instance = interfaces(interface="FastEthernet0/0", ip="192.168.1.1", sm="255.255.255.0", description="Main Interface", shutdown=True, ipNatInside=True, ipNatOutside=False)
-interface_instance = interfaces(interface="FastEthernet0/1", ip="192.168.1.2", sm="255.255.255.0", description="Main Interface2", shutdown=False, ipNatInside=False, ipNatOutside=True)
-
-config = interface_instance.toConfig()
-print(config)
-
 #endregion
 #region StaticRoute
 
@@ -82,6 +75,9 @@ class StaticRoute:
                 self.routes.append({'targetNw': targetNw, 'targetSm': targetSm, 'nextHop': nextHop})
         return self.routes
 
+    def __repr__(self) -> str:
+        return json.dumps(self.routes, indent=4)
+    
     def toConfig(self) -> list:
         config = []
         for route in self.routes:
@@ -100,12 +96,12 @@ class ripRouting:
             raise TypeError()
 
         if type(ripSumState) == bool:
-            self.ripSumState = "no-auto summary" if ripSumState else None
+            self.ripSumState = "no-auto summary\n" if ripSumState else ''
         else: 
             raise TypeError()
         
         if type(ripOriginate) == bool:
-            self.ripOriginate = "default-information originate" if ripOriginate else None
+            self.ripOriginate = "default-information originate\n" if ripOriginate else ''
         else:
             raise TypeError()
         
@@ -118,14 +114,17 @@ class ripRouting:
     def getNetworks(self, ripNetworks:str) -> list:
         return ripNetworks.split(';')
 
+    def __repr__(self) -> str:
+        return "RIP Version: " + self.ripVersion + "\n" + "Auto Summary: " + self.ripSumState + "\n" + "Default Information Originate: " + self.ripOriginate + "\n" + "Networks: " + ', '.join(self.ripNetworks) + "\n"
+    
     def toConfig(self) -> list:
         config = []
         config.append("router rip\n")
         config.append(f" version {self.ripVersion}\n")
         if self.ripSumState:
-            config.append(f" {self.ripSumState}\n")
+            config.append(f" {self.ripSumState}")
         if self.ripOriginate:
-            config.append(f" {self.ripOriginate}\n")
+            config.append(f" {self.ripOriginate}")
         for network in self.ripNetworks:
             config.append(f" network {network}\n")
         config.append("!\n")
@@ -191,7 +190,9 @@ class nat:
             self.interface = interfaceName
         else:
             raise TypeError()
-
+    def __repr__(self) -> str:
+        return "NAT Pool: " + ', '.join(self.natPool) + "\n" + "Interface: " + self.interface + "\n"
+    
     def toConfig(self) -> list:
         config = []
         config.append(f"ip nat inside source list 1 interface {self.interface} overload\n" + "!\n")
