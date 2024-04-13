@@ -206,6 +206,7 @@ for line in config:
 
 class nat:
     def __init__(self, natPool:str = "192.168.16.0,0.0.0.255", interfaceName:str = None) -> None:
+        # Permit Any und 0.0.0.0 0.0.0.255
         if type(natPool) == str:
             self.natPool = natPool.split(',')
         else:
