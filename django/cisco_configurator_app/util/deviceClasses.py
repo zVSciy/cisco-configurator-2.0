@@ -249,6 +249,18 @@ class aclStandard:
                 self.denied.append({'ip': ip, 'sm': sm})
         return self.denied                                                                     
 
+    def __repr__(self) -> str:
+        return "Access List Name: " + self.accessListName + "\n" + "Allowed: " + ', '.join(self.allowed) + "\n" + "Denied: " + ', '.join(self.denied) + "\n"
+    
+    def toConfig(self) -> list:
+        config = []
+        config.append(f"ip access-list standard {self.accessListName}\n")
+        for allow in self.allowed:
+            config.append(f" permit {allow['ip']} {allow['sm']}\n")
+        for deny in self.denied:
+            config.append(f" deny {deny['ip']} {deny['sm']}\n")
+        config.append("!\n")
+        return config
 #endregion	
 
 
