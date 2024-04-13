@@ -182,7 +182,7 @@ class dhcp:
     def toConfig(self) -> list:
         config = []
         for area in self.areas:
-            config.append(f"ip dhcp excluded-address {area['AreaFromIP']} {area['AreaToIP']}")
+            config.append(f"ip dhcp excluded-address {area['AreaFromIP']} {area['AreaToIP']}\n")
         config.append("!\n")
         config.append(f"ip dhcp pool {self.dhcpPoolName}\n")
         config.append(f"   network {self.dhcpNetworkIP} {self.dhcpNetworkSM}\n")
