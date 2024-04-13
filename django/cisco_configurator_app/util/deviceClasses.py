@@ -22,7 +22,7 @@ class deviceInfo:
 #region Interfaces
 
 class interfaces:
-    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = None, shutdown:bool = None ) -> None:
+    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = "Default", shutdown:bool = None ) -> None:
         #Überprüft ob die Eingabe ein String ist und speichert die Werte
         if type(interface) == str:
             self.interface = interface #FastEthernet0/0
@@ -61,6 +61,7 @@ class interfaces:
 
 # Erstellen Sie eine Instanz der Klasse
 interface_instance = interfaces(interface="FastEthernet0/0", ip="192.168.1.1", sm="255.255.255.0", description="Main Interface", shutdown=True, ipNatInside=True, ipNatOutside=False)
+interface_instance = interfaces(interface="FastEthernet0/1", ip="192.168.1.2", sm="255.255.255.0", description="Main Interface2", shutdown=False, ipNatInside=False, ipNatOutside=True)
 
 config = interface_instance.toConfig()
 print(config)
