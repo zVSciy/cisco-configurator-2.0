@@ -246,6 +246,22 @@ class aclStandard:
 #region OSPF
  
 class ospf:
+    def __init__(self, ospfProcess:str = None, ospfRouterID:str = None, ospfNetworks:str = None) -> None:
+        if type(ospfProcess) == str:
+            self.ospfProcess = ospfProcess
+        else:
+            raise TypeError()
+        
+        if type(ospfRouterID) == str:
+            self.ospfRouterID = ospfRouterID
+        else:
+            raise TypeError()
+        
+        if type(ospfNetworks) == str:
+            self.ospfNetworks = self.getNetworks(ospfNetworks)
+        else:
+            raise TypeError()
+
 
 
 
