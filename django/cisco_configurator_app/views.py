@@ -27,23 +27,23 @@ def interface(request, device_type):
     return render(request, 'configurations/interface.html', config_option)
 
  
-def etherchannel(request):
+def etherchannel(request, device_type):
     config_option = {
-        "device_type": request.POST.get('deviceType')
+        "device_type": device_type
     }
     return render(request, 'configurations/etherchannel.html', config_option)
 
  
-def vlan(request):
+def vlan(request, device_type):
     config_option = {
-        "device_type": request.POST.get('deviceType')
+        "device_type": device_type
     }
     return render(request, 'configurations/vlan.html', config_option)
 
  
-def ospf(request):
+def ospf(request, device_type):
     config_option = {
-        "device_type": request.POST.get('deviceType')
+        "device_type": device_type
     }
     return render(request, 'configurations/ospf.html', config_option)
 
@@ -77,30 +77,30 @@ def dhcp(request, device_type):
     return render(request, 'configurations/dhcp.html', config_option)
 
  
-def acl_basic(request):
+def acl_basic(request, device_type):
     config_option = {
-        "device_type": request.POST.get('deviceType')
+        "device_type": device_type
     }
     return render(request, 'configurations/acl_basic.html', config_option)
 
  
-def acl_extended(request):
+def acl_extended(request, device_type):
     config_option = {
-        "device_type": request.POST.get('deviceType')
+        "device_type": device_type
     }
     return render(request, 'configurations/acl_extendet.html', config_option)
 
  
-def vtp_dtp(request):
+def vtp_dtp(request, device_type):
     config_option = {
-        "device_type": request.POST.get('deviceType')
+        "device_type": device_type
     }
     return render(request, 'configurations/vtp_dtp.html', config_option)
 
  
-def stp(request):
+def stp(request, device_type):
     config_option = {
-        "device_type": request.POST.get('deviceType')
+        "device_type": device_type
     }
     return render(request, 'configurations/stp.html', config_option)
 

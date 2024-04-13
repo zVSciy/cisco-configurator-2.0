@@ -13,5 +13,13 @@
     </select>
     
     <br><br>
-    <button type="submit">Start Configuring</button>
+    <button type="button" onclick="submitForm()">Start Configuring</button>
 </form>
+
+<script>
+    function submitForm() {
+        let deviceType = document.getElementById("deviceType").value;
+        document.getElementById("configForm").action = "{% url 'basic_config_route' device_type='router' %}".replace('router', deviceType);
+        document.getElementById("configForm").submit();
+    }
+</script>

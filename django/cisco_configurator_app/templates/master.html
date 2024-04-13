@@ -10,6 +10,49 @@
 </head>
 
 <body>
+  <!-- hidden input form to forward the user input into the backend if another site gets opened -->
+  <form method="post" id="inputs_form" action="{% url 'get_inputs_route' device_type='router' %}" class="menu-form">
+    {% csrf_token %}
+
+    <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="">
+    <!-- basic config -->
+    <input type="hidden" id="hidden_hostname" name="hidden_hostname">
+    <input type="hidden" id="hidden_banner" name="hidden_banner">
+    <!-- interfaces -->
+    <input type="hidden" id="hidden_FastEthernet0/0_shutdown" name="hidden_FastEthernet0/0_shutdown">
+    <input type="hidden" id="hidden_FastEthernet0/0_description" name="hidden_FastEthernet0/0_description">
+    <input type="hidden" id="hidden_FastEthernet0/0_ip" name="hidden_FastEthernet0/0_ip">
+    <input type="hidden" id="hidden_FastEthernet0/0_sm" name="hidden_FastEthernet0/0_sm">
+
+    <input type="hidden" id="hidden_FastEthernet0/1_shutdown" name="hidden_FastEthernet0/1_shutdown">
+    <input type="hidden" id="hidden_FastEthernet0/1_description" name="hidden_FastEthernet0/1_description">
+    <input type="hidden" id="hidden_FastEthernet0/1_ip" name="hidden_FastEthernet0/1_ip">
+    <input type="hidden" id="hidden_FastEthernet0/1_sm" name="hidden_FastEthernet0/1_sm">
+
+    <!-- nat -->
+    <input type="hidden" id="hidden_nat_status" name="hidden_nat_status">
+    <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing">
+    <input type="hidden" id="hidden_nat_outgoing" name="hidden_nat_outgoing">
+    <input type="hidden" id="hidden_nat_info_for_transfer" name="hidden_nat_info_for_transfer">
+
+    <!-- dhcp -->
+    <input type="hidden" id="hidden_dhcp_status" name="hidden_dhcp_status">
+    <input type="hidden" id="hidden_dhcp_poolName" name="hidden_dhcp_poolName">
+    <input type="hidden" id="hidden_dhcp_Network" name="hidden_dhcp_Network">
+    <input type="hidden" id="hidden_dhcp_dG" name="hidden_dhcp_dG">
+    <input type="hidden" id="hidden_dhcp_dnsServer" name="hidden_dhcp_dnsServer">
+    <input type="hidden" id="hidden_dhcp_info_for_transfer" name="hidden_dhcp_info_for_transfer">
+
+    <!-- rip -->
+    <input type="hidden" id="hidden_rip_state" name="hidden_rip_state">
+    <input type="hidden" id="hidden_networks_input_routing" name="hidden_networks_input_routing">
+    <input type="hidden" id="hidden_dropdown_rip_version" name="hidden_dropdown_rip_version">
+    <input type="hidden" id="hidden_sum_state" name="hidden_sum_state">
+    <input type="hidden" id="hidden_originate_state" name="hidden_originate_state">
+
+    <!-- static routing -->
+    <input type="hidden" id="hidden_staticRouting_info_for_transfer" name="hidden_staticRouting_info_for_transfer">
+  </form>
 
   <div class="menu-container justify-between flex py-2 pt-10 items-center">
     <a class="menu-button btn min-h-0 h-[2.5rem]" href="{%  url 'index_route' %}">
@@ -21,438 +64,159 @@
       <form method="post" action="{% url 'index_route' %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
+          <option value="router">Router</option>
         </select>
         <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            Return to start
+          Return to start
         </button>
-    </form>
-    
-    <form method="post" action="{% url 'get_inputs_route' device_type='router' %}" class="menu-form">
-      {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
-        </select>
-        <!-- hidden inputs to forward the user input into the backend if another site gets opened -->
-        <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="basic_config">
-        	<!-- basic config -->
-        <input type="hidden" id="hidden_hostname" name="hidden_hostname">
-        <input type="hidden" id="hidden_banner" name="hidden_banner">
-        <!-- interfaces -->
-        <input type="hidden" id="hidden_FastEthernet0/0_shutdown" name="hidden_FastEthernet0/0_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/0_description" name="hidden_FastEthernet0/0_description">
-        <input type="hidden" id="hidden_FastEthernet0/0_ip" name="hidden_FastEthernet0/0_ip">
-        <input type="hidden" id="hidden_FastEthernet0/0_sm" name="hidden_FastEthernet0/0_sm">
+      </form>
 
-        <input type="hidden" id="hidden_FastEthernet0/1_shutdown" name="hidden_FastEthernet0/1_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/1_description" name="hidden_FastEthernet0/1_description">
-        <input type="hidden" id="hidden_FastEthernet0/1_ip" name="hidden_FastEthernet0/1_ip">
-        <input type="hidden" id="hidden_FastEthernet0/1_sm" name="hidden_FastEthernet0/1_sm">
 
-        <!-- nat -->
-        <input type="hidden" id="hidden_nat_status" name="hidden_nat_status">
-        <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing">
-        <input type="hidden" id="hidden_nat_outgoing" name="hidden_nat_outgoing">
-        <input type="hidden" id="hidden_nat_info_for_transfer" name="hidden_nat_info_for_transfer">
+      <button type="button" id="basic-config-button" name="basic-config-button" onclick="submitForm('basic_config')">
+        Hostname & Banner (Basic Config)
+      </button>
 
-        <!-- dhcp -->
-        <input type="hidden" id="hidden_dhcp_status" name="hidden_dhcp_status">
-        <input type="hidden" id="hidden_dhcp_poolName" name="hidden_dhcp_poolName">
-        <input type="hidden" id="hidden_dhcp_Network" name="hidden_dhcp_Network">
-        <input type="hidden" id="hidden_dhcp_dG" name="hidden_dhcp_dG">
-        <input type="hidden" id="hidden_dhcp_dnsServer" name="hidden_dhcp_dnsServer">
-        <input type="hidden" id="hidden_dhcp_info_for_transfer" name="hidden_dhcp_info_for_transfer">
+      <button type="button" onclick="submitForm('interface')">
+        Interfaces
+      </button>
 
-        <!-- rip -->
-        <input type="hidden" id="hidden_rip_state" name="hidden_rip_state">
-        <input type="hidden" id="hidden_networks_input_routing" name="hidden_networks_input_routing">
-        <input type="hidden" id="hidden_dropdown_rip_version" name="hidden_dropdown_rip_version">
-        <input type="hidden" id="hidden_sum_state" name="hidden_sum_state">
-        <input type="hidden" id="hidden_originate_state" name="hidden_originate_state">
+      <button type="submit" onclick="submitForm('nat')">
+        NAT
+      </button>
 
-        <!-- static routing -->
-        <input type="hidden" id="hidden_staticRouting_info_for_transfer" name="hidden_staticRouting_info_for_transfer">
-
-        <button type="submit" id="basic-config-button" name="basic-config-button" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            Hostname & Banner (Basic Config)
-        </button>
-    </form>
-    
-    <form method="post" action="{% url 'get_inputs_route' device_type='router' %}" class="menu-form">
-      {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
-        </select>
-
-        <!-- hidden inputs to forward the user input into the backend if another site gets opened -->
-        <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="interface">
-        	<!-- basic config -->
-        <input type="hidden" id="hidden_hostname" name="hidden_hostname">
-        <input type="hidden" id="hidden_banner" name="hidden_banner">
-        <!-- interfaces -->
-        <input type="hidden" id="hidden_FastEthernet0/0_shutdown" name="hidden_FastEthernet0/0_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/0_description" name="hidden_FastEthernet0/0_description">
-        <input type="hidden" id="hidden_FastEthernet0/0_ip" name="hidden_FastEthernet0/0_ip">
-        <input type="hidden" id="hidden_FastEthernet0/0_sm" name="hidden_FastEthernet0/0_sm">
-
-        <input type="hidden" id="hidden_FastEthernet0/1_shutdown" name="hidden_FastEthernet0/1_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/1_description" name="hidden_FastEthernet0/1_description">
-        <input type="hidden" id="hidden_FastEthernet0/1_ip" name="hidden_FastEthernet0/1_ip">
-        <input type="hidden" id="hidden_FastEthernet0/1_sm" name="hidden_FastEthernet0/1_sm">
-
-        <!-- nat -->
-        <input type="hidden" id="hidden_nat_status" name="hidden_nat_status">
-        <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing">
-        <input type="hidden" id="hidden_nat_outgoing" name="hidden_nat_outgoing">
-        <input type="hidden" id="hidden_nat_info_for_transfer" name="hidden_nat_info_for_transfer">
-
-        <!-- dhcp -->
-        <input type="hidden" id="hidden_dhcp_status" name="hidden_dhcp_status">
-        <input type="hidden" id="hidden_dhcp_poolName" name="hidden_dhcp_poolName">
-        <input type="hidden" id="hidden_dhcp_Network" name="hidden_dhcp_Network">
-        <input type="hidden" id="hidden_dhcp_dG" name="hidden_dhcp_dG">
-        <input type="hidden" id="hidden_dhcp_dnsServer" name="hidden_dhcp_dnsServer">
-        <input type="hidden" id="hidden_dhcp_info_for_transfer" name="hidden_dhcp_info_for_transfer">
-
-        <!-- rip -->
-        <input type="hidden" id="hidden_rip_state" name="hidden_rip_state">
-        <input type="hidden" id="hidden_networks_input_routing" name="hidden_networks_input_routing">
-        <input type="hidden" id="hidden_dropdown_rip_version" name="hidden_dropdown_rip_version">
-        <input type="hidden" id="hidden_sum_state" name="hidden_sum_state">
-        <input type="hidden" id="hidden_originate_state" name="hidden_originate_state">
-
-        <!-- static routing -->
-        <input type="hidden" id="hidden_staticRouting_info_for_transfer" name="hidden_staticRouting_info_for_transfer">
-
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            Interfaces
-        </button>
-    </form>
-    
-    <form method="post" action="{% url 'get_inputs_route' device_type='router' %}" class="menu-form">
-      {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
-        </select>
-
-        <!-- hidden inputs to forward the user input into the backend if another site gets opened -->
-        <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="nat">
-        	<!-- basic config -->
-        <input type="hidden" id="hidden_hostname" name="hidden_hostname">
-        <input type="hidden" id="hidden_banner" name="hidden_banner">
-        <!-- interfaces -->
-        <input type="hidden" id="hidden_FastEthernet0/0_shutdown" name="hidden_FastEthernet0/0_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/0_description" name="hidden_FastEthernet0/0_description">
-        <input type="hidden" id="hidden_FastEthernet0/0_ip" name="hidden_FastEthernet0/0_ip">
-        <input type="hidden" id="hidden_FastEthernet0/0_sm" name="hidden_FastEthernet0/0_sm">
-
-        <input type="hidden" id="hidden_FastEthernet0/1_shutdown" name="hidden_FastEthernet0/1_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/1_description" name="hidden_FastEthernet0/1_description">
-        <input type="hidden" id="hidden_FastEthernet0/1_ip" name="hidden_FastEthernet0/1_ip">
-        <input type="hidden" id="hidden_FastEthernet0/1_sm" name="hidden_FastEthernet0/1_sm">
-
-        <!-- nat -->
-        <input type="hidden" id="hidden_nat_status" name="hidden_nat_status">
-        <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing">
-        <input type="hidden" id="hidden_nat_outgoing" name="hidden_nat_outgoing">
-        <input type="hidden" id="hidden_nat_info_for_transfer" name="hidden_nat_info_for_transfer">
-
-        <!-- dhcp -->
-        <input type="hidden" id="hidden_dhcp_status" name="hidden_dhcp_status">
-        <input type="hidden" id="hidden_dhcp_poolName" name="hidden_dhcp_poolName">
-        <input type="hidden" id="hidden_dhcp_Network" name="hidden_dhcp_Network">
-        <input type="hidden" id="hidden_dhcp_dG" name="hidden_dhcp_dG">
-        <input type="hidden" id="hidden_dhcp_dnsServer" name="hidden_dhcp_dnsServer">
-        <input type="hidden" id="hidden_dhcp_info_for_transfer" name="hidden_dhcp_info_for_transfer">
-
-        <!-- rip -->
-        <input type="hidden" id="hidden_rip_state" name="hidden_rip_state">
-        <input type="hidden" id="hidden_networks_input_routing" name="hidden_networks_input_routing">
-        <input type="hidden" id="hidden_dropdown_rip_version" name="hidden_dropdown_rip_version">
-        <input type="hidden" id="hidden_sum_state" name="hidden_sum_state">
-        <input type="hidden" id="hidden_originate_state" name="hidden_originate_state">
-
-        <!-- static routing -->
-        <input type="hidden" id="hidden_staticRouting_info_for_transfer" name="hidden_staticRouting_info_for_transfer">
-
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            NAT
-        </button>
-    </form>
-    
-    <form method="post" action="{% url 'get_inputs_route' device_type='router' %}" class="menu-form">
-      {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
-        </select>
-
-        <!-- hidden inputs to forward the user input into the backend if another site gets opened -->
-        <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="dhcp">
-        	<!-- basic config -->
-        <input type="hidden" id="hidden_hostname" name="hidden_hostname">
-        <input type="hidden" id="hidden_banner" name="hidden_banner">
-        <!-- interfaces -->
-        <input type="hidden" id="hidden_FastEthernet0/0_shutdown" name="hidden_FastEthernet0/0_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/0_description" name="hidden_FastEthernet0/0_description">
-        <input type="hidden" id="hidden_FastEthernet0/0_ip" name="hidden_FastEthernet0/0_ip">
-        <input type="hidden" id="hidden_FastEthernet0/0_sm" name="hidden_FastEthernet0/0_sm">
-
-        <input type="hidden" id="hidden_FastEthernet0/1_shutdown" name="hidden_FastEthernet0/1_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/1_description" name="hidden_FastEthernet0/1_description">
-        <input type="hidden" id="hidden_FastEthernet0/1_ip" name="hidden_FastEthernet0/1_ip">
-        <input type="hidden" id="hidden_FastEthernet0/1_sm" name="hidden_FastEthernet0/1_sm">
-
-        <!-- nat -->
-        <input type="hidden" id="hidden_nat_status" name="hidden_nat_status">
-        <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing">
-        <input type="hidden" id="hidden_nat_outgoing" name="hidden_nat_outgoing">
-        <input type="hidden" id="hidden_nat_info_for_transfer" name="hidden_nat_info_for_transfer">
-
-        <!-- dhcp -->
-        <input type="hidden" id="hidden_dhcp_status" name="hidden_dhcp_status">
-        <input type="hidden" id="hidden_dhcp_poolName" name="hidden_dhcp_poolName">
-        <input type="hidden" id="hidden_dhcp_Network" name="hidden_dhcp_Network">
-        <input type="hidden" id="hidden_dhcp_dG" name="hidden_dhcp_dG">
-        <input type="hidden" id="hidden_dhcp_dnsServer" name="hidden_dhcp_dnsServer">
-        <input type="hidden" id="hidden_dhcp_info_for_transfer" name="hidden_dhcp_info_for_transfer">
-
-        <!-- rip -->
-        <input type="hidden" id="hidden_rip_state" name="hidden_rip_state">
-        <input type="hidden" id="hidden_networks_input_routing" name="hidden_networks_input_routing">
-        <input type="hidden" id="hidden_dropdown_rip_version" name="hidden_dropdown_rip_version">
-        <input type="hidden" id="hidden_sum_state" name="hidden_sum_state">
-        <input type="hidden" id="hidden_originate_state" name="hidden_originate_state">
-
-        <!-- static routing -->
-        <input type="hidden" id="hidden_staticRouting_info_for_transfer" name="hidden_staticRouting_info_for_transfer">
-
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            DHCP
-        </button>
-    </form>
-    
-    <form method="post" action="{% url 'etherchannel_route'%}" class="menu-form">
-      {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            Etherchannel
-        </button>
-    </form>
-    
-    <form method="post" action="{% url 'ospf_route' %}" class="menu-form">
-      {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            OSPF
-        </button>
-    </form>
-    
-    <form method="post" action="{% url 'get_inputs_route' device_type='router' %}" class="menu-form">
-      {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
-        </select>
-
-        <!-- hidden inputs to forward the user input into the backend if another site gets opened -->
-        <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="rip">
-        	<!-- basic config -->
-        <input type="hidden" id="hidden_hostname" name="hidden_hostname">
-        <input type="hidden" id="hidden_banner" name="hidden_banner">
-        <!-- interfaces -->
-        <input type="hidden" id="hidden_FastEthernet0/0_shutdown" name="hidden_FastEthernet0/0_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/0_description" name="hidden_FastEthernet0/0_description">
-        <input type="hidden" id="hidden_FastEthernet0/0_ip" name="hidden_FastEthernet0/0_ip">
-        <input type="hidden" id="hidden_FastEthernet0/0_sm" name="hidden_FastEthernet0/0_sm">
-
-        <input type="hidden" id="hidden_FastEthernet0/1_shutdown" name="hidden_FastEthernet0/1_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/1_description" name="hidden_FastEthernet0/1_description">
-        <input type="hidden" id="hidden_FastEthernet0/1_ip" name="hidden_FastEthernet0/1_ip">
-        <input type="hidden" id="hidden_FastEthernet0/1_sm" name="hidden_FastEthernet0/1_sm">
-
-        <!-- nat -->
-        <input type="hidden" id="hidden_nat_status" name="hidden_nat_status">
-        <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing">
-        <input type="hidden" id="hidden_nat_outgoing" name="hidden_nat_outgoing">
-        <input type="hidden" id="hidden_nat_info_for_transfer" name="hidden_nat_info_for_transfer">
-
-        <!-- dhcp -->
-        <input type="hidden" id="hidden_dhcp_status" name="hidden_dhcp_status">
-        <input type="hidden" id="hidden_dhcp_poolName" name="hidden_dhcp_poolName">
-        <input type="hidden" id="hidden_dhcp_Network" name="hidden_dhcp_Network">
-        <input type="hidden" id="hidden_dhcp_dG" name="hidden_dhcp_dG">
-        <input type="hidden" id="hidden_dhcp_dnsServer" name="hidden_dhcp_dnsServer">
-        <input type="hidden" id="hidden_dhcp_info_for_transfer" name="hidden_dhcp_info_for_transfer">
-
-        <!-- rip -->
-        <input type="hidden" id="hidden_rip_state" name="hidden_rip_state">
-        <input type="hidden" id="hidden_networks_input_routing" name="hidden_networks_input_routing">
-        <input type="hidden" id="hidden_dropdown_rip_version" name="hidden_dropdown_rip_version">
-        <input type="hidden" id="hidden_sum_state" name="hidden_sum_state">
-        <input type="hidden" id="hidden_originate_state" name="hidden_originate_state">
-
-        <!-- static routing -->
-        <input type="hidden" id="hidden_staticRouting_info_for_transfer" name="hidden_staticRouting_info_for_transfer">
-
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            RIP
-        </button>
-    </form>
-    
-    <form method="post" action="{% url 'get_inputs_route' device_type='router' %}" class="menu-form">
-      {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
-        </select>
-
-        <!-- hidden inputs to forward the user input into the backend if another site gets opened -->
-        <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="static_routing">
-        	<!-- basic config -->
-        <input type="hidden" id="hidden_hostname" name="hidden_hostname">
-        <input type="hidden" id="hidden_banner" name="hidden_banner">
-        <!-- interfaces -->
-        <input type="hidden" id="hidden_FastEthernet0/0_shutdown" name="hidden_FastEthernet0/0_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/0_description" name="hidden_FastEthernet0/0_description">
-        <input type="hidden" id="hidden_FastEthernet0/0_ip" name="hidden_FastEthernet0/0_ip">
-        <input type="hidden" id="hidden_FastEthernet0/0_sm" name="hidden_FastEthernet0/0_sm">
-
-        <input type="hidden" id="hidden_FastEthernet0/1_shutdown" name="hidden_FastEthernet0/1_shutdown">
-        <input type="hidden" id="hidden_FastEthernet0/1_description" name="hidden_FastEthernet0/1_description">
-        <input type="hidden" id="hidden_FastEthernet0/1_ip" name="hidden_FastEthernet0/1_ip">
-        <input type="hidden" id="hidden_FastEthernet0/1_sm" name="hidden_FastEthernet0/1_sm">
-
-        <!-- nat -->
-        <input type="hidden" id="hidden_nat_status" name="hidden_nat_status">
-        <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing">
-        <input type="hidden" id="hidden_nat_outgoing" name="hidden_nat_outgoing">
-        <input type="hidden" id="hidden_nat_info_for_transfer" name="hidden_nat_info_for_transfer">
-
-        <!-- dhcp -->
-        <input type="hidden" id="hidden_dhcp_status" name="hidden_dhcp_status">
-        <input type="hidden" id="hidden_dhcp_poolName" name="hidden_dhcp_poolName">
-        <input type="hidden" id="hidden_dhcp_Network" name="hidden_dhcp_Network">
-        <input type="hidden" id="hidden_dhcp_dG" name="hidden_dhcp_dG">
-        <input type="hidden" id="hidden_dhcp_dnsServer" name="hidden_dhcp_dnsServer">
-        <input type="hidden" id="hidden_dhcp_info_for_transfer" name="hidden_dhcp_info_for_transfer">
-
-        <!-- rip -->
-        <input type="hidden" id="hidden_rip_state" name="hidden_rip_state">
-        <input type="hidden" id="hidden_networks_input_routing" name="hidden_networks_input_routing">
-        <input type="hidden" id="hidden_dropdown_rip_version" name="hidden_dropdown_rip_version">
-        <input type="hidden" id="hidden_sum_state" name="hidden_sum_state">
-        <input type="hidden" id="hidden_originate_state" name="hidden_originate_state">
-
-        <!-- static routing -->
-        <input type="hidden" id="hidden_staticRouting_info_for_transfer" name="hidden_staticRouting_info_for_transfer">
-
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            Static Routing
-        </button>
-    </form>
-    
-    <form method="post" action="{% url 'acl_basic_route' %}" class="menu-form">
-      {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            Basic ACL
-        </button>
-    </form>
-    
-    <form method="post" action="{% url 'acl_extended_route' %}" class="menu-form">
-      {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-            <option value="router">Router</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-            Extended ACL
-        </button>
-    </form>
-    
+      <button type="submit" onclick="submitForm('dhcp')">
+        DHCP
+      </button>
       
+      <button type="submit" onclick="submitForm('rip')">
+        RIP
+      </button>
+
+      <button type="submit" onclick="submitForm('static_routing')">
+        Static Routing
+      </button>
+
+      <form method="post" action="{% url 'etherchannel_route' device_type='router' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          Etherchannel
+        </button>
+      </form>
+
+      <form method="post" action="{% url 'ospf_route' device_type='router' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          OSPF
+        </button>
+      </form>
+
+
+      <form method="post" action="{% url 'acl_basic_route' device_type='router' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          Basic ACL
+        </button>
+      </form>
+
+      <form method="post" action="{% url 'acl_extended_route' device_type='router' %}" class="menu-form">
+        {% csrf_token %}
+        <select name="deviceType" id="deviceType" style="display: none;">
+          <option value="router">Router</option>
+        </select>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          Extended ACL
+        </button>
+      </form>
+
+
       {% elif device_type == "switch" %}
       <form method="post" action="{% url 'index_route' %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
         </select>
-          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-              Return to start
-          </button>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          Return to start
+        </button>
       </form>
 
-      <form method="post" action="{% url 'basic_config_route' %}" class="menu-form">
+      <form method="post" action="{% url 'basic_config_route' device_type='switch' %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
         </select>
-          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-              Hostname & Banner (Basic Config)
-          </button>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          Hostname & Banner (Basic Config)
+        </button>
       </form>
 
-      <form method="post" action="{% url 'etherchannel_route' %}" class="menu-form">
+      <form method="post" action="{% url 'etherchannel_route' device_type='switch' %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
         </select>
-          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-              Etherchannel
-          </button>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          Etherchannel
+        </button>
       </form>
 
-      <form method="post" action="{% url 'vlan_route' %}" class="menu-form">
+      <form method="post" action="{% url 'vlan_route' device_type='switch' %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
         </select>
-          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-              VLAN
-          </button>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          VLAN
+        </button>
       </form>
 
-      <form method="post" action="{% url 'acl_basic_route' %}" class="menu-form">
+      <form method="post" action="{% url 'acl_basic_route' device_type='switch' %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
         </select>
-          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-              Basic ACL
-          </button>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          Basic ACL
+        </button>
       </form>
 
-      <form method="post" action="{% url 'acl_extended_route' %}" class="menu-form">
+      <form method="post" action="{% url 'acl_extended_route' device_type='switch' %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
         </select>
-          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-              Extended ACL
-          </button>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          Extended ACL
+        </button>
       </form>
 
-      <form method="post" action="{% url 'vtp_dtp_route' %}" class="menu-form">
+      <form method="post" action="{% url 'vtp_dtp_route' device_type='switch' %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
         </select>
-          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-              VTP & DTP
-          </button>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          VTP & DTP
+        </button>
       </form>
 
-      <form method="post" action="{% url 'stp_route' %}" class="menu-form">
+      <form method="post" action="{% url 'stp_route' device_type='switch' %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
         </select>
-          <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-              STP
-          </button>
+        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          STP
+        </button>
       </form>
 
       {% endif %}
@@ -487,8 +251,9 @@
         <input placeholder="e.g. 0.0.0.0" class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs"
           type="text" maxlength="15" size="15" id="ipAdresse" name="ip"
           oninput="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')">
-        <select itemid="dl_or_tf" name="dl_or_tf" class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs"
-          id="dl_or_tf" onchange="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')">
+        <select itemid="dl_or_tf" name="dl_or_tf"
+          class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" id="dl_or_tf"
+          onchange="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')">
       </div>
 
       <option name="download" value="download">Download</option>
@@ -505,4 +270,12 @@
   </form>
   </div>
 </body>
+
+<script>
+  function submitForm(to) {
+    document.getElementById("hidden_forward_to").value = to
+    document.getElementById("inputs_form").submit();
+  }
+</script>
+
 </html>
