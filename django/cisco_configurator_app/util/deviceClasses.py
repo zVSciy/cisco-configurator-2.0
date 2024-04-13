@@ -1,6 +1,6 @@
 import json
 
-#MARK: DeviceInfo
+#region Device
 
 class deviceInfo:
     def __init__(self, hostname:str = None, motd:str = None) -> None:
@@ -17,8 +17,9 @@ class deviceInfo:
         
     def __repr__(self) -> str:
         return "Hostname: " + self.hostname + "\n" + "MOTD: " + self.motd
-
-#MARK: Interfaces
+    
+#endregion
+#region Interfaces
 
 class interfaces:
     def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = None, shutdown:str = None ) -> None:
@@ -58,8 +59,8 @@ class interfaces:
     def toConfig(self) -> list:
         return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}\n', f'{self.ipNatInside}', f'{self.ipNatOutside}']
     
-
-#MARK: Static Routing
+#endregion
+#region StaticRoute
 
 class StaticRoute:
     def __init__(self, staticRouting:str = None ) -> None:
@@ -80,7 +81,8 @@ class StaticRoute:
             config.append(f"ip route {route['targetNw']} {route['targetSm']} {route['nextHop']}\n")
         return config
 
-#MARK: RIP
+#endregion
+#region RIP
 
 class ripRouting:
     def __init__(self, ripVersion:str = None, ripSumState:bool = None, ripOriginate:bool = None, ripNetworks:str = None) -> None:
@@ -121,7 +123,8 @@ class ripRouting:
             config.append(f" network {network}\n")
         return config
 
-#MARK: DHCP
+#endregion
+#region DHCP
 
 class dhcp:
     def __init__(self, dhcpNetwork:str = None, dhcpGateway:str = None, dhcpDNS:str = None, dhcpPool:str = None) -> None:
@@ -154,7 +157,8 @@ class dhcp:
         config.append(f"dns-server {self.dhcpDNS}\n")
         return config
 
-#MARK: NAT
+#endregion
+#region NAT
 
 class nat:
     def __init__(self, natPool:str = "192.168.16.0,0.0.0.255", interfaceName:str = None) -> None:
@@ -172,8 +176,8 @@ class nat:
         config.append(f"ip nat inside source list 1 interface {self.interface} overload\n")
         config.append(f"access list 1 permit {', '.join(self.natPool)}\n")
         return config
-        
 
-    
+#endregion
+
 
 
