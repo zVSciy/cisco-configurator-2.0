@@ -165,6 +165,8 @@ class dhcp:
             self.dhcpPoolName = dhcpPoolName
         else:
             raise TypeError()
+    def __repr__(self) -> str:
+        return "DHCP Network: " + self.dhcpNetwork + "\n" + "DHCP Gateway: " + self.dhcpGateway + "\n" + "DHCP DNS: " + self.dhcpDNS + "\n" + "DHCP Excluded Areas: " + ', '.join(self.dhcpExcludedAreas) + "\n" + "DHCP Pool Name: " + self.dhcpPoolName + "\n"
 
     def toConfig(self) -> list:
         config = []
