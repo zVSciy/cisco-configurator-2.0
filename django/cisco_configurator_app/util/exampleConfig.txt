@@ -16,6 +16,7 @@ ip cef
 !
 !
 ip dhcp excluded-address 172.16.11.0 172.16.11.10
+ip dhcp excluded-address 172.16.11.200 172.16.11.255
 !
 ip dhcp pool 172
  network 172.16.11.0 255.255.255.0

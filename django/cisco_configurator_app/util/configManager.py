@@ -120,17 +120,54 @@ class configManager:
         self.configEditor.writeConfig()
     #endregion
 
-    def getDhcpConfig(self) -> dhcp:
-        pass
+    #region DHCP
+
+    def getDhcpConfig(self, inputPoolName: str ) -> dhcp:
+        dhcpLines = self.configEditor.findContentIndexes(f"ip dhcp pool {inputPoolName}", "!")
+        dhcpText = self.configEditor.getContentBetweenIndexes(dhcpLines[0], dhcpLines[-1])
+        excludedLines = self.configEditor.findContentIndexes("ip dhcp excluded-address", "!")
+        excludedText = self.configEditor.getContentBetweenIndexes(excludedLines[0], excludedLines[-1])
+        poolName, networkIP, networkSM, defaultRouter, dnsServer = None, None, None, None, None
+        excludedNetworks = ""
+        for line in dhcpText:
+            if line.startswith("ip dhcp pool"):
+                poolName = line.split(" ")[3]
+            elif line.startswith("network"):
+                networkIP = line.split(" ")[1]
+                networkSM = line.split(" ")[2]
+            elif line.startswith("default-router"):
+                defaultRouter = line.split(" ")[1]
+            elif line.startswith("dns-server"):
+                dnsServer = line.split(" ")[1]
+
+        for line in excludedText:
+            if(len(excludedNetworks) > 0):
+                excludedNetworks += ";"
+            excludedNetworks += line.split(" ")[3] + "," + line.split(" ")[4]
+        return dhcp(networkIP, networkSM, defaultRouter, dnsServer, excludedNetworks, poolName)
+
+    def writeDhcpConfig(self, dhcpConfig: dhcp, poolName) -> None:
+        dhcpLines = self.configEditor.findContentIndexes(f"ip dhcp pool {dhcpConfig.dhcpPoolName}", "!")
+        excludedLines = self.configEditor.findContentIndexes("ip dhcp excluded-address", "!")
+        self.configEditor.removeContentBetweenIndexes(dhcpLines[0], dhcpLines[-1])
+        self.configEditor.removeContentBetweenIndexes(excludedLines[0], excludedLines[-1])
+        self.configEditor.appendContentToFile(dhcpConfig.toConfig())
+        self.configEditor.writeConfig()
+    #endregion
+
+    #region NAT
+    
+
+
 
 cM = configManager(filePath)
 
 
 
 # print(cM.getAllInterfaces())
-for i in cM.getAllInterfaces():
-    print(i.toConfig())
-    cM.writeInterface(i)
+# for i in cM.getAllInterfaces():
+#     print(i.toConfig())
+#     cM.writeInterface(i)
 
 # print(cM.getInterface("Fast"))
 
@@ -144,3 +181,13 @@ for i in cM.getAllInterfaces():
 # cM.writeStaticRoutes(staticRoutes)
 
 # print(cM.getRIPConfig().toConfig())
+
+# print(cM.getDhcpConfig("172"))
+# print(cM.getDhcpConfig("172").toConfig())
+# dhcpConfig = cM.getDhcpConfig("172")
+# cM.writeDhcpConfig(dhcpConfig, "172")
+
+# ripConfig = cM.getRIPConfig()
+# ripConfig.ripVersion = "1"
+# cM.writeRIPConfig(ripConfig)
+
