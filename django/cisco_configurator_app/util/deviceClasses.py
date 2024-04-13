@@ -217,51 +217,36 @@ class nat:
 #region ACL
 
 class aclStandard:
-    def __init__(self, accessListName:str = None, accessListAllowed:str = None, accessListDeny:str = None) -> None:
-        if type(accessListName) == str:
-            self.accessListName = accessListName
-        else:
-            raise TypeError()
-        if type(accessListAllowed) == str:
-            self.allowed = []
-            self.getAllowed(accessListAllowed)
-        else:
-            raise TypeError()
-        if type(accessListDeny) == str:
-            self.denied = []
-            self.getDenied(accessListDeny)
+    def __init__(self, accessList:str = None) -> None:
+        if type(accessList) == str:
+            self.ACL = []
+            self.getACLs(accessList)
         else:
             raise TypeError()  
         
-    def getAllowed(self, accessListAllowed:str) -> list:
-        if accessListAllowed:
-            allowed = accessListAllowed.split(';')
-            for allow in allowed:
-                ip, sm = allow.split(',')
-                self.allowed.append({'ip': ip, 'sm': sm})
-        return self.allowed
-
-    def getDenied(self, accessListDeny:str) -> list:
-        if accessListDeny:
-            denied = accessListDeny.split(';')
-            for deny in denied:
-                ip, sm = deny.split(',')
-                self.denied.append({'ip': ip, 'sm': sm})
-        return self.denied                                                                     
+    #"ACLID,deny|permit,IP,SM;ACLID,deny|permit,IP,SM;ACLID,IP,SM"
+    def getACLs(self, accessList:str) -> list:
+        if accessList:
+            ACLs = accessList.split(';')
+            for ACL in ACLs:
+                id, permitDeny, ip, sm = ACL.split(',')
+                self.ACLs.append({'id': id,'permitDeny': permitDeny, 'ip': ip, 'sm': sm})
+        return self.ACL                                                                   
 
     def __repr__(self) -> str:
-        return "Access List Name: " + self.accessListName + "\n" + "Allowed: " + ', '.join(self.allowed) + "\n" + "Denied: " + ', '.join(self.denied) + "\n"
+        return json.dumps(self.ACL, indent=4)
     
     def toConfig(self) -> list:
         config = []
-        config.append(f"ip access-list standard {self.accessListName}\n")
-        for allow in self.allowed:
-            config.append(f" permit {allow['ip']} {allow['sm']}\n")
-        for deny in self.denied:
-            config.append(f" deny {deny['ip']} {deny['sm']}\n")
+        for ACL in self.ACL:
+            config.append(f"access-list {ACL['id']} {ACL['permitDeny']} {ACL['ip']} {ACL['sm']}\n")
         config.append("!\n")
         return config
-#endregion	
+    
+#region OSPF
+ 
+class ospf:
 
 
 
+#endregion
