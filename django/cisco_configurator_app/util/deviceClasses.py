@@ -157,25 +157,48 @@ class dhcp:
             raise TypeError()
         
         if type(dhcpExcludedAreas) == str:
-            self.dhcpExcludedAreas = dhcpExcludedAreas.split(',')
+            self.areas = []
+            self.getAreas(dhcpExcludedAreas)
         else:
             raise TypeError()
+        
         if type(dhcpPoolName) == str:
             self.dhcpPoolName = dhcpPoolName
         else:
             raise TypeError()
+        
+    def getAreas(self, dhcpExcludeAreas:str) -> list:
+        if dhcpExcludeAreas:
+            areas = dhcpExcludeAreas.split(';')
+            for area in areas:
+                AreaFromIP, AreaToIP = area.split(',')
+                self.areas.append({'AreaFromIP': AreaFromIP, 'AreaToIP': AreaToIP})
+        return self.areas
+    
     def __repr__(self) -> str:
         return "Network IP: " + self.dhcpNetworkIP + "\n" + "Network Subnet Mask: " + self.dhcpNetworkSM + "\n" + "Gateway: " + self.dhcpGateway + "\n" + "DNS: " + self.dhcpDNS + "\n" + "Excluded Areas: " + ', '.join(self.dhcpExcludedAreas) + "\n" + "Pool Name: " + self.dhcpPoolName + "\n"
     
     def toConfig(self) -> list:
         config = []
-        config.append(f"ip dhcp excluded-address {', '.join(self.dhcpExcludedAreas)}\n" + "!\n")
+        for area in self.areas:
+            config.append(f"ip dhcp excluded-address {area['AreaFromIP']} {area['AreaToIP']}")
+        config.append("!\n")
         config.append(f"ip dhcp pool {self.dhcpPoolName}\n")
         config.append(f"   network {self.dhcpNetworkIP} {self.dhcpNetworkSM}\n")
         config.append(f"   default-router {self.dhcpGateway}\n")
         config.append(f"   dns-server {self.dhcpDNS}\n")
         config.append("!\n")
         return config
+
+## Erstellen Sie eine Instanz der dhcp Klasse
+dhcp_instance = dhcp("192.168.1.1", "255.255.255.0", "192.168.1.254", "8.8.8.8", "192.168.1.100,192.168.1.200;192.168.0.0,0.0.0.0", "MyPool")
+
+# Rufen Sie die toConfig Funktion auf und speichern Sie das Ergebnis
+config = dhcp_instance.toConfig()
+
+# Drucken Sie das Ergebnis
+for line in config:
+    print(line)
 
 #endregion
 #region NAT
