@@ -100,12 +100,13 @@ router rip
 !
 ip http server
 no ip http secure-server
+ip nat inside source list 1 interface Ethernet0/1 overload
 !
 !
 !
 !
-!
-!
+access-list 1 permit any
+access-list 2 permit 192.168.1.1 123.123.123.123
 !
 control-plane
 !

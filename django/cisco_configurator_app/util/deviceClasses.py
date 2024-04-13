@@ -210,7 +210,7 @@ class nat:
     
     def toConfig(self) -> list:
         config = []
-        config.append(f"ip nat inside source list {self.acccesListName} interface {self.interface} overload\n" + "!\n")
+        config.append(f"ip nat inside source list {self.accessList} interface {self.interface} overload\n" + "!\n")
         return config
 
 #endregion
@@ -219,7 +219,7 @@ class nat:
 class aclStandard:
     def __init__(self, accessList:str = None) -> None:
         if type(accessList) == str:
-            self.ACL = []
+            self.ACLs = []
             self.getACLs(accessList)
         else:
             raise TypeError()  
@@ -229,17 +229,24 @@ class aclStandard:
         if accessList:
             ACLs = accessList.split(';')
             for ACL in ACLs:
-                id, permitDeny, ip, sm = ACL.split(',')
-                self.ACLs.append({'id': id,'permitDeny': permitDeny, 'ip': ip, 'sm': sm})
-        return self.ACL                                                                   
+                if(len(ACL.split(',')) == 3):
+                    id, permitDeny, ip = ACL.split(',')
+                    self.ACLs.append({'id': id, 'permitDeny': permitDeny, 'ip': ip})
+                elif (len(ACL.split(',')) == 4):
+                    id, permitDeny, ip, sm = ACL.split(',')
+                    self.ACLs.append({'id': id,'permitDeny': permitDeny, 'ip': ip, 'sm': sm})
+        return self.ACLs                                                                   
 
     def __repr__(self) -> str:
         return json.dumps(self.ACL, indent=4)
     
     def toConfig(self) -> list:
         config = []
-        for ACL in self.ACL:
-            config.append(f"access-list {ACL['id']} {ACL['permitDeny']} {ACL['ip']} {ACL['sm']}\n")
+        for acl in self.ACLs:
+            if len(acl) == 3:
+                config.append(f"access-list {acl['id']} {acl['permitDeny']} {acl['ip']}\n")
+            elif len(acl) == 4:
+                config.append(f"access-list {acl['id']} {acl['permitDeny']} {acl['ip']} {acl['sm']}\n")
         config.append("!\n")
         return config
     

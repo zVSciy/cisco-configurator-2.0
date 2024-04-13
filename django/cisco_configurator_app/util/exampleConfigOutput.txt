@@ -91,6 +91,12 @@ ip route 192.168.1.0 255.255.255.0 192.168.1.6
 ip route 192.168.1.0 255.255.255.0 192.168.1.7
 ip route 192.168.5.0 255.255.255.0 192.168.1.5
 !
+router rip 
+ version 2 
+ default-information originate
+ network 192.168.0.1
+ netowrk 192.168.0.2
+ network 192.168.0.3
 !
 ip http server
 no ip http secure-server
@@ -98,8 +104,8 @@ no ip http secure-server
 !
 !
 !
-!
-!
+access-list 1 permit any
+access-list 2 permit 192.168.1.1 123.123.123.123
 !
 control-plane
 !
@@ -121,10 +127,6 @@ line aux 0
 line vty 0 4
 !
 !
-router rip
- version 1
- default-information originate
- network 192.168.0.1
- network 192.168.0.3
+ip nat inside source list 5 interface Ethernet0/1 overload
 !
 end

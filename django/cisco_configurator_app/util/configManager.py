@@ -1,5 +1,5 @@
 from configEditor import configEditor
-from deviceClasses import interfaces, StaticRoute, ripRouting, dhcp
+from deviceClasses import interfaces, StaticRoute, ripRouting, dhcp, aclStandard, nat   
 
 filePath = "./exampleConfig.txt"
 class configManager:
@@ -155,9 +155,52 @@ class configManager:
         self.configEditor.writeConfig()
     #endregion
 
-    #region NAT
-    
+    #region ACL
 
+    def getACLConfig(self) -> aclStandard:
+        aclLines = self.configEditor.findContentIndexes("access-list ", "!")
+        aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
+        ACLs = "" #"ACLID,deny|permit,IP,SM;ACLID,deny|permit,IP,SM;ACLID,IP,SM"
+        for line in aclText:
+            if not line.startswith("access-list"):
+                continue
+            if len(ACLs) > 0:
+                ACLs += ";"
+            aclID = line.split(" ")[1]
+            aclType = line.split(" ")[2]
+            aclIP = line.split(" ")[3]
+            if aclIP == "any":
+                ACLs += aclID + "," + aclType + "," + aclIP
+            else:
+                aclWM = line.split(" ")[4]
+                ACLs += aclID + "," + aclType + "," + aclIP + "," + aclWM
+        return aclStandard(ACLs)
+    
+    def writeACLConfig(self, aclConfig: aclStandard) -> None:
+        aclLines = self.configEditor.findContentIndexes("access-list ", "!")
+        self.configEditor.removeContentBetweenIndexes(aclLines[0], aclLines[-1])
+        self.configEditor.appendContentToFile(aclConfig.toConfig())
+        self.configEditor.writeConfig()
+
+
+    #region NAT
+
+    def getNATConfig(self) -> nat:
+        natLines = self.configEditor.findContentIndexes("ip nat inside ", "!")
+        natText = self.configEditor.getContentBetweenIndexes(natLines[0], natLines[-1])
+        for line in natText:
+            if line.startswith("ip nat inside source"):
+                aclName = line.split(" ")[5]
+                interfaceName = line.split(" ")[7]
+            return nat(interfaceName, aclName)
+                
+    def writeNATConfig(self, natConfig: nat) -> None:
+        natLines = self.configEditor.findContentIndexes("ip nat inside ", "!")
+        self.configEditor.removeContentBetweenIndexes(natLines[0], natLines[-1])
+        self.configEditor.appendContentToFile(natConfig.toConfig())
+        self.configEditor.writeConfig()
+
+    #endregion
 
 
 cM = configManager(filePath)
@@ -191,3 +234,9 @@ cM = configManager(filePath)
 # ripConfig.ripVersion = "1"
 # cM.writeRIPConfig(ripConfig)
 
+# print(cM.getACLConfig().toConfig())
+# cM.writeACLConfig(cM.getACLConfig())
+
+# natConfig = cM.getNATConfig()
+# natConfig.accessList = "5"
+# cM.writeNATConfig(natConfig)
