@@ -21,7 +21,7 @@ class DeviceInfo:
 #endregion
 #region Interfaces
 
-class Interfaces:
+class Interface:
     def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = "Default", shutdown:bool = None ) -> None:
         #Überprüft ob die Eingabe ein String ist und speichert die Werte
         if type(interface) == str:
