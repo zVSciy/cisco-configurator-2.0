@@ -149,6 +149,8 @@ def get_inputs(request, device_type):
     #static routing
     static_routing_routes = request.POST.get('hidden_staticRouting_info_for_transfer')
 
-
-    # return render(request, 'configurations/'+forward_to+'.html', config_option)
-    return redirect(reverse(forward_to + '_route', kwargs={'device_type': device_type}))
+    # exception for the index route bc index can`t handle the device type
+    if forward_to != 'index':
+        return redirect(reverse(forward_to + '_route', kwargs={'device_type': device_type}))
+    else:
+        return redirect(reverse(forward_to + '_route'))
