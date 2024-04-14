@@ -2,7 +2,7 @@ from configEditor import configEditor
 from deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard, NAT
 
 filePath = "./exampleConfig.txt"
-class configManager:
+class ConfigManager:
     def __init__(self, configFilePath:str) -> None:
         self.filePath = configFilePath
         self.configEditor = configEditor(configFilePath)
@@ -126,7 +126,7 @@ class configManager:
             excludedNetworks += line.split(" ")[3] + "," + line.split(" ")[4]
         return DHCP(networkIP, networkSM, defaultRouter, dnsServer, excludedNetworks, poolName)
 
-    def writeDhcpConfig(self, dhcpConfig: DHCP, poolName: str) -> None:
+    def writeDhcpConfig(self, dhcpConfig: DHCP) -> None:
         dhcpLines = self.configEditor.findContentIndexes(f"ip dhcp pool {dhcpConfig.dhcpPoolName}", "!")
         excludedLines = self.configEditor.findContentIndexes("ip dhcp excluded-address", "!")
         self.configEditor.removeContentBetweenIndexes(dhcpLines[0], dhcpLines[-1])
@@ -183,8 +183,10 @@ class configManager:
     #endregion
 
 
-cM = configManager(filePath)
+cM = ConfigManager(filePath)
 
+
+# region Example Usage
 
 
 # print(cM.getAllInterfaces())
@@ -220,3 +222,5 @@ cM = configManager(filePath)
 # natConfig = cM.getNATConfig()
 # natConfig.accessList = "5"
 # cM.writeNATConfig(natConfig)
+
+#endregion
