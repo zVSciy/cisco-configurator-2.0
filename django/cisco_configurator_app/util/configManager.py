@@ -1,5 +1,5 @@
 from .configEditor import configEditor
-from .deviceClasses import interfaces, StaticRoute, ripRouting, dhcp, aclStandard, nat   
+from .deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard, NAT   
 
 filePath = "./exampleConfig.txt"
 class ConfigManager:
