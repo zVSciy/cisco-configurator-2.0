@@ -1,7 +1,8 @@
 from .configEditor import configEditor
 from .deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard, NAT, DeviceInfo 
 
-filePath = "./exampleConfig.txt"
+# filePath = "./exampleConfig.txt"
+
 class ConfigManager:
     def __init__(self, configFilePath:str) -> None:
         self.filePath = configFilePath
@@ -201,7 +202,7 @@ class ConfigManager:
     #endregion
 
 
-cM = ConfigManager(filePath)
+# cM = ConfigManager(filePath)
 
 
 # region Example Usage

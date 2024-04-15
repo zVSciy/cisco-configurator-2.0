@@ -39,6 +39,6 @@ urlpatterns = [
     path('vtp-dtp/<str:device_type>/', views.vtp_dtp, name='vtp_dtp_route'),
     path('stp/<str:device_type>/', views.stp, name='stp_route'),
     path('config/<str:device_type>/', views.get_inputs, name='get_inputs_route'),
-    path('transfer/', views.transfer_config, name='transfer_route'),
-    path('download/', views.download_config, name='download_route'),
+    # path('transfer/', views.transfer_config, name='transfer_route'),
+    # path('download/', views.download_config, name='download_route'),
 ]

@@ -5,8 +5,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from .util.configManager import ConfigManager
 from .util.deviceClasses import *
-from .util.fileManager import transfer_config as tc
-from .util.fileManager import download_config as dc
+from .util.fileManager import transfer_config
+from .util.fileManager import download_config
 
 # Create your views here.
 
@@ -112,7 +112,7 @@ def get_inputs(request, device_type):
         "device_type": device_type
     }
 
-    cM = ConfigManager('exampleConfig.txt')
+    cM = ConfigManager('exampleConfig')
 
     forward_to = request.POST.get('hidden_forward_to')
 
@@ -146,8 +146,9 @@ def get_inputs(request, device_type):
         else:
             cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, True, FastEthernet00_description, FastEthernet00_shutdown))
             cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, True, False, FastEthernet01_description, FastEthernet01_shutdown))
-    else:
+    elif (FastEthernet00_ip and FastEthernet00_sm):
         cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, False, FastEthernet00_description, FastEthernet00_shutdown))
+    elif (FastEthernet01_ip and FastEthernet01_sm):
         cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, False, False, FastEthernet01_description, FastEthernet01_shutdown))
 
     #nat
@@ -184,19 +185,21 @@ def get_inputs(request, device_type):
         cM.writeStaticRoutes(StaticRoute(static_routes))
 
     dl_or_tf = request.POST.get('hidden_dl_or_tf')
+    ip = request.POST.get('hidden_ip')
+    user = request.POST.get('hidden_user')
+    pw = request.POST.get('hidden_pw')
+
+    if dl_or_tf == 'download':
+        response = download_config()
+    elif dl_or_tf == 'transfer':
+        response = transfer_config(ip, user, pw)
+
+    # Überprüfe, ob eine Antwort vorhanden ist, bevor eine Umleitung durchgeführt wird
+    if response:
+        return response
 
     # exception for the index route bc index can`t handle the device type
     if forward_to != 'index':
         return redirect(reverse(forward_to + '_route', kwargs={'device_type': device_type}))
-    elif dl_or_tf == 'download':
-        download_config(request, forward_to)
-        return redirect(reverse(forward_to + '_route'))
     else:
-        transfer_config(request, forward_to)
-        return redirect(reverse(forward_to + '_route'))
-
-def download_config(request, forward_to):
-  dc(request)
-
-def transfer_config(request, forward_to):
-  tc(request)
+        return redirect('index_route')
