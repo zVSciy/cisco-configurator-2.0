@@ -1,5 +1,5 @@
 from .configEditor import configEditor
-from .deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard, NAT   
+from .deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard, NAT, DeviceInfo 
 
 filePath = "./exampleConfig.txt"
 class ConfigManager:
@@ -180,6 +180,24 @@ class ConfigManager:
         self.configEditor.appendContentToFile(natConfig.toConfig())
         self.configEditor.writeConfig()
 
+    #endregion
+
+    #region BasicConfig
+
+    def getDeviceInfo(self) -> str:
+        hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
+        motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
+        hostName = self.configEditor.getContentOnIndex(hostNameLine[0]).split(" ")[1]
+        motd = self.configEditor.getContentOnIndex(motdLine[0])
+        return DeviceInfo(hostName, motd)
+    
+    def writeDeviceInfo(self, deviceInfo: DeviceInfo) -> None:
+        hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
+        motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
+        self.configEditor.removeContentBetweenIndexes(hostNameLine[0], hostNameLine[-1])
+        self.configEditor.removeContentBetweenIndexes(motdLine[0], motdLine[-1])
+        self.configEditor.appendContentToFile(deviceInfo.toConfig())
+        self.configEditor.writeConfig()
     #endregion
 
 
