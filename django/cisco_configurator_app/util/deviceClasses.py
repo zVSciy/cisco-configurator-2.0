@@ -19,7 +19,7 @@ class DeviceInfo:
         return "Hostname: " + self.hostname + "\n" + "MOTD: " + self.motd + "!\n"
     
     def toConfig(self) -> list:
-        return [f"hostname {self.hostname}\n", f"banner motd {self.motd}\n", "!\n"]
+        return [f"hostname {self.hostname}\n", "!\n" f"banner motd {self.motd}\n", "!\n"]
 #endregion
 #region Interfaces
 
@@ -59,7 +59,7 @@ class Interface:
         return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + "\n" + self.ipNatInside + self.ipNatOutside 
 
     def toConfig(self) -> list:
-        return [self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}', f' {self.ipNatInside}', f'{self.ipNatOutside}' + "!\n"]
+        return ["interface " + self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}', f' {self.ipNatInside}', f'{self.ipNatOutside}' + "!\n"]
 
 #endregion
 #region StaticRoute
@@ -117,7 +117,7 @@ class RipRouting:
 
     # Teilt den String in die einzelnen Netzwerke auf und speichert sie in einer Liste
     def getNetworks(self, ripNetworks:str) -> list:
-        return ripNetworks.split(';')
+        return ripNetworks.split(',')
 
     def __repr__(self) -> str:
         return "RIP Version: " + self.ripVersion + "\n" + "Auto Summary: " + self.ripSumState + "\n" + "Default Information Originate: " + self.ripOriginate + "\n" + "Networks: " + ', '.join(self.ripNetworks) + "\n"
@@ -176,6 +176,8 @@ class DHCP:
         if dhcpExcludeAreas:
             areas = dhcpExcludeAreas.split(';')
             for area in areas:
+                if(len(area) < 1):
+                    continue
                 AreaFromIP, AreaToIP = area.split(',')
                 self.areas.append({'AreaFromIP': AreaFromIP, 'AreaToIP': AreaToIP})
         return self.areas

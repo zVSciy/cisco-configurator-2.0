@@ -18,15 +18,16 @@ class configEditor:
 
     # This function takes a config in the form of a list of lines and writes it to a fil
     def writeConfig(self) -> None:
-        outputPath = self.filePath.split(".")  # Split the file name by the period
-        for i in range(0, len(outputPath)): # check if we are at the end of the string before the file type addon (.txt)
-            if (i < len(outputPath)-2):
-                outputPath[i] += "." #add any periods that were in the string originally, except the last one (.txt)
-            elif (i == len(outputPath)-2): # add Output to the name of the file name
-                outputPath[i] += "Output."
+        outputPath = self.filePath
+        # outputPath = self.filePath.split(".")  # Split the file name by the period
+        # for i in range(0, len(outputPath)): # check if we are at the end of the string before the file type addon (.txt)
+        #     if (i < len(outputPath)-2):
+        #         outputPath[i] += "." #add any periods that were in the string originally, except the last one (.txt)
+        #     elif (i == len(outputPath)-2): # add Output to the name of the file name
+        #         outputPath[i] += "Output."
 
-        # join the list of strings into one string
-        outputPath = ''.join(outputPath)
+        # # join the list of strings into one string
+        # outputPath = ''.join(outputPath)
 
         with open(outputPath, 'w')as outputFile:  # write the file
             outputFile.writelines(self.fileContent)

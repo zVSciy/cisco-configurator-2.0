@@ -120,13 +120,13 @@ line vty 0 4
 !
 !
 FastEthernet0/0
- ip address 192.168.0.1 255.255.255.0
- description TEst
+ ip address  
+ description 
  no shutdown
  !
 FastEthernet0/1
- ip address 192.168.0.2 255.255.0.0
- description aaaaaaa
+ ip address  
+ description 
  no shutdown
  !
 end

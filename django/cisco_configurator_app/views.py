@@ -133,21 +133,25 @@ def get_inputs(request, device_type):
     FastEthernet01_ip = request.POST.get('hidden_FastEthernet0/1_ip')  
     FastEthernet01_sm = request.POST.get('hidden_FastEthernet0/1_sm') 
 
+    ##DEBUG
+    FastEthernet01_shutdown = True
+    FastEthernet00_shutdown = True
+
     if(nat_ingoing and nat_outgoing):
         if(nat_ingoing == 'FastEthernet00' and nat_outgoing == 'FastEthernet01'):
-            cM.writeInterface(Interface('FastEthernet00', FastEthernet00_ip, FastEthernet00_sm, True, False, FastEthernet00_description, FastEthernet00_shutdown))
-            cM.writeInterface(Interface('FastEthernet01', FastEthernet01_ip, FastEthernet01_sm, False, True, FastEthernet01_description, FastEthernet01_shutdown))
+            cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, True, False, FastEthernet00_description, FastEthernet00_shutdown))
+            cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, False, True, FastEthernet01_description, FastEthernet01_shutdown))
         else:
-            cM.writeInterface(Interface('FastEthernet00', FastEthernet00_ip, FastEthernet00_sm, False, True, FastEthernet00_description, FastEthernet00_shutdown))
-            cM.writeInterface(Interface('FastEthernet01', FastEthernet01_ip, FastEthernet01_sm, True, False, FastEthernet01_description, FastEthernet01_shutdown))
+            cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, True, FastEthernet00_description, FastEthernet00_shutdown))
+            cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, True, False, FastEthernet01_description, FastEthernet01_shutdown))
     else:
-        cM.writeInterface(Interface('FastEthernet00', FastEthernet00_ip, FastEthernet00_sm, False, False, FastEthernet00_description, FastEthernet00_shutdown))
-        cM.writeInterface(Interface('FastEthernet01', FastEthernet01_ip, FastEthernet01_sm, False, False, FastEthernet01_description, FastEthernet01_shutdown))
+        cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, False, FastEthernet00_description, FastEthernet00_shutdown))
+        cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, False, False, FastEthernet01_description, FastEthernet01_shutdown))
 
     #nat
     nat_status = request.POST.get('hidden_nat_status')  #true = on | false = off
     # acl_networks = request.POST.get('hidden_nat_info_for_transfer') 
-    if(nat_status and nat_ingoing and nat_outgoing and acl_networks):
+    if(nat_status and nat_ingoing and nat_outgoing):
         cM.writeNATConfig(NAT(nat_outgoing, '0'))
 
     #dhcp
@@ -160,17 +164,17 @@ def get_inputs(request, device_type):
     dhcp_dG = request.POST.get('hidden_dhcp_dG') 
     dhcp_dnsServer = request.POST.get('hidden_dhcp_dnsServer') 
     dhcp_info_for_transfer = request.POST.get('hidden_dhcp_info_for_transfer') 
-    if(dhcp_status and dhcp_poolName and dhcp_Network and dhcp_dG and dhcp_dnsServer and dhcp_info_for_transfer):
+    if(dhcp_status and dhcp_poolName and dhcp_network and dhcp_dG and dhcp_dnsServer and dhcp_info_for_transfer):
         cM.writeDhcpConfig(DHCP(dhcp_network_IP, dhcp_network_SM, dhcp_dG, dhcp_dnsServer, dhcp_info_for_transfer, dhcp_poolName))
 
     #rip
     rip_state = request.POST.get('hidden_rip_state')
     rip_version = request.POST.get('hidden_dropdown_rip_version')
-    rip_sum_state = request.POST.get('hidden_sum_state')
-    rip_originate_state = request.POST.get('hidden_originate_state')
+    rip_sum_state = bool(request.POST.get('hidden_sum_state'))
+    rip_originate_state = bool(request.POST.get('hidden_originate_state'))
     rip_networks = request.POST.get('hidden_networks_input_routing')
     if(rip_state and rip_version and rip_sum_state and rip_originate_state and rip_networks):
-        cM.writeRIPConfig(RipRouting(ripVersion, ripSumState, rip_originate_state, rip_networks))
+        cM.writeRIPConfig(RipRouting(rip_version, rip_sum_state, rip_originate_state, rip_networks))
 
     #static routing
     static_routes = request.POST.get('hidden_staticRouting_info_for_transfer')
