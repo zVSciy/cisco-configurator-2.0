@@ -5,7 +5,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from .util.configManager import ConfigManager
 from .util.deviceClasses import *
-from .util.fileManager import *
+from .util.fileManager import transfer_config as tc
+from .util.fileManager import download_config as dc
 
 # Create your views here.
 
@@ -182,14 +183,20 @@ def get_inputs(request, device_type):
     if(static_routes):
         cM.writeStaticRoutes(StaticRoute(static_routes))
 
+    dl_or_tf = request.POST.get('hidden_dl_or_tf')
+
     # exception for the index route bc index can`t handle the device type
     if forward_to != 'index':
         return redirect(reverse(forward_to + '_route', kwargs={'device_type': device_type}))
+    elif dl_or_tf == 'download':
+        download_config(request, forward_to)
+        return redirect(reverse(forward_to + '_route'))
     else:
+        transfer_config(request, forward_to)
         return redirect(reverse(forward_to + '_route'))
 
-def download_config(request):
-  download_config(request)
+def download_config(request, forward_to):
+  dc(request)
 
-def transfer_config(request):
-  transfer_config(request)
+def transfer_config(request, forward_to):
+  tc(request)

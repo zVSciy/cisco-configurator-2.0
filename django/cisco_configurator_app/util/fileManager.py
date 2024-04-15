@@ -1,6 +1,8 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from netmiko import ConnectHandler, SCPConn
+from django.http import HttpResponse
+import os
 
 def transfer_config(request):
     try:
@@ -14,7 +16,7 @@ def transfer_config(request):
         scp_conn = SCPConn(net_conn)
         scp_conn.scp_transfer_file('exampleConfig.txt', 'system:running-config')
         net_conn.disconnect()
-        return redirect('test_route')
+        # return redirect('index_route')
     except Exception as ex:
         return HttpResponse(ex)
 
@@ -25,7 +27,7 @@ def download_config(request):
             response['content_type'] = "application/octet-stream"
             response['Content-Disposition'] = 'attachment; filename=' + \
                 os.path.basename('exampleConfig.txt')
-            return response
+            # return redirect('index_route')
     except Exception as ex:
         return HttpResponse(ex)
 

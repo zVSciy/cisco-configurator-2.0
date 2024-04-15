@@ -50,6 +50,8 @@
     <input type="hidden" id="hidden_sum_state" name="hidden_sum_state">
     <input type="hidden" id="hidden_originate_state" name="hidden_originate_state">
 
+    <input type="hidden" id="hidden_dl_or_tf" name="hidden_dl_or_tf">
+
     <!-- static routing -->
     <input type="hidden" id="hidden_staticRouting_info_for_transfer" name="hidden_staticRouting_info_for_transfer">
   </form>
@@ -277,11 +279,11 @@
         <input type="text" name="ipAddress" placeholder="10.0.0.1" oninput="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')">
         <input type="text" name="username" placeholder="admin">
         <input type="password" name="password" placeholder="*****">
-        <select id="dl_or_tf" name="dl_or_tf" onchange="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf'); downloadOrTransferRoute();">
+        <select id="dl_or_tf" name="dl_or_tf" onchange="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')">
           <option name="transfer" value="transfer">Transfer</option>
           <option name="download" value="download">Download</option>
         </select>
-        <button id="transferButton" type="button" onclick="submitForm('index')">Submit</button>
+        <button id="transferButton" type="button" onclick="submitForm('index', document.getElementById('dl_or_tf').value);">Submit</button>
         <div id="transfer_info"></div>
       </form>
     </div>
@@ -290,15 +292,12 @@
 </body>
 
 <script>
-  function submitForm(to) {
+  function submitForm(to, dl_or_tf) {
     document.getElementById("hidden_forward_to").value = to
+    document.getElementById("hidden_dl_or_tf").value = dl_or_tf
     document.getElementById("inputs_form").submit();
   }
-  function downloadOrTransferRoute() {
-    let route = document.getElementById("dl_or_tf").value;
-    document.getElementById("submitForm").action = "{% url 'transfer_route' %}".replace('transfer', route);
-    document.getElementById("submitForm").submit();
-}
+
 </script>
 
 </html>
