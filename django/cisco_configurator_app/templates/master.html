@@ -276,12 +276,12 @@
     <div>
       </form>
       <form id="submitForm" action="{% url 'transfer_route' %}" method="post">
-        <input type="text" name="ipAddress" placeholder="10.0.0.1" oninput="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')">
+        <input type="text" name="ipAddress" id="ipAddress" placeholder="10.0.0.1" oninput="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')">
         <input type="text" name="username" placeholder="admin">
         <input type="password" name="password" placeholder="*****">
-        <select id="dl_or_tf" name="dl_or_tf" onchange="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')">
-          <option name="transfer" value="transfer">Transfer</option>
+        <select id="dl_or_tf" name="dl_or_tf" onchange="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')">
           <option name="download" value="download">Download</option>
+          <option name="transfer" value="transfer">Transfer</option>
         </select>
         <button id="transferButton" type="button" onclick="submitForm('index', document.getElementById('dl_or_tf').value);">Submit</button>
         <div id="transfer_info"></div>
