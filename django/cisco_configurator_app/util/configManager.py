@@ -2,42 +2,25 @@ from .configEditor import configEditor
 from .deviceClasses import interfaces, StaticRoute, ripRouting, dhcp, aclStandard, nat   
 
 filePath = "./exampleConfig.txt"
-class configManager:
+class ConfigManager:
     def __init__(self, configFilePath:str) -> None:
         self.filePath = configFilePath
         self.configEditor = configEditor(configFilePath)
 
         #region Interfaces
 
-    def getAllInterfaces(self) -> list[interfaces]:
+    def getAllInterfaces(self) -> list[Interface]:
         InterfacesLines = self.configEditor.findMultipleContentIndexes("interface ")
         returnInterfaceObjects = []
         print(InterfacesLines)
         for interfaceIndexes in InterfacesLines:
             interfaceText = self.configEditor.getContentOnIndex(interfaceIndexes[0])
             intName = interfaceText.split(" ")[1]
-            print(intName)
 
             returnInterfaceObjects.append(self.getInterface(intName))
-            # intName, ip, sm, desc, natInside, natOutside, shut = None, None, None, "Default", None, None, "no shutdown"
-            # for intLine in interfaceText: #Iterates over the lines of the interface
-            #     if intLine.startswith("interface "):
-            #         intName = intLine.split(" ")[1]
-            #     elif intLine.startswith("ip address"):
-            #         ip = intLine.split(" ")[2]
-            #         sm = intLine.split(" ")[3]
-            #     elif intLine.startswith("ip nat"):
-            #         nat = intLine.split(" ")[2]
-            #         natInside = True if nat == "inside" else False
-            #         natOutside = True if nat == "outside" else False
-            #     elif intLine.startswith("description"):
-            #         desc = intLine.split(" ")[1]
-            #     elif intLine.startswith("shutdown") or intLine.startswith("no shutdown"):
-            #         shut = intLine
-            # returnInterfaceObjects.append(interfaces(intName, ip, sm, natInside, natOutside, desc, shut))
         return returnInterfaceObjects
 
-    def getInterface(self, interfaceName: str) -> interfaces:
+    def getInterface(self, interfaceName: str) -> Interface:
         InterfaceLines = self.configEditor.findContentIndexes("interface " + interfaceName, "!") #Finds the indexes of the interface in the config list
         interfaceText = self.configEditor.getContentBetweenIndexes(InterfaceLines[0], InterfaceLines[-1])
         intName, ip, sm, desc, natInside, natOutside, shut = None, None, None, "Default", None, None, True
@@ -57,9 +40,9 @@ class configManager:
                 shut = False if intLine == "shutdown" else True
             if natInside == None: natInside = False
             if natOutside == None: natOutside = False
-        return interfaces(intName, ip, sm, natInside, natOutside, desc, shut)
+        return Interface(intName, ip, sm, natInside, natOutside, desc, shut)
     
-    def writeInterface(self, interface: interfaces) -> None:
+    def writeInterface(self, interface: Interface) -> None:
         interfaceLines = self.configEditor.findContentIndexes("interface " + interface.interface, "!")
         self.configEditor.removeContentBetweenIndexes(interfaceLines[0], interfaceLines[-1])
         self.configEditor.appendContentToFile(interface.toConfig())
@@ -91,7 +74,7 @@ class configManager:
 
     #region RIP
 
-    def getRIPConfig(self) -> ripRouting:
+    def getRIPConfig(self) -> RipRouting:
         ripLines = self.configEditor.findContentIndexes("router rip", "!")
         ripText = self.configEditor.getContentBetweenIndexes(ripLines[0], ripLines[-1])
         ripNetworks = []
@@ -108,12 +91,9 @@ class configManager:
                     ripNetworks += ";"
                 ripNetworks += ripLine.split(" ")[1]
             
-        return ripRouting(ripVersion, ripSumState, ripOriginate, ripNetworks)
-            # if ripLine.startswith("network"):
-        #         ripNetworks.append(ripLine.split(" ")[1])
-        # return ripRouting(ripNetworks)
+        return RipRouting(ripVersion, ripSumState, ripOriginate, ripNetworks)
     
-    def writeRIPConfig(self, ripConfig: ripRouting) -> None:
+    def writeRIPConfig(self, ripConfig: RipRouting) -> None:
         ripLines = self.configEditor.findContentIndexes("router rip", "!")
         self.configEditor.removeContentBetweenIndexes(ripLines[0], ripLines[-1])
         self.configEditor.appendContentToFile(ripConfig.toConfig())
@@ -122,7 +102,7 @@ class configManager:
 
     #region DHCP
 
-    def getDhcpConfig(self, inputPoolName: str ) -> dhcp:
+    def getDhcpConfig(self, inputPoolName: str ) -> DHCP:
         dhcpLines = self.configEditor.findContentIndexes(f"ip dhcp pool {inputPoolName}", "!")
         dhcpText = self.configEditor.getContentBetweenIndexes(dhcpLines[0], dhcpLines[-1])
         excludedLines = self.configEditor.findContentIndexes("ip dhcp excluded-address", "!")
@@ -144,9 +124,9 @@ class configManager:
             if(len(excludedNetworks) > 0):
                 excludedNetworks += ";"
             excludedNetworks += line.split(" ")[3] + "," + line.split(" ")[4]
-        return dhcp(networkIP, networkSM, defaultRouter, dnsServer, excludedNetworks, poolName)
+        return DHCP(networkIP, networkSM, defaultRouter, dnsServer, excludedNetworks, poolName)
 
-    def writeDhcpConfig(self, dhcpConfig: dhcp, poolName) -> None:
+    def writeDhcpConfig(self, dhcpConfig: DHCP) -> None:
         dhcpLines = self.configEditor.findContentIndexes(f"ip dhcp pool {dhcpConfig.dhcpPoolName}", "!")
         excludedLines = self.configEditor.findContentIndexes("ip dhcp excluded-address", "!")
         self.configEditor.removeContentBetweenIndexes(dhcpLines[0], dhcpLines[-1])
@@ -157,7 +137,7 @@ class configManager:
 
     #region ACL
 
-    def getACLConfig(self) -> aclStandard:
+    def getACLConfig(self) -> ACLStandard:
         aclLines = self.configEditor.findContentIndexes("access-list ", "!")
         aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
         ACLs = "" #"ACLID,deny|permit,IP,SM;ACLID,deny|permit,IP,SM;ACLID,IP,SM"
@@ -174,9 +154,9 @@ class configManager:
             else:
                 aclWM = line.split(" ")[4]
                 ACLs += aclID + "," + aclType + "," + aclIP + "," + aclWM
-        return aclStandard(ACLs)
+        return ACLStandard(ACLs)
     
-    def writeACLConfig(self, aclConfig: aclStandard) -> None:
+    def writeACLConfig(self, aclConfig: ACLStandard) -> None:
         aclLines = self.configEditor.findContentIndexes("access-list ", "!")
         self.configEditor.removeContentBetweenIndexes(aclLines[0], aclLines[-1])
         self.configEditor.appendContentToFile(aclConfig.toConfig())
@@ -185,16 +165,16 @@ class configManager:
 
     #region NAT
 
-    def getNATConfig(self) -> nat:
+    def getNATConfig(self) -> NAT:
         natLines = self.configEditor.findContentIndexes("ip nat inside ", "!")
         natText = self.configEditor.getContentBetweenIndexes(natLines[0], natLines[-1])
         for line in natText:
             if line.startswith("ip nat inside source"):
                 aclName = line.split(" ")[5]
                 interfaceName = line.split(" ")[7]
-            return nat(interfaceName, aclName)
+            return NAT(interfaceName, aclName)
                 
-    def writeNATConfig(self, natConfig: nat) -> None:
+    def writeNATConfig(self, natConfig: NAT) -> None:
         natLines = self.configEditor.findContentIndexes("ip nat inside ", "!")
         self.configEditor.removeContentBetweenIndexes(natLines[0], natLines[-1])
         self.configEditor.appendContentToFile(natConfig.toConfig())
@@ -203,8 +183,10 @@ class configManager:
     #endregion
 
 
-cM = configManager(filePath)
+cM = ConfigManager(filePath)
 
+
+# region Example Usage
 
 
 # print(cM.getAllInterfaces())
@@ -240,3 +222,5 @@ cM = configManager(filePath)
 # natConfig = cM.getNATConfig()
 # natConfig.accessList = "5"
 # cM.writeNATConfig(natConfig)
+
+#endregion

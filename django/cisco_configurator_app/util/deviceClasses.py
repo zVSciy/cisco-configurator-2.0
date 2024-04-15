@@ -2,7 +2,7 @@ import json
 
 #region Device
 
-class deviceInfo:
+class DeviceInfo:
     def __init__(self, hostname:str = None, motd:str = None) -> None:
         #Überprüft ob die Eingabe ein String ist und speichert die Werte
         if type(hostname) == str:
@@ -21,7 +21,7 @@ class deviceInfo:
 #endregion
 #region Interfaces
 
-class interfaces:
+class Interface:
     def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = "Default", shutdown:bool = None ) -> None:
         #Überprüft ob die Eingabe ein String ist und speichert die Werte
         if type(interface) == str:
@@ -88,7 +88,7 @@ class StaticRoute:
 #endregion
 #region RIP
 
-class ripRouting:
+class RipRouting:
     def __init__(self, ripVersion:str = None, ripSumState:bool = None, ripOriginate:bool = None, ripNetworks:str = None) -> None:
         #Überprüft ob die Eingabe ein String ist und speichert die Werte
         if type(ripVersion) == str:
@@ -134,7 +134,7 @@ class ripRouting:
 #endregion
 #region DHCP
 
-class dhcp:
+class DHCP:
     def __init__(self, dhcpNetworkIP:str = None,dhcpNetworkSM:str = None, dhcpGateway:str = None, dhcpDNS:str = None, dhcpExcludedAreas:str = None, dhcpPoolName:str = None) -> None:
         
         if type(dhcpNetworkIP) == str:
@@ -194,7 +194,7 @@ class dhcp:
 #endregion
 #region NAT
 
-class nat:
+class NAT:
     def __init__(self, interfaceName:str = None, accessListName:str = None) -> None:
         # Permit Any und 0.0.0.0 0.0.0.255
         if type(interfaceName) == str:
@@ -216,7 +216,7 @@ class nat:
 #endregion
 #region ACL
 
-class aclStandard:
+class ACLStandard:
     def __init__(self, accessList:str = None) -> None:
         if type(accessList) == str:
             self.ACLs = []
@@ -252,7 +252,7 @@ class aclStandard:
     
 #region OSPF
  
-class ospf:
+class OSPF:
     def __init__(self, ospfProcess:str = None, ospfRouterID:str = None, ospfNetworks:str = None) -> None:
         if type(ospfProcess) == str:
             self.ospfProcess = ospfProcess
@@ -268,8 +268,5 @@ class ospf:
             self.ospfNetworks = self.getNetworks(ospfNetworks)
         else:
             raise TypeError()
-
-
-
 
 #endregion
