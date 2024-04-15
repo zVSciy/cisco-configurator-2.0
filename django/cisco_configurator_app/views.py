@@ -3,6 +3,7 @@ from .models import Router_Interfaces
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from django.urls import reverse
+from .util.configManager import configManager
 
 # Create your views here.
  
@@ -14,7 +15,7 @@ def basic_config(request, device_type):
     config_option = {
         "device_type": device_type
     }
-    print(config_option)
+    #print(config_option)
     return render(request, 'configurations/basic_config.html', config_option)
 
 routerID = 1
