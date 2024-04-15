@@ -71,9 +71,11 @@ class StaticRoute:
         if staticRouting:
             routes = staticRouting.split(';')
             for route in routes:
-                targetNw, targetSm, nextHop = route.split(',')
-                self.routes.append({'targetNw': targetNw, 'targetSm': targetSm, 'nextHop': nextHop})
+                if route:
+                    targetNw, targetSm, nextHop = route.split(',')
+                    self.routes.append({'targetNw': targetNw, 'targetSm': targetSm, 'nextHop': nextHop})
         return self.routes
+
 
     def __repr__(self) -> str:
         return json.dumps(self.routes, indent=4)
