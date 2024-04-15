@@ -232,14 +232,17 @@
       </label>
     </div>
   </div>
+
   <!-- <form class="bg-base-300 p-4 rounded-2xl" id="transfer_form" method="post"
   action="url'router_submit_config_route'" enctype="multipart/form-data">
   <input type="hidden" id="router_name" name="router_name" value="{router}"> -->
   <!-- content placeholder -->
+
   {% block content %}
   if you see this, something is wrong!
   {% endblock content %}
-  <div class="uebertragung-content  bg-base-200 rounded-lg p-8">
+
+{% comment %} <div class="uebertragung-content  bg-base-200 rounded-lg p-8">
     <h2 id="heading-uebertragen" class="font-extrabold text-2xl pb-5">Transfer or Download Configuration</h2>
     <!-- <form id="download" method="post" action="{% url
                     'router_transfer_config_route' %}" enctype="multipart/form-data"> -->
@@ -266,8 +269,23 @@
   <div class="menu-button border-base-300" id="download">
     <button class="font-bold btn btn-accent !rounded-xl w-full min-h-0  text-2xl" type="button"
       id="transferButton" onclick="submitForm('index')">Submit</button>
-  </div>
-  </form>
+  </div> {% endcomment %}
+
+    <div>
+      </form>
+      <form id="submitForm" action="{% url 'transfer_route' %}" method="post">
+        <input type="text" name="ipAddress" placeholder="10.0.0.1" oninput="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')">
+        <input type="text" name="username" placeholder="admin">
+        <input type="password" name="password" placeholder="*****">
+        <select id="dl_or_tf" name="dl_or_tf" onchange="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf'); downloadOrTransferRoute();">
+          <option name="transfer" value="transfer">Transfer</option>
+          <option name="download" value="download">Download</option>
+        </select>
+        <button id="transferButton" type="button" onclick="submitForm('index')">Submit</button>
+        <div id="transfer_info"></div>
+      </form>
+    </div>
+
   </div>
 </body>
 
@@ -276,6 +294,11 @@
     document.getElementById("hidden_forward_to").value = to
     document.getElementById("inputs_form").submit();
   }
+  function downloadOrTransferRoute() {
+    let route = document.getElementById("dl_or_tf").value;
+    document.getElementById("submitForm").action = "{% url 'transfer_route' %}".replace('transfer', route);
+    document.getElementById("submitForm").submit();
+}
 </script>
 
 </html>

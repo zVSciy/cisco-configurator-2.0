@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from .util.configManager import ConfigManager
 from .util.deviceClasses import *
+from .util.fileManager import *
 
 # Create your views here.
 
@@ -186,3 +187,9 @@ def get_inputs(request, device_type):
         return redirect(reverse(forward_to + '_route', kwargs={'device_type': device_type}))
     else:
         return redirect(reverse(forward_to + '_route'))
+
+def download_config(request):
+  download_config(request)
+
+def transfer_config(request):
+  transfer_config(request)

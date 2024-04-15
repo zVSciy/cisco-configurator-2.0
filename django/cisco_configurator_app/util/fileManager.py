@@ -12,7 +12,7 @@ def transfer_config(request):
         }
         net_conn = ConnectHandler(**target)
         scp_conn = SCPConn(net_conn)
-        scp_conn.scp_transfer_file('running-config', 'system:running-config')
+        scp_conn.scp_transfer_file('exampleConfig.txt', 'system:running-config')
         net_conn.disconnect()
         return redirect('test_route')
     except Exception as ex:
@@ -20,11 +20,11 @@ def transfer_config(request):
 
 def download_config(request):
     try:
-        with open('running-config', 'rb') as f:
+        with open('exampleConfig.txt', 'rb') as f:
             response = HttpResponse(f)
             response['content_type'] = "application/octet-stream"
             response['Content-Disposition'] = 'attachment; filename=' + \
-                os.path.basename('running-config')
+                os.path.basename('exampleConfig.txt')
             return response
     except Exception as ex:
         return HttpResponse(ex)

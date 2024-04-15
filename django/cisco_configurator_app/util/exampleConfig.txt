@@ -63,18 +63,7 @@ archive
 interface Loopback1
  ip address 1.1.1.1 255.255.255.255
 !
-interface FastEthernet0/0
- ip address 192.168.2.1 255.255.255.0
- duplex auto
- ip nat inside
- speed auto
 !
-interface FastEthernet0/1
- ip address 192.168.1.1 255.255.255.0
- duplex auto
- ip nat outside
- speed auto
- shutdown
 !
 router ospf 1
  router-id 1.1.1.1
@@ -130,4 +119,50 @@ line aux 0
 line vty 0 4
 !
 !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+interface FastEthernet0/0
+ ip address  
+ description 
+ no shutdown
+ !
+interface FastEthernet0/1
+ ip address  
+ description 
+ no shutdown
+ !
 end
