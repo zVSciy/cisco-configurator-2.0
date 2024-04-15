@@ -18,6 +18,8 @@ class DeviceInfo:
     def __repr__(self) -> str:
         return "Hostname: " + self.hostname + "\n" + "MOTD: " + self.motd + "!\n"
     
+    def toConfig(self) -> list:
+        return [f"hostname {self.hostname}\n", f"banner motd {self.motd}\n", "!\n"]
 #endregion
 #region Interfaces
 
