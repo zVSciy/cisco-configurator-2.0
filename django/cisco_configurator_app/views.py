@@ -196,7 +196,6 @@ def get_inputs(request, device_type):
     elif dl_or_tf == 'transfer':
         response = transfer_config(ip, user, pw)
 
-    # Überprüfe, ob eine Antwort vorhanden ist, bevor eine Umleitung durchgeführt wird
     if response:
         return response
 
