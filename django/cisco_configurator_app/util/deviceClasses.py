@@ -25,16 +25,17 @@ class DeviceInfo:
 
 class Interface:
     def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = "Default", shutdown:bool = None ) -> None:
-        #Überprüft ob die Eingabe ein String ist und speichert die Werte
         if type(interface) == str:
-            self.interface = interface #FastEthernet0/0
+            self.interface = interface
         else:
             raise TypeError()
         if type(ip) == str:
             self.ip = ip
+            if ip.lower() == "dhcp" and sm is not None:
+                raise ValueError("Subnet mask should not be provided when IP is set to DHCP")
         else:
             raise TypeError()
-        if type(sm) == str:
+        if type(sm) == str or sm is None:
             self.sm = sm
         else:
             raise TypeError()
@@ -54,14 +55,15 @@ class Interface:
             self.ipNatOutside = ipNatOutside
         else:
             raise TypeError()
-        
+
     def __repr__(self) -> str:
         return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + "\n" + self.ipNatInside + self.ipNatOutside 
 
     def toConfig(self) -> list:
         natInside = "ip nat inside\n" if self.ipNatInside else ''
         natOutside = "ip nat outside\n" if self.ipNatOutside else ''
-        return ["interface " + self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}', f' {natInside}', f'{natOutside}' + "!\n"]
+        ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
+        return ["interface " + self.interface + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}', f' {natInside}', f'{natOutside}' + "!\n"]
 
 #endregion
 #region StaticRoute
