@@ -45,7 +45,8 @@ class ConfigManager:
     
     def writeInterface(self, interface: Interface) -> None:
         interfaceLines = self.configEditor.findContentIndexes("interface " + interface.interface, "!")
-        self.configEditor.removeContentBetweenIndexes(interfaceLines[0], interfaceLines[-1])
+        if(len(interfaceLines) > 0 and interfaceLines != None):
+            self.configEditor.removeContentBetweenIndexes(interfaceLines[0], interfaceLines[-1])
         self.configEditor.appendContentToFile(interface.toConfig())
         self.configEditor.writeConfig()
     #endregion
@@ -130,8 +131,10 @@ class ConfigManager:
     def writeDhcpConfig(self, dhcpConfig: DHCP) -> None:
         dhcpLines = self.configEditor.findContentIndexes(f"ip dhcp pool {dhcpConfig.dhcpPoolName}", "!")
         excludedLines = self.configEditor.findContentIndexes("ip dhcp excluded-address", "!")
-        self.configEditor.removeContentBetweenIndexes(dhcpLines[0], dhcpLines[-1])
-        self.configEditor.removeContentBetweenIndexes(excludedLines[0], excludedLines[-1])
+        if(len(dhcpLines) > 0):
+            self.configEditor.removeContentBetweenIndexes(dhcpLines[0], dhcpLines[-1])
+        if(len(excludedLines) > 0):
+            self.configEditor.removeContentBetweenIndexes(excludedLines[0], excludedLines[-1])
         self.configEditor.appendContentToFile(dhcpConfig.toConfig())
         self.configEditor.writeConfig()
     #endregion
@@ -159,7 +162,8 @@ class ConfigManager:
     
     def writeACLConfig(self, aclConfig: ACLStandard) -> None:
         aclLines = self.configEditor.findContentIndexes("access-list ", "!")
-        self.configEditor.removeContentBetweenIndexes(aclLines[0], aclLines[-1])
+        if(len(aclLines) > 0):
+            self.configEditor.removeContentBetweenIndexes(aclLines[0], aclLines[-1])
         self.configEditor.appendContentToFile(aclConfig.toConfig())
         self.configEditor.writeConfig()
 
@@ -177,7 +181,8 @@ class ConfigManager:
                 
     def writeNATConfig(self, natConfig: NAT) -> None:
         natLines = self.configEditor.findContentIndexes("ip nat inside ", "!")
-        self.configEditor.removeContentBetweenIndexes(natLines[0], natLines[-1])
+        if(len(natLines) > 0):
+            self.configEditor.removeContentBetweenIndexes(natLines[0], natLines[-1])
         self.configEditor.appendContentToFile(natConfig.toConfig())
         self.configEditor.writeConfig()
 
@@ -194,9 +199,11 @@ class ConfigManager:
     
     def writeDeviceInfo(self, deviceInfo: DeviceInfo) -> None:
         hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
-        self.configEditor.removeContentBetweenIndexes(hostNameLine[0], hostNameLine[-1])
+        if(len(hostNameLine) > 0):
+            self.configEditor.removeContentBetweenIndexes(hostNameLine[0], hostNameLine[-1])
         motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
-        self.configEditor.removeContentBetweenIndexes(motdLine[0], motdLine[-1])
+        if(len(motdLine) > 0):
+            self.configEditor.removeContentBetweenIndexes(motdLine[0], motdLine[-1])
         self.configEditor.appendContentToFile(deviceInfo.toConfig())
         self.configEditor.writeConfig()
     #endregion

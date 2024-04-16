@@ -45,6 +45,7 @@ class configEditor:
                 return foundIndexes
             elif foundTarget == True:
                 foundIndexes.append(i)
+        return foundIndexes
                 
     def findMultipleContentIndexes(self, startsWith: str, endsWith: str = "!") -> list:
         foundIndexes = [] #list of lists with the indexes of the found content

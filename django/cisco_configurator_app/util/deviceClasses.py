@@ -19,7 +19,7 @@ class DeviceInfo:
         return "Hostname: " + self.hostname + "\n" + "MOTD: " + self.motd + "!\n"
     
     def toConfig(self) -> list:
-        return [f"hostname {self.hostname}\n", "!\n" f"banner motd {self.motd}\n", "!\n"]
+        return [f"hostname {self.hostname}\n", "!\n" f"banner motd ^C{self.motd}^C\n", "!\n"]
 #endregion
 #region Interfaces
 
