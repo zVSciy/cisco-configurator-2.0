@@ -61,7 +61,18 @@ archive
 interface Loopback1
  ip address 1.1.1.1 255.255.255.255
 !
+interface FastEthernet0/0
+ ip address 192.168.2.1 255.255.255.0
+ duplex auto
+ ip nat inside
+ speed auto
 !
+interface FastEthernet0/1
+ ip address 192.168.1.1 255.255.255.0
+ duplex auto
+ ip nat outside
+ speed auto
+ shutdown
 !
 router ospf 1
  router-id 1.1.1.1
@@ -71,6 +82,14 @@ router ospf 1
  default-information originate
 !
 ip forward-protocol nd
+ip route 192.168.1.0 255.255.255.0 192.168.1.1
+ip route 192.168.1.0 255.255.255.0 192.168.1.2
+ip route 192.168.1.0 255.255.255.0 192.168.1.3
+ip route 192.168.1.0 255.255.255.0 192.168.1.4
+ip route 192.168.1.0 255.255.255.0 192.168.1.5
+ip route 192.168.1.0 255.255.255.0 192.168.1.6
+ip route 192.168.1.0 255.255.255.0 192.168.1.7
+ip route 192.168.5.0 255.255.255.0 192.168.1.5
 !
 router rip 
  version 2 
@@ -109,27 +128,8 @@ line aux 0
 line vty 0 4
 !
 !
-!
-!
-!
-!
 hostname 1111
 !
 banner motd aaaaa
 !
- !
-!
-!
-ip route 123.123.123.123 123.123.123.123 123.123.123.123
-!
-interface FastEthernet0/0
- ip address 123.123.123.123 123.123.123.123
- description asdasda
- no shutdown
- !
-interface FastEthernet0/1
- ip address 123.123.123.123 1.1.1.1
- description asdasaasd
- no shutdown
- !
 end
