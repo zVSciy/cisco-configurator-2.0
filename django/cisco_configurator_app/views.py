@@ -141,11 +141,25 @@ def get_inputs(request, device_type):
 
     if(nat_ingoing and nat_outgoing):
         if(nat_ingoing == 'FastEthernet00' and nat_outgoing == 'FastEthernet01'):
-            cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, True, False, FastEthernet00_description, FastEthernet00_shutdown))
-            cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, False, True, FastEthernet01_description, FastEthernet01_shutdown))
+            fe00 = cM.getInterface("FastEthernet0/0")
+            fe01 = cM.getInterface("FastEthernet0/1")
+            fe00.ipNatInside = True
+            fe00.ipNatOutside = False
+
+            fe01.ipNatInside = False
+            fe01.ipNatOutside = True
+            cM.writeInterface(fe00)
+            cM.writeInterface(fe01)
         else:
-            cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, True, FastEthernet00_description, FastEthernet00_shutdown))
-            cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, True, False, FastEthernet01_description, FastEthernet01_shutdown))
+            fe00 = cM.getInterface("FastEthernet0/0")
+            fe01 = cM.getInterface("FastEthernet0/1")
+            fe00.ipNatInside = False
+            fe00.ipNatOutside = True
+
+            fe01.ipNatInside = True
+            fe01.ipNatOutside = False
+            cM.writeInterface(fe00)
+            cM.writeInterface(fe01)
     elif (FastEthernet00_ip and FastEthernet00_sm):
         cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, False, FastEthernet00_description, FastEthernet00_shutdown))
     elif (FastEthernet01_ip and FastEthernet01_sm):
