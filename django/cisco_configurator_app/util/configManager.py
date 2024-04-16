@@ -194,8 +194,8 @@ class ConfigManager:
     
     def writeDeviceInfo(self, deviceInfo: DeviceInfo) -> None:
         hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
-        motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
         self.configEditor.removeContentBetweenIndexes(hostNameLine[0], hostNameLine[-1])
+        motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
         self.configEditor.removeContentBetweenIndexes(motdLine[0], motdLine[-1])
         self.configEditor.appendContentToFile(deviceInfo.toConfig())
         self.configEditor.writeConfig()
