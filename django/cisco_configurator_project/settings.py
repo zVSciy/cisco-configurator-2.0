@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-yl*i6lc&!q0#*+c^ra(6f=r1nf+1rfzv6sbz0xvmwnk(g#soi!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'cisco_configurator_app/static'),
