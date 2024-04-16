@@ -4,9 +4,7 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 no service password-encryption
 !
-hostname R1
 !
-banner motd ^Chello^C
 !
 boot-start-marker
 boot-end-marker
@@ -119,88 +117,18 @@ line aux 0
 line vty 0 4
 !
 !
+!
+!
  !
  !
+!
+!
  !
  !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
- !
+hostname aaa
+!
+banner motd aaa
+!
  !
  !
 interface FastEthernet0/0
