@@ -47,11 +47,11 @@ class Interface:
         else:
             raise TypeError()
         if type(ipNatInside) == bool:
-            self.ipNatInside = "ip nat inside\n" if ipNatInside else ''
+            self.ipNatInside = ipNatInside
         else:
             raise TypeError()
         if type(ipNatOutside) == bool:
-            self.ipNatOutside = "ip nat outside\n" if ipNatOutside else ''
+            self.ipNatOutside = ipNatOutside
         else:
             raise TypeError()
         
@@ -59,7 +59,9 @@ class Interface:
         return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + "\n" + self.ipNatInside + self.ipNatOutside 
 
     def toConfig(self) -> list:
-        return ["interface " + self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}', f' {self.ipNatInside}', f'{self.ipNatOutside}' + "!\n"]
+        natInside = "ip nat inside\n" if self.ipNatInside else ''
+        natOutside = "ip nat outside\n" if self.ipNatOutside else ''
+        return ["interface " + self.interface + "\n", f' ip address {self.ip} {self.sm}\n', f' description {self.description}\n', f' {self.shutdown}', f' {natInside}', f'{natOutside}' + "!\n"]
 
 #endregion
 #region StaticRoute
