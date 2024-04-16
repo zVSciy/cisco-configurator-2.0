@@ -189,6 +189,8 @@ def get_inputs(request, device_type):
     user = request.POST.get('hidden_user')
     pw = request.POST.get('hidden_pw')
 
+    response = ''
+
     if dl_or_tf == 'download':
         response = download_config()
     elif dl_or_tf == 'transfer':
