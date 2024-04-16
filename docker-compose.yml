@@ -29,7 +29,7 @@ services:
     
     # the port mapping
     ports:
-    - "8000:9000"
+    - "9000:8000"
 
     # the command that will be executed on start:
     # command: >
