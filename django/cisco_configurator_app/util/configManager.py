@@ -30,7 +30,10 @@ class ConfigManager:
                 intName = intLine.split(" ")[1]
             elif intLine.startswith("ip address"):
                 ip = intLine.split(" ")[2]
-                sm = intLine.split(" ")[3]
+                if len(intLine.split(" ")) > 3:
+                    sm = intLine.split(" ")[3]
+                else :
+                    sm = ''
             elif intLine.startswith("ip nat"):
                 nat = intLine.split(" ")[2]
                 natInside = True if nat == "inside" else False
