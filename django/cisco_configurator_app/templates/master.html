@@ -273,8 +273,8 @@
         <input id="username" type="text" name="username" placeholder="admin">
         <input id="password" type="password" name="password" placeholder="*****">
         <select id="dl_or_tf" name="dl_or_tf" onchange="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')">
-          <option name="transfer" value="transfer">Transfer</option>
           <option name="download" value="download">Download</option>
+          <option name="transfer" value="transfer">Transfer</option>
         </select>
         <button id="transferButton" type="button" onclick="submitForm('index', document.getElementById('dl_or_tf').value, document.getElementById('ipAddress').value, document.getElementById('username').value, document.getElementById('password').value)">Submit</button>
         <div id="transfer_info"></div>
