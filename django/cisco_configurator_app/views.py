@@ -162,7 +162,6 @@ def get_inputs(request, device_type):
             cM.writeInterface(fe01)
     elif (FastEthernet00_ip):
         cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, False, FastEthernet00_description, FastEthernet00_shutdown))
-    elif (FastEthernet01_ip):
         cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, False, False, FastEthernet01_description, FastEthernet01_shutdown))
 
     #nat
