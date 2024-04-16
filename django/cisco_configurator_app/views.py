@@ -160,16 +160,16 @@ def get_inputs(request, device_type):
             fe01.ipNatOutside = False
             cM.writeInterface(fe00)
             cM.writeInterface(fe01)
-    elif (FastEthernet00_ip and FastEthernet00_sm):
+    elif (FastEthernet00_ip):
         cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, False, FastEthernet00_description, FastEthernet00_shutdown))
-    elif (FastEthernet01_ip and FastEthernet01_sm):
+    elif (FastEthernet01_ip):
         cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, False, False, FastEthernet01_description, FastEthernet01_shutdown))
 
     #nat
     nat_status = request.POST.get('hidden_nat_status')  #true = on | false = off
     # acl_networks = request.POST.get('hidden_nat_info_for_transfer') 
     if(nat_status and nat_ingoing and nat_outgoing):
-        cM.writeNATConfig(NAT(nat_outgoing, '0'))
+        cM.writeNATConfig(NAT(nat_outgoing, '2'))
 
     #dhcp
     dhcp_status = request.POST.get('hidden_dhcp_status')  #true = on | false = off

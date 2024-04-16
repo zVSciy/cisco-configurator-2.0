@@ -31,7 +31,7 @@ class Interface:
             raise TypeError()
         if type(ip) == str:
             self.ip = ip
-            if ip.lower() == "dhcp" and sm is not None:
+            if ip.lower() == "dhcp" and sm != '':
                 raise ValueError("Subnet mask should not be provided when IP is set to DHCP")
         else:
             raise TypeError()
