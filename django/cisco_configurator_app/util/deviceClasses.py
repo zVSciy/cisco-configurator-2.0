@@ -80,7 +80,11 @@ class Interface:
 
     # Define the string representation of the class
     def __repr__(self) -> str:
-        return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + "\n" + self.ipNatInside + self.ipNatOutside 
+        natInside = "ip nat inside\n" if self.ipNatInside else ''
+        natOutside = "ip nat outside\n" if self.ipNatOutside else ''
+
+        
+        return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + "\n" + natInside + natOutside 
 
     # Convert the interface information to a configuration list
     def toConfig(self) -> list:
@@ -233,7 +237,12 @@ class DHCP:
     
     # Define the string representation of the class
     def __repr__(self) -> str:
-        return "Network IP: " + self.dhcpNetworkIP + "\n" + "Network Subnet Mask: " + self.dhcpNetworkSM + "\n" + "Gateway: " + self.dhcpGateway + "\n" + "DNS: " + self.dhcpDNS + "\n" + "Excluded Areas: " + ', '.join(self.dhcpExcludedAreas) + "\n" + "Pool Name: " + self.dhcpPoolName + "\n"
+        #! NOT WORKING
+        #! NOT WORKING
+        #! NOT WORKING
+        #! NOT WORKING
+        #! joim(self.areas) -> you cant join a dictionary
+        return "Network IP: " + self.dhcpNetworkIP + "\n" + "Network Subnet Mask: " + self.dhcpNetworkSM + "\n" + "Gateway: " + self.dhcpGateway + "\n" + "DNS: " + self.dhcpDNS + "\n" + "Excluded Areas: " + ', '.join(self.areas) + "\n" + "Pool Name: " + self.dhcpPoolName + "\n"
     
     # Convert the stored DHCP configurations to a list of configuration commands
     def toConfig(self) -> list:

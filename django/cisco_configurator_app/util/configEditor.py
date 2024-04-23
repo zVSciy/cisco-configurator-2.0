@@ -39,11 +39,12 @@ class configEditor:
     def findContentIndexes(self, startsWith: str, endsWith: str = "!") -> list:
         foundIndexes = []
         foundTarget = False
-        for i in range(0, self.fileLength):
-            if self.fileContent[i].lower().startswith(startsWith.lower()) and foundTarget == False:
+        # for i in range(0, self.fileLength):
+        for i, content in enumerate(self.fileContent):
+            if content.lower().startswith(startsWith.lower()) and foundTarget == False:
                 foundIndexes.append(i)
                 foundTarget = True
-            elif endsWith in self.fileContent[i] and foundTarget == True:
+            elif endsWith in content and foundTarget == True:
                 return foundIndexes
             elif foundTarget == True:
                 foundIndexes.append(i)
@@ -53,11 +54,12 @@ class configEditor:
         foundIndexes = [] #list of lists with the indexes of the found content
         foundTarget = False
         currentFinds = [] #The indexes of the currently found content (indexes of E0/0)
-        for i in range(0, self.fileLength):
-            if self.fileContent[i].lower().startswith(startsWith.lower()) and foundTarget == False:
+        # for i in range(0, self.fileLength):
+        for i,content   in enumerate(self.fileContent):
+            if content.lower().startswith(startsWith.lower()) and foundTarget == False:
                 currentFinds.append(i)
                 foundTarget = True
-            elif endsWith in self.fileContent[i] and foundTarget == True:
+            elif endsWith in content and foundTarget == True:
                 foundIndexes.append(currentFinds.copy())
                 currentFinds.clear()
                 foundTarget = False
@@ -91,3 +93,4 @@ class configEditor:
 #Notes for documentation
 # Order of Config?
 # Why was code appended to the end of the file?
+
