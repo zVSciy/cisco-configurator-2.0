@@ -5,111 +5,134 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from .util.configManager import ConfigManager
 from .util.deviceClasses import *
+from .util.deviceClasses import Interface
 from .util.fileManager import transfer_config
 from .util.fileManager import download_config
 
 # Create your views here.
+
+routerID = 1
+
+def get_interfaces(device_type):
+    if device_type == 'router':
+        return Router_Interfaces.objects.filter(router_id=routerID)
+    elif device_type == 'switch':
+        return Router_Interfaces.objects.filter(router_id=routerID)
 
 def index(request):
     return render(request, 'index.html')
 
 @csrf_exempt
 def basic_config(request, device_type):
+
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
+
     #print(config_option)
     return render(request, 'configurations/basic_config.html', config_option)
 
-routerID = 1
+
 
 def interface(request, device_type):
     config_option = {
         "device_type": device_type,
-        "interfaces": Router_Interfaces.objects.filter(router_id=routerID)
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/interface.html', config_option)
 
  
 def etherchannel(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/etherchannel.html', config_option)
 
  
 def vlan(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/vlan.html', config_option)
 
  
 def ospf(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/ospf.html', config_option)
 
  
 def rip(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/rip.html', config_option)
 
  
 def static_routing(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/static_routing.html', config_option)
 
 def nat(request, device_type):
     config_option = {
         "device_type": device_type,
-        "interfaces": Router_Interfaces.objects.filter(router_id=routerID)
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/nat.html', config_option)
 
  
 def dhcp(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/dhcp.html', config_option)
 
  
 def acl_basic(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/acl_basic.html', config_option)
 
  
 def acl_extended(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/acl_extendet.html', config_option)
 
  
 def vtp_dtp(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/vtp_dtp.html', config_option)
 
  
 def stp(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
     return render(request, 'configurations/stp.html', config_option)
 
 def get_inputs(request, device_type):
     config_option = {
-        "device_type": device_type
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type)
     }
 
     cM = ConfigManager('exampleConfig')
@@ -122,47 +145,56 @@ def get_inputs(request, device_type):
     if(hostname and banner):
         cM.writeDeviceInfo(DeviceInfo(hostname, banner))
 
-    #Interfaces
+    
     nat_ingoing = request.POST.get('hidden_nat_ingoing')
     nat_outgoing = request.POST.get('hidden_nat_outgoing')  
 
-    FastEthernet00_shutdown = request.POST.get('hidden_FastEthernet0/0_shutdown')  #true = on | false = off
-    FastEthernet00_description = request.POST.get('hidden_FastEthernet0/0_description')
-    FastEthernet00_ip = request.POST.get('hidden_FastEthernet0/0_ip')  
-    FastEthernet00_sm = request.POST.get('hidden_FastEthernet0/0_sm')  
-    FastEthernet01_shutdown = request.POST.get('hidden_FastEthernet0/1_shutdown')  #true = on | false = off
-    FastEthernet01_description = request.POST.get('hidden_FastEthernet0/1_description')
-    FastEthernet01_ip = request.POST.get('hidden_FastEthernet0/1_ip')  
-    FastEthernet01_sm = request.POST.get('hidden_FastEthernet0/1_sm') 
+    #Interfaces
+    Interface_List = [] # ! List to store the Interface as an Interface Object in 
+
+    if request.POST.get('hidden_'+config_option["interfaces"][0].port_name+'_shutdown') != '':
+        for i in config_option["interfaces"]:
+            interfaces_shutdown = request.POST.get('hidden_'+i.port_name+'_shutdown')
+            interfaces_description = request.POST.get('hidden_'+i.port_name+'_description')
+            interfaces_ip = request.POST.get('hidden_'+i.port_name+'_ip')
+            interfaces_sm = request.POST.get('hidden_'+i.port_name+'_sm')
+            nat_inside = False
+            nat_outside = False
+            if nat_ingoing == i.port_name:
+                nat_inside = True
+            if nat_outgoing == i.port_name:
+                nat_outside = True
+            Interface_List.append(Interface(i.port_name, interfaces_ip, interfaces_sm, nat_inside, nat_outside, interfaces_description, bool(interfaces_shutdown)))
+
 
     ##DEBUG
-    FastEthernet01_shutdown = True
-    FastEthernet00_shutdown = True
+    # FastEthernet01_shutdown = True
+    # FastEthernet00_shutdown = True
 
-    if(nat_ingoing and nat_outgoing):
-        if(nat_ingoing == 'FastEthernet00' and nat_outgoing == 'FastEthernet01'):
-            fe00 = cM.getInterface("FastEthernet0/0")
-            fe01 = cM.getInterface("FastEthernet0/1")
-            fe00.ipNatInside = True
-            fe00.ipNatOutside = False
+    # if(nat_ingoing and nat_outgoing):
+    #     if(nat_ingoing == 'FastEthernet00' and nat_outgoing == 'FastEthernet01'):
+    #         fe00 = cM.getInterface("FastEthernet0/0")
+    #         fe01 = cM.getInterface("FastEthernet0/1")
+    #         fe00.ipNatInside = True
+    #         fe00.ipNatOutside = False
 
-            fe01.ipNatInside = False
-            fe01.ipNatOutside = True
-            cM.writeInterface(fe00)
-            cM.writeInterface(fe01)
-        else:
-            fe00 = cM.getInterface("FastEthernet0/0")
-            fe01 = cM.getInterface("FastEthernet0/1")
-            fe00.ipNatInside = False
-            fe00.ipNatOutside = True
+    #         fe01.ipNatInside = False
+    #         fe01.ipNatOutside = True
+    #         cM.writeInterface(fe00)
+    #         cM.writeInterface(fe01)
+    #     else:
+    #         fe00 = cM.getInterface("FastEthernet0/0")
+    #         fe01 = cM.getInterface("FastEthernet0/1")
+    #         fe00.ipNatInside = False
+    #         fe00.ipNatOutside = True
 
-            fe01.ipNatInside = True
-            fe01.ipNatOutside = False
-            cM.writeInterface(fe00)
-            cM.writeInterface(fe01)
-    elif (FastEthernet00_ip):
-        cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, False, FastEthernet00_description, FastEthernet00_shutdown))
-        cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, False, False, FastEthernet01_description, FastEthernet01_shutdown))
+    #         fe01.ipNatInside = True
+    #         fe01.ipNatOutside = False
+    #         cM.writeInterface(fe00)
+    #         cM.writeInterface(fe01)
+    # elif (FastEthernet00_ip):
+    #     cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, False, FastEthernet00_description, FastEthernet00_shutdown))
+    #     cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, False, False, FastEthernet01_description, FastEthernet01_shutdown))
 
     #nat
     nat_status = request.POST.get('hidden_nat_status')  #true = on | false = off

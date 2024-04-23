@@ -317,6 +317,15 @@ function ValidateIPaddressStaticRouting(ipaddress, info) {
   }
 }
 
+function extractInterfaceNames(inputString) {
+   const regex = /(?:<Router_Interfaces:\s)(\w+\/\d+)(?=>)/g;
+   const interfaceNames = [];
+   let match;
+   while ((match = regex.exec(inputString)) !== null) {
+     interfaceNames.push(match[1]);
+   }
+   return interfaceNames;
+}
 
 
 function add_to_config(page) {
@@ -332,27 +341,39 @@ function add_to_config(page) {
   }
 
   if (page == "interface"){
-    //get the inputs
-      let FastEthernet00_shutdown_to_set = document.getElementById('FastEthernet0/0_shutdown').checked 
-      let FastEthernet00_description_to_set = document.getElementById('FastEthernet0/0_description').value;
-      let FastEthernet00_ip_to_set = document.getElementById('FastEthernet0/0_ip').value 
-      let FastEthernet00_sm_to_set = document.getElementById('FastEthernet0/0_sm').value 
+    // get the interfaces
+      let interfaces = extractInterfaceNames(document.getElementById('interfaces_for_get_inputs').value);
+    
+      //get the inputs from all Interfaces and store them into the hidden input fields 
 
-      let FastEthernet01_shutdown_to_set = document.getElementById('FastEthernet0/1_shutdown').checked 
-      let FastEthernet01_description_to_set = document.getElementById('FastEthernet0/1_description').value;
-      let FastEthernet01_ip_to_set = document.getElementById('FastEthernet0/1_ip').value 
-      let FastEthernet01_sm_to_set = document.getElementById('FastEthernet0/1_sm').value 
+      for (let i = 0; i<= interfaces.length; i++){
+        document.getElementById(interfaces[i]+'_shutdown').checked = document.getElementById('hidden_'+interfaces[i]+'_shutdown').value;
+        document.getElementById(interfaces[i]+'_description').value = document.getElementById('hidden_'+interfaces[i]+'_description').value;
+        document.getElementById(interfaces[i]+'FastEthernet0/0_ip').value = document.getElementById('hidden_'+interfaces[i]+'_ip').value;
+        document.getElementById(interfaces[i]+'_sm').value = document.getElementById('hidden_'+interfaces[i]+'_sm').value;
+      }
 
-      // enter the values into the hidden fields
-      document.getElementById('hidden_FastEthernet0/0_shutdown').value = FastEthernet00_shutdown_to_set;
-      document.getElementById('hidden_FastEthernet0/0_description').value = FastEthernet00_description_to_set;
-      document.getElementById('hidden_FastEthernet0/0_ip').value = FastEthernet00_ip_to_set;
-      document.getElementById('hidden_FastEthernet0/0_sm').value = FastEthernet00_sm_to_set;
 
-      document.getElementById('hidden_FastEthernet0/1_shutdown').value = FastEthernet01_shutdown_to_set;
-      document.getElementById('hidden_FastEthernet0/1_description').value = FastEthernet01_description_to_set;
-      document.getElementById('hidden_FastEthernet0/1_ip').value = FastEthernet01_ip_to_set;
-      document.getElementById('hidden_FastEthernet0/1_sm').value = FastEthernet01_sm_to_set;
+      // let FastEthernet00_shutdown_to_set = document.getElementById('FastEthernet0/0_shutdown').checked 
+      // let FastEthernet00_description_to_set = document.getElementById('FastEthernet0/0_description').value;
+      // let FastEthernet00_ip_to_set = document.getElementById('FastEthernet0/0_ip').value 
+      // let FastEthernet00_sm_to_set = document.getElementById('FastEthernet0/0_sm').value 
+
+      // let FastEthernet01_shutdown_to_set = document.getElementById('FastEthernet0/1_shutdown').checked 
+      // let FastEthernet01_description_to_set = document.getElementById('FastEthernet0/1_description').value;
+      // let FastEthernet01_ip_to_set = document.getElementById('FastEthernet0/1_ip').value 
+      // let FastEthernet01_sm_to_set = document.getElementById('FastEthernet0/1_sm').value 
+
+      // ! enter the values into the hidden fields
+      // document.getElementById('hidden_FastEthernet0/0_shutdown').value = FastEthernet00_shutdown_to_set;
+      // document.getElementById('hidden_FastEthernet0/0_description').value = FastEthernet00_description_to_set;
+      // document.getElementById('hidden_FastEthernet0/0_ip').value = FastEthernet00_ip_to_set;
+      // document.getElementById('hidden_FastEthernet0/0_sm').value = FastEthernet00_sm_to_set;
+
+      // document.getElementById('hidden_FastEthernet0/1_shutdown').value = FastEthernet01_shutdown_to_set;
+      // document.getElementById('hidden_FastEthernet0/1_description').value = FastEthernet01_description_to_set;
+      // document.getElementById('hidden_FastEthernet0/1_ip').value = FastEthernet01_ip_to_set;
+      // document.getElementById('hidden_FastEthernet0/1_sm').value = FastEthernet01_sm_to_set;
 
   }
   if (page == "nat"){
