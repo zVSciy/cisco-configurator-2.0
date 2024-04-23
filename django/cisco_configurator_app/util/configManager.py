@@ -18,7 +18,32 @@ class ConfigManager:
         #The configEditor object that will be used to read and write the config file
         self.configEditor = configEditor(configFilePath)
 
-        #region Interfaces
+
+    #region BasicConfig
+
+    # Returns a DeviceInfo object with the hostname and motd configuration in the config file
+    def getDeviceInfo(self) -> str:
+        hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
+        motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
+        hostName = self.configEditor.getContentOnIndex(hostNameLine[0]).split(" ")[1]
+        #^hostname R1
+        motd = self.configEditor.getContentOnIndex(motdLine[0])
+        #^banner motd ^Chello^C
+        return DeviceInfo(hostName, motd)
+    
+    def writeDeviceInfo(self, deviceInfo: DeviceInfo) -> None:
+        hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
+        if(len(hostNameLine) > 0):
+            self.configEditor.removeContentBetweenIndexes(hostNameLine[0], hostNameLine[-1])
+        motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
+        if(len(motdLine) > 0):
+            self.configEditor.removeContentBetweenIndexes(motdLine[0], motdLine[-1])
+        self.configEditor.appendContentToFile(deviceInfo.toConfig())
+        self.configEditor.writeConfig()
+    #endregion
+
+
+    #region Interfaces
 
     # Returns an Interface object based on the interface name.
     # It searches for the interface name in the config file and returns the object
@@ -67,9 +92,7 @@ class ConfigManager:
             #^ interface FastEthernet0/0
             returnInterfaceObjects.append(self.getInterface(intName))
         return returnInterfaceObjects
-
     
-
     # Writes the interface object to the config file
     # If a interface with the same name is detected, it will replace it, if no interface is found, it will add a new interface to the end of the file
     def writeInterface(self, interface: Interface) -> None:
@@ -252,71 +275,48 @@ class ConfigManager:
 
     #endregion
 
-    #region BasicConfig
-
-    # Returns a DeviceInfo object with the hostname and motd configuration in the config file
-    def getDeviceInfo(self) -> str:
-        hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
-        motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
-        hostName = self.configEditor.getContentOnIndex(hostNameLine[0]).split(" ")[1]
-        #^hostname R1
-        motd = self.configEditor.getContentOnIndex(motdLine[0])
-        #^banner motd ^Chello^C
-        return DeviceInfo(hostName, motd)
-    
-    def writeDeviceInfo(self, deviceInfo: DeviceInfo) -> None:
-        hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
-        if(len(hostNameLine) > 0):
-            self.configEditor.removeContentBetweenIndexes(hostNameLine[0], hostNameLine[-1])
-        motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
-        if(len(motdLine) > 0):
-            self.configEditor.removeContentBetweenIndexes(motdLine[0], motdLine[-1])
-        self.configEditor.appendContentToFile(deviceInfo.toConfig())
-        self.configEditor.writeConfig()
-    #endregion
-
 
 
 
 # region Example Usage
 
-filePath = "./exampleConfig"
-cM = ConfigManager(filePath)
+# filePath = "./exampleConfig"
+# cM = ConfigManager(filePath)
 
-print(cM.getAllInterfaces())
-for i in cM.getAllInterfaces():
-    print(i.toConfig())
-    cM.writeInterface(i)
+# print(cM.getAllInterfaces())
+# for i in cM.getAllInterfaces():
+#     print(i.toConfig())
+#     cM.writeInterface(i)
 
-int =  cM.getInterface("Fast")
-cM.writeInterface(int)
+# int =  cM.getInterface("Fast")
+# cM.writeInterface(int)
 
-print(cM.getStaticRoutes().toConfig())
+# print(cM.getStaticRoutes().toConfig())
 
-interface = cM.getInterface("FastEthernet0/1")
-interface.ip = '10.10.23.11'
-cM.writeInterface(interface)
+# interface = cM.getInterface("FastEthernet0/1")
+# interface.ip = '10.10.23.11'
+# cM.writeInterface(interface)
 
-staticRoutes = cM.getStaticRoutes()
-cM.writeStaticRoutes(staticRoutes)
+# staticRoutes = cM.getStaticRoutes()
+# cM.writeStaticRoutes(staticRoutes)
 
-print(cM.getRIPConfig().toConfig())
+# print(cM.getRIPConfig().toConfig())
 
-# print(cM.getDhcpConfig("172"))
-print(cM.getDhcpConfig("172").toConfig())
-dhcpConfig = cM.getDhcpConfig("172")
-cM.writeDhcpConfig(dhcpConfig)
+# # print(cM.getDhcpConfig("172"))
+# print(cM.getDhcpConfig("172").toConfig())
+# dhcpConfig = cM.getDhcpConfig("172")
+# cM.writeDhcpConfig(dhcpConfig)
 
-ripConfig = cM.getRIPConfig()
-ripConfig.ripVersion = "1"
-cM.writeRIPConfig(ripConfig)
+# ripConfig = cM.getRIPConfig()
+# ripConfig.ripVersion = "1"
+# cM.writeRIPConfig(ripConfig)
 
-print(cM.getACLConfig().toConfig())
-cM.writeACLConfig(cM.getACLConfig())
+# print(cM.getACLConfig().toConfig())
+# cM.writeACLConfig(cM.getACLConfig())
 
-natConfig = cM.getNATConfig()
-natConfig.accessList = "5"
-cM.writeNATConfig(natConfig)
+# natConfig = cM.getNATConfig()
+# natConfig.accessList = "5"
+# cM.writeNATConfig(natConfig)
 
 #endregion
 

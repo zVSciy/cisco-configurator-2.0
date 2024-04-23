@@ -91,6 +91,18 @@ class Interface:
         natInside = "ip nat inside\n" if self.ipNatInside else ''
         natOutside = "ip nat outside\n" if self.ipNatOutside else ''
         ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
+        #! CAUSES ISSUES
+        #! CAUSES ISSUES
+        #! CAUSES ISSUES
+        #! CAUSES ISSUES
+        #! CAUSES ISSUES
+        #! CAUSES ISSUES
+        #! CAUSES ISSUES
+        #! empty space inside 
+        #f' {natInside}'
+        #f' {self.shutdown}
+        #! Seems to cause issues when writing to the file, creating spaces infront of ! making the config weird
+            
         return ["interface " + self.interface + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}', f' {natInside}', f'{natOutside}' + "!\n"]
 
 #endregion
@@ -241,7 +253,7 @@ class DHCP:
         #! NOT WORKING
         #! NOT WORKING
         #! NOT WORKING
-        #! joim(self.areas) -> you cant join a dictionary
+        #! join(self.areas) -> you cant join a dictionary
         return "Network IP: " + self.dhcpNetworkIP + "\n" + "Network Subnet Mask: " + self.dhcpNetworkSM + "\n" + "Gateway: " + self.dhcpGateway + "\n" + "DNS: " + self.dhcpDNS + "\n" + "Excluded Areas: " + ', '.join(self.areas) + "\n" + "Pool Name: " + self.dhcpPoolName + "\n"
     
     # Convert the stored DHCP configurations to a list of configuration commands
