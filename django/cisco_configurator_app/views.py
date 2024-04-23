@@ -150,7 +150,7 @@ def get_inputs(request, device_type):
     nat_outgoing = request.POST.get('hidden_nat_outgoing')  
 
     #Interfaces
-    Interface_List = [] # ! List to store the Interface as an Interface Object in 
+    Interface_List = [] # ! List to store the Interfaces as an Interface Object in 
 
     if request.POST.get('hidden_'+config_option["interfaces"][0].port_name+'_shutdown') != '':
         for i in config_option["interfaces"]:
