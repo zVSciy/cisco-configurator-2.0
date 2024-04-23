@@ -19,6 +19,8 @@ class configEditor:
     # This function takes a config in the form of a list of lines and writes it to a fil
     def writeConfig(self) -> None:
         outputPath = self.filePath
+
+
         # outputPath = self.filePath.split(".")  # Split the file name by the period
         # for i in range(0, len(outputPath)): # check if we are at the end of the string before the file type addon (.txt)
         #     if (i < len(outputPath)-2):
@@ -32,12 +34,12 @@ class configEditor:
         with open(outputPath, 'w')as outputFile:  # write the file
             outputFile.writelines(self.fileContent)
 
-
+    # This function takes a string and finds the index of the first line that starts with that string
+    # It only gets the first one, and the endsWith parameter is optional and selects until when the content should be read
     def findContentIndexes(self, startsWith: str, endsWith: str = "!") -> list:
         foundIndexes = []
         foundTarget = False
         for i in range(0, self.fileLength):
-
             if self.fileContent[i].lower().startswith(startsWith.lower()) and foundTarget == False:
                 foundIndexes.append(i)
                 foundTarget = True

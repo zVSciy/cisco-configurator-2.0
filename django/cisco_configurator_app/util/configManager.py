@@ -9,7 +9,7 @@ class ConfigManager:
         self.configEditor = configEditor(configFilePath)
 
         #region Interfaces
-
+    # returns a list of all Interfaces in the config file
     def getAllInterfaces(self) -> list[Interface]:
         InterfacesLines = self.configEditor.findMultipleContentIndexes("interface ")
         returnInterfaceObjects = []
@@ -21,10 +21,14 @@ class ConfigManager:
             returnInterfaceObjects.append(self.getInterface(intName))
         return returnInterfaceObjects
 
+    # Returns an Interface object based on the interface name.
+    # It searches for the interface name in the config file and returns the object
+    # Note the interfaceName should be the name of the interface without the "interface" keyword -> "FastEthernet0/1" instead of "interface FastEthernet0/1"
     def getInterface(self, interfaceName: str) -> Interface:
         InterfaceLines = self.configEditor.findContentIndexes("interface " + interfaceName, "!") #Finds the indexes of the interface in the config list
-        interfaceText = self.configEditor.getContentBetweenIndexes(InterfaceLines[0], InterfaceLines[-1])
+        interfaceText = self.configEditor.getContentBetweenIndexes(InterfaceLines[0], InterfaceLines[-1]) #Gets the content of the interface
         intName, ip, sm, desc, natInside, natOutside, shut = None, None, None, "Default", None, None, True
+        #Iterates over the lines of the interface, splits the line and assigns the values to the variables
         for intLine in interfaceText: #Iterates over the lines of the interface
             if intLine.startswith("interface "):
                 intName = intLine.split(" ")[1]
