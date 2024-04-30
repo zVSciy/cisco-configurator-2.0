@@ -5,7 +5,7 @@ import json
 # Define a class to store device information
 class DeviceInfo:
     # Initialize the class with hostname and motd (Message of the Day)
-    def __init__(self, hostname:str = None, motd:str = None) -> None:
+    def __init__(self, hostname:str = None, motd:str = "Cisco Troll") -> None:
         # Check if the hostname is a string and store it
         if type(hostname) == str:
             self.hostname = hostname
@@ -62,7 +62,7 @@ class Interface:
 
         # Check if the shutdown status is a boolean and store it, convert it to a string representation
         if type(shutdown) == bool:
-            self.shutdown = "no shutdown\n" if shutdown else "shutdown\n"
+            self.shutdown = shutdown
         else:
             raise TypeError()
 
@@ -82,26 +82,16 @@ class Interface:
     def __repr__(self) -> str:
         natInside = "ip nat inside\n" if self.ipNatInside else ''
         natOutside = "ip nat outside\n" if self.ipNatOutside else ''
+        shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
 
-        
-        return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + "\n" + natInside + natOutside 
+        return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + shutdown + "\n" + natInside + natOutside 
 
     # Convert the interface information to a configuration list
     def toConfig(self) -> list:
         natInside = "ip nat inside\n" if self.ipNatInside else ''
         natOutside = "ip nat outside\n" if self.ipNatOutside else ''
         ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! empty space inside 
-        #f' {natInside}'
-        #f' {self.shutdown}
-        #! Seems to cause issues when writing to the file, creating spaces infront of ! making the config weird
+
             
         return ["interface " + self.interface + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}', f' {natInside}', f'{natOutside}' + "!\n"]
 
@@ -154,13 +144,13 @@ class RipRouting:
 
         # Check if the ripSumState is a boolean and store it
         if type(ripSumState) == bool:
-            self.ripSumState = "no-auto summary\n" if ripSumState else ''
+            self.ripSumState = ripSumState
         else: 
             raise TypeError()
         
         # Check if the ripOriginate is a boolean and store it
         if type(ripOriginate) == bool:
-            self.ripOriginate = "default-information originate\n" if ripOriginate else ''
+            self.ripOriginate = ripOriginate
         else:
             raise TypeError()
         
@@ -176,7 +166,10 @@ class RipRouting:
 
     # Define the string representation of the class
     def __repr__(self) -> str:
-        return "RIP Version: " + self.ripVersion + "\n" + "Auto Summary: " + self.ripSumState + "\n" + "Default Information Originate: " + self.ripOriginate + "\n" + "Networks: " + ', '.join(self.ripNetworks) + "\n"
+        ripSumState = "Auto Summary: " + self.ripSumState + "\n" if self.ripSumState else ''
+        ripOriginate = "Default Information Originate: " + self.ripOriginate + "\n" if self.ripOriginate else ''
+
+        return "RIP Version: " + self.ripVersion + "\n" + "Auto Summary: " + ripSumState + "\n" + "Default Information Originate: " + ripOriginate + "\n" + "Networks: " + ', '.join(self.ripNetworks) + "\n"
     
     # Convert the stored RIP routing configurations to a list of configuration commands
     def toConfig(self) -> list:
@@ -249,13 +242,15 @@ class DHCP:
     
     # Define the string representation of the class
     def __repr__(self) -> str:
-        #! NOT WORKING
-        #! NOT WORKING
-        #! NOT WORKING
-        #! NOT WORKING
-        #! join(self.areas) -> you cant join a dictionary
-        return "Network IP: " + self.dhcpNetworkIP + "\n" + "Network Subnet Mask: " + self.dhcpNetworkSM + "\n" + "Gateway: " + self.dhcpGateway + "\n" + "DNS: " + self.dhcpDNS + "\n" + "Excluded Areas: " + ', '.join(self.areas) + "\n" + "Pool Name: " + self.dhcpPoolName + "\n"
-    
+        excluded_areas = ', '.join([f"{area['AreaFromIP']} - {area['AreaToIP']}" for area in self.areas])
+        return (
+            f"Network IP: {self.dhcpNetworkIP}\n"
+            f"Network Subnet Mask: {self.dhcpNetworkSM}\n"
+            f"Gateway: {self.dhcpGateway}\n"
+            f"DNS: {self.dhcpDNS}\n"
+            f"Excluded Areas: {excluded_areas}\n"
+            f"Pool Name: {self.dhcpPoolName}\n"
+        )
     # Convert the stored DHCP configurations to a list of configuration commands
     def toConfig(self) -> list:
         config = []
@@ -303,13 +298,17 @@ class NAT:
 # Define a class to manage Standard Access Control List (ACL) configurations
 class ACLStandard:
     # Initialize the class with various parameters
-    def __init__(self, accessList:str = None) -> None:
+    def __init__(self, accessList:str = None, accessListName:str = None) -> None:
         # Check if the accessList is a string and store it
         if type(accessList) == str:
             self.ACLs = []
             self.getACLs(accessList)
         else:
             raise TypeError()  
+        if type(accessListName) == str:
+            self.accessList = accessListName
+        else:
+            raise TypeError()
 
     # Split the accessList string into individual ACLs and store them in a list
     # The accessList string format is "ACLID,deny|permit,IP,SM;ACLID,deny|permit,IP,SM;ACLID,IP,SM"
@@ -327,11 +326,12 @@ class ACLStandard:
 
     # Define the string representation of the class
     def __repr__(self) -> str:
-        return json.dumps(self.ACL, indent=4)
+        return "AccessListName: " + self.accessListName + "\n" + json.dumps(self.ACL, indent=4)
     
     # Convert the stored ACL configurations to a list of configuration commands
     def toConfig(self) -> list:
         config = []
+        config.append(f"ip access-list standard {self.accessListName}\n")
         for acl in self.ACLs:
             if len(acl) == 3:
                 config.append(f"access-list {acl['id']} {acl['permitDeny']} {acl['ip']}\n")
@@ -345,27 +345,23 @@ class ACLStandard:
  
 # Define a class to manage OSPF (Open Shortest Path First) configurations
 class OSPF:
-    # Initialize the class with various parameters
     def __init__(self, ospfProcess:str = None, ospfRouterID:str = None, ospfNetworks:str = None) -> None:
-        # Check if the ospfProcess is a string and store it
         if type(ospfProcess) == str:
             self.ospfProcess = ospfProcess
         else:
             raise TypeError()
         
-        # Check if the ospfRouterID is a string and store it
         if type(ospfRouterID) == str:
             self.ospfRouterID = ospfRouterID
         else:
             raise TypeError()
         
-        # Check if the ospfNetworks is a string and store it
+        self.ospfNetworks = []
         if type(ospfNetworks) == str:
-            self.ospfNetworks = self.getNetworks(ospfNetworks)
+            self.getNetworks(ospfNetworks)
         else:
             raise TypeError()
 
-    # Split the ospfNetworks string into individual networks and store them in a list
     def getNetworks(self, ospfNetworks:str) -> list:
         if ospfNetworks:
             networks = ospfNetworks.split(';')
@@ -377,8 +373,9 @@ class OSPF:
     
     # Define the string representation of the class
     def __repr__(self) -> str:
-        return "OSPF Process: " + self.ospfProcess + "\n" + "Router ID: " + self.ospfRouterID + "\n" + "Networks: " + ', '.join(self.ospfNetworks) + "\n"
-    
+        networks = ', '.join([f"{network['networkID']}, {network['networkWM']}, {network['area']}" for network in self.ospfNetworks])
+        return "OSPF Process: " + self.ospfProcess + "\n" + "Router ID: " + self.ospfRouterID + "\n" + "Networks: " + networks + "\n"
+
     # Convert the stored OSPF configurations to a list of configuration commands
     def toConfig(self) -> list:
         config = []
@@ -389,4 +386,39 @@ class OSPF:
         config.append("!\n")
         return config
 
+#endregion
+#region ACL Extended
+
+class ACLExtended:
+    def __init__(self, aclListName:str = None, aclList:list = None) -> None:
+        if aclList is None:
+            self.aclList = []
+        elif type(aclList) == list:
+            self.aclList = aclList
+        else:
+            raise TypeError()
+        if type(aclListName) == str:
+            self.aclListName = aclListName
+        else:
+            raise TypeError()
+    
+    def getACLs(self, aclList:str) -> list:
+        if aclList:
+            ACLs = aclList.split(";")
+            for ACL in ACLs:
+                if ACL:
+                    id, permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, port = ACL.split(",")
+                    self.aclList.append({'id': id, 'permitDeny': permitDeny, 'protocol': protocol, 'sourceIP': sourceIP, 'sourceWM': sourceWM, 'destIP': destIP, 'destWM': destWM, 'port': port})
+        return self.aclList
+    
+    def __repr__(self) -> str:
+        return "AccessListName: " + self.aclListName + "\n" + json.dumps(self.aclList, indent=4)
+
+    def toConfig(self) -> list:
+        config = []
+        config.append(f"ip access-list extended {self.aclListName}\n")
+        for acl in self.aclList:
+            config.append(f"access-list {acl['id']} {acl['permitDeny']} {acl['protocol']} {acl['sourceIP']} {acl['sourceWM']} {acl['destIP']} {acl['destWM']} {acl['port']}\n")
+        config.append("!\n")
+        return config
 #endregion
