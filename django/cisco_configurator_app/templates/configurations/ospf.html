@@ -16,7 +16,8 @@
           <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="number"
             name="ospf_process" id="ospf_process"
             placeholder="enter process-id"
-            oninput="add_to_config('ospf')" min="1" max="65535">
+            oninput="add_to_config('ospf');checkOspfProcess()" min="1" max="65535">
+            <span id="process_id_info"></span>
         </div>
       </div>
 
@@ -28,7 +29,8 @@
           <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" 
             name="ospf_router_id" id="ospf_router_id"
             placeholder="enter router-id"
-            oninput="add_to_config('ospf')">
+            oninput="add_to_config('ospf'); checkOspfRouterID()">
+            <span id="router_id_info"></span>
         </div>
       </div>
 
