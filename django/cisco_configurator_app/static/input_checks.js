@@ -365,6 +365,42 @@ function ValidateOspfNetworks(info) {
   }
 }
 
+function checkOspfRouterID(){
+  let TButton = document.getElementById("transferButton");
+  let ospf_router_id = document.getElementById('ospf_router_id').value
+  let message = document.getElementById('router_id_info')
+
+  if (isValidIpAddress(ospf_router_id) ) {
+    message.textContent = "";
+    TButton.disabled = false;
+    return true;
+  }else if(ospf_router_id == ''){
+    message.textContent = "";
+    TButton.disabled = false;
+  }else {
+    message.textContent = "Invalid Router-ID";
+    TButton.disabled = true;
+  }
+}
+
+function checkOspfProcess(){
+  let TButton = document.getElementById("transferButton");
+  let ospf_process_id = document.getElementById('ospf_process').value
+  let message = document.getElementById('process_id_info')
+
+  if (ospf_process_id >=0 && ospf_process_id <= 10000) {
+    message.textContent = "";
+    TButton.disabled = false;
+    return true;
+  }else if(ospf_process_id == ''){
+    message.textContent = "";
+    TButton.disabled = false;
+  }else {
+    message.textContent = "Invalid Process";
+    TButton.disabled = true;
+  }
+}
+
 
 
 // add to Config for backend
