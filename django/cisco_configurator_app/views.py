@@ -232,6 +232,11 @@ def get_inputs(request, device_type):
     if(static_routes):
         cM.writeStaticRoutes(StaticRoute(static_routes))
 
+    #ospf
+    ospf_info_for_transfer = request.POST.get('hidden_ospf_info_for_transfer')
+    ospf_router_id = request.POST.get('hidden_ospf_router_id')
+    ospf_process = request.POST.get('hidden_ospf_process')
+
     dl_or_tf = request.POST.get('hidden_dl_or_tf')
     ip = request.POST.get('hidden_ip')
     user = request.POST.get('hidden_user')
