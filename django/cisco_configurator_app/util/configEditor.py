@@ -1,11 +1,14 @@
 import os
 class configEditor:
-    def __init__(self, filePath: str):
-        self.filePath = filePath
+    def __init__(self, filePath: str, outputPath: str = None):
+
+        
         script_dir = os.path.dirname(os.path.realpath(__file__))
         # Join the script directory with the file path
+        self.outputPath = outputPath if outputPath != None else filePath
         self.filePath = os.path.join(script_dir, filePath)
-        self.fileContent, self.fileLength = self.readFile()        
+        self.outputPath = os.path.join(script_dir, self.outputPath)
+        self.fileContent, self.fileLength = self.readFile()
 
 
     # Reads the input file and returns the content and length of the file
@@ -18,19 +21,7 @@ class configEditor:
 
     # This function takes a config in the form of a list of lines and writes it to a fil
     def writeConfig(self) -> None:
-        outputPath = self.filePath
-
-
-        # outputPath = self.filePath.split(".")  # Split the file name by the period
-        # for i in range(0, len(outputPath)): # check if we are at the end of the string before the file type addon (.txt)
-        #     if (i < len(outputPath)-2):
-        #         outputPath[i] += "." #add any periods that were in the string originally, except the last one (.txt)
-        #     elif (i == len(outputPath)-2): # add Output to the name of the file name
-        #         outputPath[i] += "Output."
-
-        # # join the list of strings into one string
-        # outputPath = ''.join(outputPath)
-
+        outputPath = self.outputPath
         with open(outputPath, 'w')as outputFile:  # write the file
             outputFile.writelines(self.fileContent)
 

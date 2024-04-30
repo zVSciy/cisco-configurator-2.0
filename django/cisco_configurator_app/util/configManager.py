@@ -12,17 +12,18 @@ from .deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard
 
 
 class ConfigManager:
-    def __init__(self, configFilePath:str) -> None:
+    def __init__(self, configFilePath:str, configOutputPath: str = None) -> None:
         #The filepath of the input file
         self.filePath = configFilePath
+        self.outputPath = configOutputPath if configOutputPath != None else configFilePath
         #The configEditor object that will be used to read and write the config file
-        self.configEditor = configEditor(configFilePath)
+        self.configEditor = configEditor(self.filePath,self.outputPath)
 
 
     #region BasicConfig
 
     # Returns a DeviceInfo object with the hostname and motd configuration in the config file
-    def getDeviceInfo(self) -> str:
+    def getDeviceInfo(self) -> DeviceInfo:
         hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
         motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
         hostName = self.configEditor.getContentOnIndex(hostNameLine[0]).split(" ")[1]
@@ -278,15 +279,16 @@ class ConfigManager:
 
 
 
-# region Example Usage
+# region ExampleUsage
 
-# filePath = "./exampleConfig"
-# cM = ConfigManager(filePath)
+filePath = "./exampleConfig"
+outputPath = "./exampleConfigOut"
+cM = ConfigManager(filePath,outputPath)
 
 # print(cM.getAllInterfaces())
-# for i in cM.getAllInterfaces():
-#     print(i.toConfig())
-#     cM.writeInterface(i)
+for i in cM.getAllInterfaces():
+    print(i.toConfig())
+    cM.writeInterface(i)
 
 # int =  cM.getInterface("Fast")
 # cM.writeInterface(int)
