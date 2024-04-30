@@ -14,7 +14,7 @@
             class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
             for="description">Process:</label>
           <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="number"
-            name="networks_input_routing" id="networks_input_routing"
+            name="ospf_process" id="ospf_process"
             placeholder="enter process-id"
             oninput="add_to_config('ospf')" min="1" max="65535">
         </div>
@@ -26,7 +26,7 @@
             class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
             for="description">Router-ID:</label>
           <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" 
-            name="networks_input_routing" id="networks_input_routing"
+            name="ospf_router_id" id="ospf_router_id"
             placeholder="enter router-id"
             oninput="add_to_config('ospf')">
         </div>
@@ -34,19 +34,18 @@
 
 
 
-
       <div class="bg-base-300 p-4 rounded-2xl flex flex-col gap-3">
         <h3 class="config_item"><b>Networks:</b></h3>
         <h1></h1>
-  
+
         <div class="config_item" id="ip-form">
           <div class="relative flex items-center gap-3">
             <label
               class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-              for="description">IP Address:</label>
-            <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="nat_ip"
-              id="nat_ip" placeholder="e.g. 10.1.0.0" oninput="ValidateIPaddressNat('nat_ip','nat_ip_info')">
-            <span id="nat_ip_info"></span>
+              for="description">Address:</label>
+            <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="ospf_ip"
+              id="ospf_ip" placeholder="e.g. 10.1.0.0" oninput="ValidateOspfNetworks('ospf_input_info')">
+            <span id="ospf_ip_info"></span>
           </div>
         </div>
         <div class="config_item" id="ip-form">
@@ -54,9 +53,9 @@
             <label
               class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
               for="description">Wildcard Mask:</label>
-            <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="nat_wm"
-              id="nat_wm" placeholder="e.g. 0.255.255.255" oninput="ValidateIPaddressNat('nat_wm','nat_wm_info')">
-            <span id="nat_wm_info"></span>
+            <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="ospf_wm"
+              id="ospf_wm" placeholder="e.g. 0.255.255.255" oninput="ValidateOspfNetworks('ospf_input_info')">
+            <span id="ospf_wm_info"></span>
           </div>
         </div>
         <div class="config_item" id="ip-form">
@@ -64,18 +63,23 @@
               <label
                 class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
                 for="description">Area:</label>
-              <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="number" name="nat_wm"
-                id="nat_wm" placeholder="e.g. 0" oninput="">
-              <span id="nat_wm_info"></span>
+              <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="number" name="ospf_area"
+                id="ospf_area" placeholder="empty equals 0" oninput="ValidateOspfNetworks('ospf_input_info')">
+              <span id="ospf_area_info"></span>
             </div>
+            <div id="ospf_input_info"></div>
           </div>
-        <button type="button" disabled="true" class="config_item btn max-w-xs" id="add_nat_ip_button"
-          onclick="addNatIp(); add_to_config('nat')">add
+        <button type="button" disabled="true" class="config_item btn max-w-xs" id="add_ospf_ip_button"
+          onclick="addOspfIp(); add_to_config('ospf')">add
           Network</button>
-        <div id="added_nat_networks" class="config_item">
+        <div id="added_ospf_networks" class="config_item">
           added permitted Networks:</div>
-        <div class="config_item" id="nat_info"></div>
-        <input name="nat_info" id="nat_info_for_transfer"></input>
-  
+        <div class="config_item" id="ospf_info"></div>
+        <input name="ospf_info" id="ospf_info_for_transfer"></input>
+
       </div>
+
+      <script>
+        document.getElementById('ospf_info_for_transfer').style.display = 'none';
+      </script>
 {% endblock content %}
