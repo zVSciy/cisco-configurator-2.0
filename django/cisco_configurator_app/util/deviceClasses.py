@@ -391,7 +391,6 @@ class OSPF:
 
 #endregion
 #region ACL Extended
-
 class ACLExtended:
     def __init__(self, aclListName:str = None, aclList:list = None) -> None:
         if aclList is None:
@@ -426,4 +425,3 @@ class ACLExtended:
         return config
 #endregion
 
-#VLANS
