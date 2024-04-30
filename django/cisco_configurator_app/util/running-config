@@ -1,0 +1,4 @@
+hostname blabla
+!
+banner motd ^Cbanner motd ^Chello^C^C
+!

@@ -4,9 +4,7 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 no service password-encryption
 !
-hostname R1
 !
-banner motd ^Chello^C
 !
 boot-start-marker
 boot-end-marker
@@ -129,5 +127,9 @@ line con 0
 line aux 0
 line vty 0 4
 !
+!
+hostname blabla
+!
+banner motd ^Cbanner motd ^Chello^C^C
 !
 end

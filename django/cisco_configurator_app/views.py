@@ -5,9 +5,6 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from .util.configManager import ConfigManager
 from .util.deviceClasses import *
-from .util.deviceClasses import Interface
-from .util.fileManager import transfer_config
-from .util.fileManager import download_config
 
 # Create your views here.
 
@@ -19,8 +16,7 @@ def get_interfaces(device_type):
     elif device_type == 'switch':
         return Router_Interfaces.objects.filter(router_id=routerID)
 
-def index(request):
-    return render(request, 'index.html')
+
 
 @csrf_exempt
 def basic_config(request, device_type):
@@ -129,23 +125,64 @@ def stp(request, device_type):
     }
     return render(request, 'configurations/stp.html', config_option)
 
-def get_inputs(request, device_type):
+
+
+
+
+def index(request):
+    #! reset running-config file content
+    return render(request, 'index.html')
+
+def create_objects(cm):
+    return [
+        cm.getDeviceInfo(), 
+        cm.getAllInterfaces(), 
+        cm.getStaticRoutes(), 
+        cm.getRIPConfig(), 
+        cm.getDhcpConfig(), 
+        cm.getNATConfig()
+    ]
+
+def get_inputs(request, device_type, config_mode):
     config_option = {
-        "device_type": device_type,
-        "interfaces":  get_interfaces(device_type)
+        'device_type': device_type,
+        'config_mode': config_mode,
+        'interfaces':  get_interfaces(device_type)
     }
 
-    cM = ConfigManager('exampleConfig')
-
     forward_to = request.POST.get('hidden_forward_to')
+
+    #! if file leer
+    if(config_option.get('config_mode') == 'create'):
+        if(config_option.get('device_type') == 'router'):
+            #! template-config-router in running-config
+            pass
+        elif(config_option.get('device_type') == 'switch'):
+            #! template-config-switch in running-config
+            pass
+    elif(config_option.get('config_mode') == 'load'):
+        #! loaded-config in running-config
+        pass
+
+    cm = ConfigManager('running-config')
+    config_objects = create_objects(cm)
+
+
+########################################################################
 
     #basic config
     hostname = request.POST.get('hidden_hostname')
     banner = request.POST.get('hidden_banner')
-    if(hostname and banner):
-        cM.writeDeviceInfo(DeviceInfo(hostname, banner))
 
-    
+    #! serversided check for hostname and banner
+
+    config_objects[0].hostname = hostname
+    config_objects[0].banner = banner
+    cm.writeDeviceInfo(config_objects[0])
+
+########################################################################
+
+
     nat_ingoing = request.POST.get('hidden_nat_ingoing')
     nat_outgoing = request.POST.get('hidden_nat_outgoing')  
 
@@ -247,8 +284,15 @@ def get_inputs(request, device_type):
     if response:
         return response
 
+
+
+
     # exception for the index route bc index can`t handle the device type
     if forward_to != 'index':
         return redirect(reverse(forward_to + '_route', kwargs={'device_type': device_type}))
     else:
         return redirect('index_route')
+
+
+
+
