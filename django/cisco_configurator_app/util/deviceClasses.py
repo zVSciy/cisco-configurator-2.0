@@ -415,6 +415,22 @@ class ACLExtended:
         return "AccessListName: " + self.aclListName + "\n" + json.dumps(self.aclList, indent=4)
 
     def toConfig(self) -> list:
+        #! FORMAT ERROR
+        #! FORMAT ERROR
+        #! FORMAT ERROR
+        #! FORMAT ERROR
+        #^ip access-list extended test
+        #^ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq www
+        #^ permit tcp any any eq www
+        #^!
+        #^ip access-list extended test2
+        #^ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq www
+        #^ permit tcp any any eq www
+
+        #line 437: access-list and id is not required
+        #maybe think about adding a check if any parameter is any
+
+
         config = []
         config.append(f"ip access-list extended {self.aclListName}\n")
         for acl in self.aclList:

@@ -1,5 +1,5 @@
 from .configEditor import configEditor
-from .deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard, NAT, DeviceInfo 
+from .deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard, NAT, DeviceInfo, ACLExtended, OSPF
 
 #! This file colored comments to highlight the different sections of the code
 #! THis extention was used: ParthR2031.colorful-comments
@@ -277,18 +277,49 @@ class ConfigManager:
     #endregion
 
 
+    #region ExtendedACL
+
+    # def getExtendedACLConfig(self, ACLName:str = None ) -> ACLExtended:
+    #     aclLines = self.configEditor.findContentIndexes(f"ip access-list extended {ACLName}", "!")
+    #     aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
+    #     aclString = ""
+
+    #     aclName = aclText.pop(0)
+    #     for i, content in enumerate(aclText):
+    #         pass
+    
+        
+        
+        
+    # def writeExtendedACLConfig(self, aclConfig: ACLExtended) -> None:
+    #     aclLines = self.configEditor.findContentIndexes("ip access-list", "!")
+    #     aclContent = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
+    #     for i, line in aclContent:
+    #         if int(line[1]) < 100:
+    #             continue
+    #         self.configEditor.removeContentOnIndex(i)
+    #     self.configEditor.appendContentToFile(aclConfig.toConfig())
+    #     self.configEditor.writeConfig()
+
+
 
 
 # region ExampleUsage
 
-filePath = "./exampleConfig"
-outputPath = "./exampleConfigOut"
-cM = ConfigManager(filePath,outputPath)
+# filePath = "./exampleConfig"
+# outputPath = "./exampleConfigOut"
+# cM = ConfigManager(filePath,outputPath)
+
+# extendedConfig = cM.getExtendedACLConfig("test")
+# print(extendedConfig.toConfig())
+# cM.writeExtendedACLConfig(extendedConfig)
+
+
 
 # print(cM.getAllInterfaces())
-for i in cM.getAllInterfaces():
-    print(i.toConfig())
-    cM.writeInterface(i)
+# for i in cM.getAllInterfaces():
+#     print(i.toConfig())
+#     cM.writeInterface(i)
 
 # int =  cM.getInterface("Fast")
 # cM.writeInterface(int)
