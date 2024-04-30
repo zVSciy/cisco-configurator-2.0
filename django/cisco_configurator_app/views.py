@@ -15,9 +15,9 @@ routerID = 1
 
 def get_interfaces(device_type):
     if device_type == 'router':
-        return Router_Interfaces.objects.filter(router_id=routerID)
+        return Router_Interfaces.objects.filter(router_id=1)
     elif device_type == 'switch':
-        return Router_Interfaces.objects.filter(router_id=routerID)
+        return Router_Interfaces.objects.filter(router_id=2)
 
 def index(request):
     return render(request, 'index.html')
