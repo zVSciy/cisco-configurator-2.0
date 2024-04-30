@@ -103,6 +103,10 @@
         Static Routing
       </button>
 
+      <button type="button" class="menu-button" onclick="submitForm('ospf')">
+        OSPF
+      </button>
+
       <form method="post" action="{% url 'etherchannel_route' device_type='router' %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
@@ -110,16 +114,6 @@
         </select>
         <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
           Etherchannel
-        </button>
-      </form>
-
-      <form method="post" action="{% url 'ospf_route' device_type='router' %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="router">Router</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          OSPF
         </button>
       </form>
 
