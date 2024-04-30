@@ -328,6 +328,82 @@ function extractInterfaceNames(inputString) {
 }
 
 
+
+
+// OSPF
+
+function addOspfIp() {
+  let Ip = document.getElementById('ospf_ip').value;
+  let wildcardMask = document.getElementById('ospf_wm').value;
+  let area = document.getElementById('ospf_area').value
+
+  let networksInfo = "IP Address: " + Ip + "<br>Wildcard Mask: " + wildcardMask + '<br>Area:'+ area +'<br><br>';
+
+  document.getElementById('ospf_info').innerHTML += networksInfo;
+  document.getElementById('ospf_info_for_transfer').value += Ip + ',' + wildcardMask + ',' + area + ';';
+}
+
+function ValidateAreaOSPF(area){
+  if(area >=0 && area <= 4294967294 ){
+    return true;
+  }
+}
+
+function ValidateOspfNetworks(info) {
+  let message = document.getElementById(info);
+  let TButton = document.getElementById("add_ospf_ip_button");
+  if (isValidIpAddress(document.getElementById('ospf_wm').value) && isValidIpAddress(document.getElementById('ospf_ip').value) && ValidateAreaOSPF(document.getElementById('ospf_area').value)) {
+    message.textContent = "";
+    TButton.disabled = false;
+    return true;
+  }else if(document.getElementById('ospf_wm').value == '' && document.getElementById('ospf_ip').value == '' && document.getElementById('ospf_area').value == ''){
+    message.textContent = "";
+    TButton.disabled = false;
+  }else {
+    message.textContent = "Please fill out all fields correctly!";
+    TButton.disabled = true;
+  }
+}
+
+function checkOspfRouterID(){
+  let TButton = document.getElementById("transferButton");
+  let ospf_router_id = document.getElementById('ospf_router_id').value
+  let message = document.getElementById('router_id_info')
+
+  if (isValidIpAddress(ospf_router_id) ) {
+    message.textContent = "";
+    TButton.disabled = false;
+    return true;
+  }else if(ospf_router_id == ''){
+    message.textContent = "";
+    TButton.disabled = false;
+  }else {
+    message.textContent = "Invalid Router-ID";
+    TButton.disabled = true;
+  }
+}
+
+function checkOspfProcess(){
+  let TButton = document.getElementById("transferButton");
+  let ospf_process_id = document.getElementById('ospf_process').value
+  let message = document.getElementById('process_id_info')
+
+  if (ospf_process_id >=0 && ospf_process_id <= 10000) {
+    message.textContent = "";
+    TButton.disabled = false;
+    return true;
+  }else if(ospf_process_id == ''){
+    message.textContent = "";
+    TButton.disabled = false;
+  }else {
+    message.textContent = "Invalid Process";
+    TButton.disabled = true;
+  }
+}
+
+
+
+// add to Config for backend
 function add_to_config(page) {
 
   if (page == "basic_config"){
@@ -352,29 +428,6 @@ function add_to_config(page) {
         document.getElementById('hidden_'+interfaces[i]+'_ip').value = document.getElementById(interfaces[i]+'_ip').value;
         document.getElementById('hidden_'+interfaces[i]+'_sm').value = document.getElementById(interfaces[i]+'_sm').value;
       }
-
-
-      // let FastEthernet00_shutdown_to_set = document.getElementById('FastEthernet0/0_shutdown').checked 
-      // let FastEthernet00_description_to_set = document.getElementById('FastEthernet0/0_description').value;
-      // let FastEthernet00_ip_to_set = document.getElementById('FastEthernet0/0_ip').value 
-      // let FastEthernet00_sm_to_set = document.getElementById('FastEthernet0/0_sm').value 
-
-      // let FastEthernet01_shutdown_to_set = document.getElementById('FastEthernet0/1_shutdown').checked 
-      // let FastEthernet01_description_to_set = document.getElementById('FastEthernet0/1_description').value;
-      // let FastEthernet01_ip_to_set = document.getElementById('FastEthernet0/1_ip').value 
-      // let FastEthernet01_sm_to_set = document.getElementById('FastEthernet0/1_sm').value 
-
-      // ! enter the values into the hidden fields
-      // document.getElementById('hidden_FastEthernet0/0_shutdown').value = FastEthernet00_shutdown_to_set;
-      // document.getElementById('hidden_FastEthernet0/0_description').value = FastEthernet00_description_to_set;
-      // document.getElementById('hidden_FastEthernet0/0_ip').value = FastEthernet00_ip_to_set;
-      // document.getElementById('hidden_FastEthernet0/0_sm').value = FastEthernet00_sm_to_set;
-
-      // document.getElementById('hidden_FastEthernet0/1_shutdown').value = FastEthernet01_shutdown_to_set;
-      // document.getElementById('hidden_FastEthernet0/1_description').value = FastEthernet01_description_to_set;
-      // document.getElementById('hidden_FastEthernet0/1_ip').value = FastEthernet01_ip_to_set;
-      // document.getElementById('hidden_FastEthernet0/1_sm').value = FastEthernet01_sm_to_set;
-
   }
   if (page == "nat"){
       let nat_status_to_set = document.getElementById('nat_status').checked 
@@ -427,6 +480,17 @@ function add_to_config(page) {
     let staticRouting_info_for_transfer_to_set = document.getElementById('staticRouting_info_for_transfer').value
 
     document.getElementById('hidden_staticRouting_info_for_transfer').value = staticRouting_info_for_transfer_to_set;
+  }
+
+  if (page == "ospf"){
+    let ospf_process_to_set = document.getElementById('ospf_process').value 
+    let ospf_router_id_to_set = document.getElementById('ospf_router_id').value 
+    let ospf_info_for_transfer_to_set = document.getElementById('ospf_info_for_transfer').value 
+
+
+    document.getElementById('hidden_ospf_process').value = ospf_process_to_set; //true = on | false = off
+    document.getElementById('hidden_ospf_router_id').value = ospf_router_id_to_set;
+    document.getElementById('hidden_ospf_info_for_transfer').value = ospf_info_for_transfer_to_set;
   }
 
 
