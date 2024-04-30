@@ -5,7 +5,7 @@ import json
 # Define a class to store device information
 class DeviceInfo:
     # Initialize the class with hostname and motd (Message of the Day)
-    def __init__(self, hostname:str = None, motd:str = None) -> None:
+    def __init__(self, hostname:str = None, motd:str = "Cisco Troll") -> None:
         # Check if the hostname is a string and store it
         if type(hostname) == str:
             self.hostname = hostname
@@ -345,27 +345,23 @@ class ACLStandard:
  
 # Define a class to manage OSPF (Open Shortest Path First) configurations
 class OSPF:
-    # Initialize the class with various parameters
     def __init__(self, ospfProcess:str = None, ospfRouterID:str = None, ospfNetworks:str = None) -> None:
-        # Check if the ospfProcess is a string and store it
         if type(ospfProcess) == str:
             self.ospfProcess = ospfProcess
         else:
             raise TypeError()
         
-        # Check if the ospfRouterID is a string and store it
         if type(ospfRouterID) == str:
             self.ospfRouterID = ospfRouterID
         else:
             raise TypeError()
         
-        # Check if the ospfNetworks is a string and store it
+        self.ospfNetworks = []
         if type(ospfNetworks) == str:
-            self.ospfNetworks = self.getNetworks(ospfNetworks)
+            self.getNetworks(ospfNetworks)
         else:
             raise TypeError()
 
-    # Split the ospfNetworks string into individual networks and store them in a list
     def getNetworks(self, ospfNetworks:str) -> list:
         if ospfNetworks:
             networks = ospfNetworks.split(';')
@@ -377,8 +373,9 @@ class OSPF:
     
     # Define the string representation of the class
     def __repr__(self) -> str:
-        return "OSPF Process: " + self.ospfProcess + "\n" + "Router ID: " + self.ospfRouterID + "\n" + "Networks: " + ', '.join(self.ospfNetworks) + "\n"
-    
+        networks = ', '.join([f"{network['networkID']}, {network['networkWM']}, {network['area']}" for network in self.ospfNetworks])
+        return "OSPF Process: " + self.ospfProcess + "\n" + "Router ID: " + self.ospfRouterID + "\n" + "Networks: " + networks + "\n"
+
     # Convert the stored OSPF configurations to a list of configuration commands
     def toConfig(self) -> list:
         config = []
@@ -393,8 +390,10 @@ class OSPF:
 #region ACL Extended
 
 class ACLExtended:
-    def __init__(self, aclListName:str = None, aclList:str = None) -> None:
-        if type(aclList) == str:
+    def __init__(self, aclListName:str = None, aclList:list = None) -> None:
+        if aclList is None:
+            self.aclList = []
+        elif type(aclList) == list:
             self.aclList = aclList
         else:
             raise TypeError()
