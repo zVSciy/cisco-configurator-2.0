@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cisco GUI Konfigurator</title>
+  <title>Cisco Configurator 2.0</title>
   <script src="{% static 'input_checks.js' %}"></script>
 </head>
 
@@ -19,16 +19,12 @@
     <input type="hidden" id="hidden_hostname" name="hidden_hostname">
     <input type="hidden" id="hidden_banner" name="hidden_banner">
     <!-- interfaces -->
-    <input type="hidden" id="hidden_FastEthernet0/0_shutdown" name="hidden_FastEthernet0/0_shutdown">
-    <input type="hidden" id="hidden_FastEthernet0/0_description" name="hidden_FastEthernet0/0_description">
-    <input type="hidden" id="hidden_FastEthernet0/0_ip" name="hidden_FastEthernet0/0_ip">
-    <input type="hidden" id="hidden_FastEthernet0/0_sm" name="hidden_FastEthernet0/0_sm">
-
-    <input type="hidden" id="hidden_FastEthernet0/1_shutdown" name="hidden_FastEthernet0/1_shutdown">
-    <input type="hidden" id="hidden_FastEthernet0/1_description" name="hidden_FastEthernet0/1_description">
-    <input type="hidden" id="hidden_FastEthernet0/1_ip" name="hidden_FastEthernet0/1_ip">
-    <input type="hidden" id="hidden_FastEthernet0/1_sm" name="hidden_FastEthernet0/1_sm">
-
+    {% for interface in interfaces %}
+    <input type="hidden" id="hidden_{{ interface }}_shutdown" name="hidden_{{ interface }}_shutdown">
+    <input type="hidden" id="hidden_{{ interface }}_description" name="hidden_{{ interface }}_description">
+    <input type="hidden" id="hidden_{{ interface }}_ip" name="hidden_{{ interface }}_ip">
+    <input type="hidden" id="hidden_{{ interface }}_sm" name="hidden_{{ interface }}_sm">
+    {% endfor %}
     <!-- nat -->
     <input type="hidden" id="hidden_nat_status" name="hidden_nat_status">
     <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing">

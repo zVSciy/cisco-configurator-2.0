@@ -346,11 +346,11 @@ function add_to_config(page) {
     
       //get the inputs from all Interfaces and store them into the hidden input fields 
 
-      for (let i = 0; i<= interfaces.length; i++){
-        document.getElementById(interfaces[i]+'_shutdown').checked = document.getElementById('hidden_'+interfaces[i]+'_shutdown').value;
-        document.getElementById(interfaces[i]+'_description').value = document.getElementById('hidden_'+interfaces[i]+'_description').value;
-        document.getElementById(interfaces[i]+'FastEthernet0/0_ip').value = document.getElementById('hidden_'+interfaces[i]+'_ip').value;
-        document.getElementById(interfaces[i]+'_sm').value = document.getElementById('hidden_'+interfaces[i]+'_sm').value;
+      for (let i = 0; i < interfaces.length; i++){
+        document.getElementById('hidden_'+interfaces[i]+'_shutdown').value = document.getElementById(interfaces[i]+'_shutdown').checked;
+        document.getElementById('hidden_'+interfaces[i]+'_description').value = document.getElementById(interfaces[i]+'_description').value;
+        document.getElementById('hidden_'+interfaces[i]+'_ip').value = document.getElementById(interfaces[i]+'_ip').value;
+        document.getElementById('hidden_'+interfaces[i]+'_sm').value = document.getElementById(interfaces[i]+'_sm').value;
       }
 
 

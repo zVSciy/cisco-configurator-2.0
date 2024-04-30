@@ -164,9 +164,12 @@ def get_inputs(request, device_type):
                 nat_inside = True
             if nat_outgoing == i.port_name:
                 nat_outside = True
-            Interface_List.append(Interface(i.port_name, interfaces_ip, interfaces_sm, nat_inside, nat_outside, interfaces_description, bool(interfaces_shutdown)))
+                
+            interfaces_shutdown = True if interfaces_shutdown == 'true' else False
 
+            Interface_List.append(Interface(i.port_name, interfaces_ip, interfaces_sm, nat_inside, nat_outside, interfaces_description, interfaces_shutdown))
 
+    print(Interface_List)
     ##DEBUG
     # FastEthernet01_shutdown = True
     # FastEthernet00_shutdown = True
