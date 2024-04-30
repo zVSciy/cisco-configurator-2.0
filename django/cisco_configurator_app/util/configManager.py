@@ -1,5 +1,5 @@
-from configEditor import configEditor
-from deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard, NAT, DeviceInfo 
+from .configEditor import configEditor
+from .deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard, NAT, DeviceInfo 
 
 #! This file colored comments to highlight the different sections of the code
 #! THis extention was used: ParthR2031.colorful-comments
