@@ -298,13 +298,17 @@ class NAT:
 # Define a class to manage Standard Access Control List (ACL) configurations
 class ACLStandard:
     # Initialize the class with various parameters
-    def __init__(self, accessList:str = None) -> None:
+    def __init__(self, accessList:str = None, accessListName:str = None) -> None:
         # Check if the accessList is a string and store it
         if type(accessList) == str:
             self.ACLs = []
             self.getACLs(accessList)
         else:
             raise TypeError()  
+        if type(accessListName) == str:
+            self.accessList = accessListName
+        else:
+            raise TypeError()
 
     # Split the accessList string into individual ACLs and store them in a list
     # The accessList string format is "ACLID,deny|permit,IP,SM;ACLID,deny|permit,IP,SM;ACLID,IP,SM"
@@ -322,11 +326,12 @@ class ACLStandard:
 
     # Define the string representation of the class
     def __repr__(self) -> str:
-        return json.dumps(self.ACL, indent=4)
+        return "AccessListName: " + self.accessListName + "\n" + json.dumps(self.ACL, indent=4)
     
     # Convert the stored ACL configurations to a list of configuration commands
     def toConfig(self) -> list:
         config = []
+        config.append(f"ip access-list standard {self.accessListName}\n")
         for acl in self.ACLs:
             if len(acl) == 3:
                 config.append(f"access-list {acl['id']} {acl['permitDeny']} {acl['ip']}\n")
@@ -384,4 +389,37 @@ class OSPF:
         config.append("!\n")
         return config
 
+#endregion
+#region ACL Extended
+
+class ACLExtended:
+    def __init__(self, aclListName:str = None, aclList:str = None) -> None:
+        if type(aclList) == str:
+            self.aclList = aclList
+        else:
+            raise TypeError()
+        if type(aclListName) == str:
+            self.aclListName = aclListName
+        else:
+            raise TypeError()
+    
+    def getACLs(self, aclList:str) -> list:
+        if aclList:
+            ACLs = aclList.split(";")
+            for ACL in ACLs:
+                if ACL:
+                    id, permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, port = ACL.split(",")
+                    self.aclList.append({'id': id, 'permitDeny': permitDeny, 'protocol': protocol, 'sourceIP': sourceIP, 'sourceWM': sourceWM, 'destIP': destIP, 'destWM': destWM, 'port': port})
+        return self.aclList
+    
+    def __repr__(self) -> str:
+        return "AccessListName: " + self.aclListName + "\n" + json.dumps(self.aclList, indent=4)
+
+    def toConfig(self) -> list:
+        config = []
+        config.append(f"ip access-list extended {self.aclListName}\n")
+        for acl in self.aclList:
+            config.append(f"access-list {acl['id']} {acl['permitDeny']} {acl['protocol']} {acl['sourceIP']} {acl['sourceWM']} {acl['destIP']} {acl['destWM']} {acl['port']}\n")
+        config.append("!\n")
+        return config
 #endregion
