@@ -4,7 +4,8 @@
 
 <div class="menu-content bg-base-200 rounded-lg mb-4 p-8" id="menu2">
     <h2 class="font-extrabold text-2xl pb-5">Interface Configuration</h2>
-
+    <input type="hidden" id="interfaces_for_get_inputs" value="{{ interfaces }}">
+    
     <div class="grid grid-cols-3 gap-4">
       {% for interface in interfaces %}
       <div class="bg-base-300 p-4 rounded-2xl hover:outline hover:outline-1 hover:outline-slate-600">
