@@ -62,7 +62,7 @@ class Interface:
 
         # Check if the shutdown status is a boolean and store it, convert it to a string representation
         if type(shutdown) == bool:
-            self.shutdown = "no shutdown\n" if shutdown else "shutdown\n"
+            self.shutdown = shutdown
         else:
             raise TypeError()
 
@@ -82,26 +82,16 @@ class Interface:
     def __repr__(self) -> str:
         natInside = "ip nat inside\n" if self.ipNatInside else ''
         natOutside = "ip nat outside\n" if self.ipNatOutside else ''
+        shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
 
-        
-        return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + self.shutdown + "\n" + natInside + natOutside 
+        return "Interface: " + self.interface + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + shutdown + "\n" + natInside + natOutside 
 
     # Convert the interface information to a configuration list
     def toConfig(self) -> list:
         natInside = "ip nat inside\n" if self.ipNatInside else ''
         natOutside = "ip nat outside\n" if self.ipNatOutside else ''
         ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! CAUSES ISSUES
-        #! empty space inside 
-        #f' {natInside}'
-        #f' {self.shutdown}
-        #! Seems to cause issues when writing to the file, creating spaces infront of ! making the config weird
+
             
         return ["interface " + self.interface + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}', f' {natInside}', f'{natOutside}' + "!\n"]
 
@@ -154,13 +144,13 @@ class RipRouting:
 
         # Check if the ripSumState is a boolean and store it
         if type(ripSumState) == bool:
-            self.ripSumState = "no-auto summary\n" if ripSumState else ''
+            self.ripSumState = ripSumState
         else: 
             raise TypeError()
         
         # Check if the ripOriginate is a boolean and store it
         if type(ripOriginate) == bool:
-            self.ripOriginate = "default-information originate\n" if ripOriginate else ''
+            self.ripOriginate = ripOriginate
         else:
             raise TypeError()
         
@@ -176,7 +166,10 @@ class RipRouting:
 
     # Define the string representation of the class
     def __repr__(self) -> str:
-        return "RIP Version: " + self.ripVersion + "\n" + "Auto Summary: " + self.ripSumState + "\n" + "Default Information Originate: " + self.ripOriginate + "\n" + "Networks: " + ', '.join(self.ripNetworks) + "\n"
+        ripSumState = "Auto Summary: " + self.ripSumState + "\n" if self.ripSumState else ''
+        ripOriginate = "Default Information Originate: " + self.ripOriginate + "\n" if self.ripOriginate else ''
+
+        return "RIP Version: " + self.ripVersion + "\n" + "Auto Summary: " + ripSumState + "\n" + "Default Information Originate: " + ripOriginate + "\n" + "Networks: " + ', '.join(self.ripNetworks) + "\n"
     
     # Convert the stored RIP routing configurations to a list of configuration commands
     def toConfig(self) -> list:
@@ -249,13 +242,15 @@ class DHCP:
     
     # Define the string representation of the class
     def __repr__(self) -> str:
-        #! NOT WORKING
-        #! NOT WORKING
-        #! NOT WORKING
-        #! NOT WORKING
-        #! join(self.areas) -> you cant join a dictionary
-        return "Network IP: " + self.dhcpNetworkIP + "\n" + "Network Subnet Mask: " + self.dhcpNetworkSM + "\n" + "Gateway: " + self.dhcpGateway + "\n" + "DNS: " + self.dhcpDNS + "\n" + "Excluded Areas: " + ', '.join(self.areas) + "\n" + "Pool Name: " + self.dhcpPoolName + "\n"
-    
+        excluded_areas = ', '.join([f"{area['AreaFromIP']} - {area['AreaToIP']}" for area in self.areas])
+        return (
+            f"Network IP: {self.dhcpNetworkIP}\n"
+            f"Network Subnet Mask: {self.dhcpNetworkSM}\n"
+            f"Gateway: {self.dhcpGateway}\n"
+            f"DNS: {self.dhcpDNS}\n"
+            f"Excluded Areas: {excluded_areas}\n"
+            f"Pool Name: {self.dhcpPoolName}\n"
+        )
     # Convert the stored DHCP configurations to a list of configuration commands
     def toConfig(self) -> list:
         config = []
