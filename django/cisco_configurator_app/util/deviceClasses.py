@@ -90,10 +90,11 @@ class Interface:
     def toConfig(self) -> list:
         natInside = "ip nat inside\n" if self.ipNatInside else ''
         natOutside = "ip nat outside\n" if self.ipNatOutside else ''
+        shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
         ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
 
             
-        return ["interface " + self.interface + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}', f' {natInside}', f'{natOutside}' + "!\n"]
+        return ["interface " + self.interface + "\n", ipConfig, f' description {self.description}\n', f' {shutdown}', f' {natInside}', f'{natOutside}' + "!\n"]
 
 #endregion
 #region StaticRoute
@@ -173,13 +174,15 @@ class RipRouting:
     
     # Convert the stored RIP routing configurations to a list of configuration commands
     def toConfig(self) -> list:
+        ripSumState = "Auto Summary: " + self.ripSumState + "\n" if self.ripSumState else ''
+        ripOriginate = "Default Information Originate: " + self.ripOriginate + "\n" if self.ripOriginate else ''
         config = []
         config.append("router rip\n")
         config.append(f" version {self.ripVersion}\n")
         if self.ripSumState:
-            config.append(f" {self.ripSumState}")
+            config.append(f" {ripSumState}")
         if self.ripOriginate:
-            config.append(f" {self.ripOriginate}")
+            config.append(f" {ripOriginate}")
         for network in self.ripNetworks:
             config.append(f" network {network}\n")
         config.append("!\n")
@@ -422,3 +425,5 @@ class ACLExtended:
         config.append("!\n")
         return config
 #endregion
+
+#VLANS
