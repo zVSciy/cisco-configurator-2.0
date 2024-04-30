@@ -75,6 +75,8 @@ class configEditor:
     def removeContentBetweenIndexes(self, startIndex: int, endIndex: int) -> None:
         self.fileContent = self.fileContent[:startIndex] + self.fileContent[endIndex+1:]
 
+    def removeContentOnIndex(self, index: int) -> None:
+        self.fileContent = self.fileContent.pop(index)
 
     def appendContentToFile(self, content: list) -> list:
         self.fileContent = self.fileContent[:-1] + content + self.fileContent[-1:]
