@@ -110,6 +110,10 @@ ip nat inside source list 1 interface Ethernet0/1 overload
 access-list 1 permit any
 access-list 2 permit 192.168.1.1 123.123.123.123
 !
+ip access-list extended test
+ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq 80
+ permit tcp any any eq 80
+!
 control-plane
 !
 !
