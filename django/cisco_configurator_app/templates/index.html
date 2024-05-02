@@ -1,5 +1,5 @@
 <h1>Home </h1>
-<form id="configForm" method="post" action="{% url 'basic_config_route' device_type='router' %}">
+<form id="configForm" method="post" action="{% url 'basic_config_route' device_type='router' config_type='new' %}">
     <h2>Select Router or Switch:</h2>
     <select name="deviceType" id="deviceType">
         <option value="router">Router</option>
@@ -19,7 +19,9 @@
 <script>
     function submitForm() {
         let deviceType = document.getElementById("deviceType").value;
-        document.getElementById("configForm").action = "{% url 'basic_config_route' device_type='router' %}".replace('router', deviceType);
+        let configType = document.getElementById("configType").value;
+        document.getElementById("configForm").action = "{% url 'basic_config_route' device_type='router' config_type='new' %}".replace('router', deviceType).replace('new', configType);
+        
         document.getElementById("configForm").submit();
     }
 </script>

@@ -25,7 +25,7 @@ urlpatterns = [
     path('index/', views.index, name='index_route'),
     path('', lambda request: redirect('index_route', permanent=False)),
     # routing of config pages
-    path('basic-config/<str:device_type>/', views.basic_config, name='basic_config_route'),
+    path('basic-config/<str:device_type>/<str:config_type>', views.basic_config, name='basic_config_route'),
     path('interface/<str:device_type>/', views.interface, name='interface_route'),
     path('etherchannel/<str:device_type>/', views.etherchannel, name='etherchannel_route'),
     path('vlan/<str:device_type>/', views.vlan, name='vlan_route'),
