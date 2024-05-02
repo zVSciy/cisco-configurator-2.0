@@ -23,14 +23,15 @@ def index(request):
     return render(request, 'index.html')
 
 @csrf_exempt
-def basic_config(request, device_type):
+def basic_config(request, device_type, config_type):
 
     config_option = {
         "device_type": device_type,
-        "interfaces":  get_interfaces(device_type)
+        "interfaces":  get_interfaces(device_type),
+        "config_type": config_type
     }
 
-    #print(config_option)
+    print(config_type)
     return render(request, 'configurations/basic_config.html', config_option)
 
 
