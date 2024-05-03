@@ -492,7 +492,23 @@ function add_to_config(page) {
     document.getElementById('hidden_ospf_router_id').value = ospf_router_id_to_set;
     document.getElementById('hidden_ospf_info_for_transfer').value = ospf_info_for_transfer_to_set;
   }
+}
 
 
 
+//Index Site
+
+function ValidateIndexInput(){
+  ip = document.getElementById('loadFromIpAddress')
+  if (isValidIpAddress(ip.value)) {
+      document.getElementById("IndexSubmitButton").disabled = false;
+      document.getElementById("IndexErrorMessage").textContent = '';
+
+  }else if(ip.value == ''){
+    document.getElementById("IndexErrorMessage").textContent = '';
+    document.getElementById("IndexSubmitButton").disabled = true;
+  }else{
+      document.getElementById("IndexSubmitButton").disabled = true;
+      document.getElementById("IndexErrorMessage").textContent = 'You have entered an invalid IP address!';
+  }
 }

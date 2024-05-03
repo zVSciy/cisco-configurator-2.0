@@ -153,6 +153,11 @@ def get_inputs(request, device_type, config_type):# in this function the input t
 
     forward_to = request.POST.get('hidden_forward_to')
 
+    #inputs from the index site (load from ROuter Switch inputs)
+    load_from_ipAddress = request.POST.get('loadFromIpAddress')
+    load_from_username = request.POST.get('loadFromUsername')
+    load_from_password = request.POST.get('loadFromPassword')
+
     #basic config
     hostname = request.POST.get('hidden_hostname')
     banner = request.POST.get('hidden_banner')
@@ -167,24 +172,26 @@ def get_inputs(request, device_type, config_type):# in this function the input t
     Interface_List = [] # ! List to store the Interfaces as an Interface Object in 
 
     if request.POST.get('hidden_'+config_option["interfaces"][0].port_name+'_shutdown') != '':
-        for i in config_option["interfaces"]:
-            interfaces_shutdown = request.POST.get('hidden_'+i.port_name+'_shutdown')
-            interfaces_description = request.POST.get('hidden_'+i.port_name+'_description')
-            interfaces_ip = request.POST.get('hidden_'+i.port_name+'_ip')
-            interfaces_sm = request.POST.get('hidden_'+i.port_name+'_sm')
-            nat_inside = False
-            nat_outside = False
-            if nat_ingoing == i.port_name:
-                nat_inside = True
-            if nat_outgoing == i.port_name:
-                nat_outside = True
-                
-            interfaces_shutdown = True if interfaces_shutdown == 'true' else False
+        if request.POST.get('hidden_'+config_option["interfaces"][0].port_name+'_shutdown') != None:
+            for i in config_option["interfaces"]:
+                interfaces_shutdown = request.POST.get('hidden_'+i.port_name+'_shutdown')
+                interfaces_description = request.POST.get('hidden_'+i.port_name+'_description')
+                interfaces_ip = request.POST.get('hidden_'+i.port_name+'_ip')
+                interfaces_sm = request.POST.get('hidden_'+i.port_name+'_sm')
+                nat_inside = False
+                nat_outside = False
+                if nat_ingoing == i.port_name:
+                    nat_inside = True
+                if nat_outgoing == i.port_name:
+                    nat_outside = True
 
-            Interface_List.append(Interface(i.port_name, interfaces_ip, interfaces_sm, nat_inside, nat_outside, interfaces_description, interfaces_shutdown))
+                interfaces_shutdown = True if interfaces_shutdown == 'true' else False
 
-    print(Interface_List)
+                Interface_List.append(Interface(i.port_name, interfaces_ip, interfaces_sm, nat_inside, nat_outside, interfaces_description, interfaces_shutdown))
+
+
     ##DEBUG
+    # print(Interface_List)
     # FastEthernet01_shutdown = True
     # FastEthernet00_shutdown = True
 
