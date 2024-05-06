@@ -225,7 +225,7 @@ class ConfigManager:
     def getACLConfig(self) -> ACLStandard:
         aclLines = self.configEditor.findContentIndexes("access-list ", "!")
         aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
-        ACLs = "" #^"ACLID,deny|permit,IP,SM;ACLID,deny|permit,IP,SM;ACLID,IP,SM"
+        ACLs = "" #^"ACLID,deny|permit,IP,WM;ACLID,deny|permit,IP,SM;ACLID,IP,WM"
         #Iterates over the lines of the ACL configuration and adds them to the ACLs string
         # ^ access-list 1 permit any
         # ^ access-list 2 permit 192.168.1.1 123.123.123.123
