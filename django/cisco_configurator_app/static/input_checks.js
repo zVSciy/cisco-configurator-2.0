@@ -401,6 +401,58 @@ function checkOspfProcess(){
   }
 }
 
+// Basic ACLs
+
+let basic_acl_ids = []
+
+function checkBasicAclId(){
+  let id = document.getElementById('basic_acl_id').value;
+  let message = document.getElementById('basic_acl_id_info');
+
+  if (basic_acl_ids.includes(id)){
+    message.textContent = "ID already set!";
+    return false;
+  }else {
+    message.textContent = "";
+    return true;
+  }
+
+}
+
+function addBasicAclIp() {
+  let Ip = document.getElementById('basic_acl_ip').value;
+  let wildcardMask = document.getElementById('basic_acl_wm').value;
+  let id = document.getElementById('basic_acl_id').value
+  let pOrD = document.getElementById('basic_acl_pOrD').value
+
+  basic_acl_ids.push(id);
+
+  let networksInfo = "<b>ID: </b>" + id +  "<b> Option: </b>" + pOrD + " <b>IP-Address: </b>" + Ip + "<b> Wildcard Mask: </b>" + wildcardMask +'<br><br>';
+
+  document.getElementById('basic_acl_info').innerHTML += networksInfo;
+  document.getElementById('basic_acl_info_for_transfer').value += id + ',' + pOrD + ',' + Ip + ',' + wildcardMask + ';';
+
+  console.log(document.getElementById('basic_acl_info_for_transfer').value);
+
+  document.getElementById("add_basic_acl_button").disabled = true;
+}
+
+function ValidateBasicAclNetwork(info) {
+  let message = document.getElementById(info);
+  let TButton = document.getElementById("add_basic_acl_button");
+  if (isValidIpAddress(document.getElementById('basic_acl_wm').value) && isValidIpAddress(document.getElementById('basic_acl_ip').value) && checkBasicAclId()) {
+    message.textContent = "";
+    TButton.disabled = false;
+    return true;
+  }else if(document.getElementById('basic_acl_wm').value == '' && document.getElementById('basic_acl_ip').value == ''){
+    message.textContent = "";
+    TButton.disabled = true;
+  }else {
+    message.textContent = "Please fill out all fields correctly!";
+    TButton.disabled = true;
+  }
+}
+
 
 
 // add to Config for backend
@@ -491,6 +543,12 @@ function add_to_config(page) {
     document.getElementById('hidden_ospf_process').value = ospf_process_to_set; //true = on | false = off
     document.getElementById('hidden_ospf_router_id').value = ospf_router_id_to_set;
     document.getElementById('hidden_ospf_info_for_transfer').value = ospf_info_for_transfer_to_set;
+  }
+
+  if (page == "acl_basic"){
+    let basic_acl_info_for_transfer_to_set = document.getElementById('basic_acl_info_for_transfer').value 
+
+    document.getElementById('hidden_basic_acl_info_for_transfer').value = basic_acl_info_for_transfer_to_set;
   }
 }
 

@@ -258,10 +258,14 @@ def get_inputs(request, device_type, config_type):# in this function the input t
     ospf_router_id = request.POST.get('hidden_ospf_router_id')
     ospf_process = request.POST.get('hidden_ospf_process')
 
+    #basic acl
+    basic_acl_info_for_transfer = request.POST.get('hidden_basic_acl_info_for_transfer')
+
     dl_or_tf = request.POST.get('hidden_dl_or_tf')
     ip = request.POST.get('hidden_ip')
     user = request.POST.get('hidden_user')
     pw = request.POST.get('hidden_pw')
+
 
     response = ''
 
