@@ -432,8 +432,6 @@ function addBasicAclIp() {
   document.getElementById('basic_acl_info').innerHTML += networksInfo;
   document.getElementById('basic_acl_info_for_transfer').value += id + ',' + pOrD + ',' + Ip + ',' + wildcardMask + ';';
 
-  console.log(document.getElementById('basic_acl_info_for_transfer').value);
-
   document.getElementById("add_basic_acl_button").disabled = true;
 }
 
@@ -445,6 +443,61 @@ function ValidateBasicAclNetwork(info) {
     TButton.disabled = false;
     return true;
   }else if(document.getElementById('basic_acl_wm').value == '' && document.getElementById('basic_acl_ip').value == ''){
+    message.textContent = "";
+    TButton.disabled = true;
+  }else {
+    message.textContent = "Please fill out all fields correctly!";
+    TButton.disabled = true;
+  }
+}
+
+// Extended ACLs
+
+let extended_acl_ids = []
+
+function checkExtendedAclId(){
+  let id = document.getElementById('extended_acl_id').value;
+  let message = document.getElementById('extended_acl_id_info');
+
+  if (extended_acl_ids.includes(id)){
+    message.textContent = "ID already set!";
+    return false;
+  }else {
+    message.textContent = "";
+    return true;
+  }
+
+}
+
+function addExtendedAclIp() {
+  let srcIp = document.getElementById('extended_acl_src_ip').value;
+  let srcWildcardMask = document.getElementById('extended_acl_src_wm').value;
+  let destIp = document.getElementById('extended_acl_dest_ip').value;
+  let destWildcardMask = document.getElementById('extended_acl_dest_wm').value;
+  let id = document.getElementById('extended_acl_id').value
+  let pOrD = document.getElementById('extended_acl_pOrD').value
+  let port = document.getElementById('extended_acl_port').value
+
+  extended_acl_ids.push(id);
+
+  let networksInfo = "<b>ID: </b>" + id +  "<b> Option: </b>" + pOrD + " <b> Source IP-Address: </b>" + srcIp + "<b>Source Wildcard Mask: </b>" + srcWildcardMask + "<b> Destination IP-Adress: </b>" + destIp + "<b> Destination Wildcard Mask: </b>" + destWildcardMask + "<b> Port: </b>"+ port +'<br><br>';
+
+  document.getElementById('extended_acl_info').innerHTML += networksInfo;
+  document.getElementById('extended_acl_info_for_transfer').value += id + ',' + pOrD + ',' + srcIp + ',' + srcWildcardMask + ',' + destIp + ',' + destWildcardMask + ',' + port + ';';
+
+  console.log(document.getElementById('extended_acl_info_for_transfer').value);
+
+  document.getElementById("add_extended_acl_button").disabled = true;
+}
+
+function ValidateExtendedAclNetwork(info) {
+  let message = document.getElementById(info);
+  let TButton = document.getElementById("add_extended_acl_button");
+  if (isValidIpAddress(document.getElementById('extended_acl_src_ip').value) && isValidIpAddress(document.getElementById('extended_acl_src_wm').value) && isValidIpAddress(document.getElementById('extended_acl_dest_ip').value) && isValidIpAddress(document.getElementById('extended_acl_dest_wm').value) && checkExtendedAclId()) {
+    message.textContent = "";
+    TButton.disabled = false;
+    return true;
+  }else if(document.getElementById('extended_acl_src_ip').value == '' && document.getElementById('extended_acl_src_wm').value == '' && document.getElementById('extended_acl_dest_ip').value == '' && document.getElementById('extended_acl_dest_wm').value == ''){
     message.textContent = "";
     TButton.disabled = true;
   }else {
@@ -550,11 +603,17 @@ function add_to_config(page) {
 
     document.getElementById('hidden_basic_acl_info_for_transfer').value = basic_acl_info_for_transfer_to_set;
   }
+
+  if (page == "acl_extended"){
+    let extended_acl_info_for_transfer_to_set = document.getElementById('extended_acl_info_for_transfer').value 
+
+    document.getElementById('hidden_extended_acl_info_for_transfer').value = extended_acl_info_for_transfer_to_set;
+  }
 }
 
 
 
-//Index Site
+//Index Site Checks
 
 function ValidateIndexInput(){
   ip = document.getElementById('loadFromIpAddress')

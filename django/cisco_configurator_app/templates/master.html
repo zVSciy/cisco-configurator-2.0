@@ -61,6 +61,9 @@
 
     <!-- basic ACLs -->
     <input type="hidden" id="hidden_basic_acl_info_for_transfer" name="hidden_basic_acl_info_for_transfer">
+
+    <!-- extended ACLs -->
+    <input type="hidden" id="hidden_extended_acl_info_for_transfer" name="hidden_extended_acl_info_for_transfer">
   </form>
 
   <div class="menu-container justify-between flex py-2 pt-10 items-center">
@@ -109,6 +112,14 @@
         OSPF
       </button>
 
+      <button type="button" class="menu-button" onclick="submitForm('acl_basic')">
+        Basic ACL
+      </button>
+
+      <button type="button" class="menu-button" onclick="submitForm('acl_extended')">
+        Extended ACL
+      </button>
+
       <form method="post" action="{% url 'etherchannel_route' device_type='router' config_type=config_type %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
@@ -116,27 +127,6 @@
         </select>
         <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
           Etherchannel
-        </button>
-      </form>
-
-
-      <form method="post" action="{% url 'acl_basic_route' device_type='router' config_type=config_type %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="router">Router</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          Basic ACL
-        </button>
-      </form>
-
-      <form method="post" action="{% url 'acl_extended_route' device_type='router'  config_type=config_type %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="router">Router</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          Extended ACL
         </button>
       </form>
 
