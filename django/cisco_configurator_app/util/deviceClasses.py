@@ -167,7 +167,7 @@ class RipRouting:
 
     # Define the string representation of the class
     def __repr__(self) -> str:
-        ripSumState = "Auto Summary: " + self.ripSumState + "\n" if self.ripSumState else ''
+        ripSumState = "auto-summary" + self.ripSumState + "\n" if self.ripSumState else ''
         ripOriginate = "Default Information Originate: " + self.ripOriginate + "\n" if self.ripOriginate else ''
 
         return "RIP Version: " + self.ripVersion + "\n" + "Auto Summary: " + ripSumState + "\n" + "Default Information Originate: " + ripOriginate + "\n" + "Networks: " + ', '.join(self.ripNetworks) + "\n"
@@ -175,7 +175,7 @@ class RipRouting:
     # Convert the stored RIP routing configurations to a list of configuration commands
     def toConfig(self) -> list:
         ripSumState = "Auto Summary: " + self.ripSumState + "\n" if self.ripSumState else ''
-        ripOriginate = "Default Information Originate: " + self.ripOriginate + "\n" if self.ripOriginate else ''
+        ripOriginate = "default-information originate" + self.ripOriginate + "\n" if self.ripOriginate else ''
         config = []
         config.append("router rip\n")
         config.append(f" version {self.ripVersion}\n")
@@ -301,17 +301,14 @@ class NAT:
 # Define a class to manage Standard Access Control List (ACL) configurations
 class ACLStandard:
     # Initialize the class with various parameters
-    def __init__(self, accessList:str = None, accessListName:str = None) -> None:
+    def __init__(self, accessList:str = None) -> None:
         # Check if the accessList is a string and store it
         if type(accessList) == str:
             self.ACLs = []
             self.getACLs(accessList)
         else:
             raise TypeError()  
-        if type(accessListName) == str:
-            self.accessList = accessListName
-        else:
-            raise TypeError()
+        
 
     # Split the accessList string into individual ACLs and store them in a list
     # The accessList string format is "ACLID,deny|permit,IP,SM;ACLID,deny|permit,IP,SM;ACLID,IP,SM"
@@ -329,12 +326,11 @@ class ACLStandard:
 
     # Define the string representation of the class
     def __repr__(self) -> str:
-        return "AccessListName: " + self.accessListName + "\n" + json.dumps(self.ACL, indent=4)
+        return  json.dumps(self.ACL, indent=4)
     
     # Convert the stored ACL configurations to a list of configuration commands
     def toConfig(self) -> list:
         config = []
-        config.append(f"ip access-list standard {self.accessListName}\n")
         for acl in self.ACLs:
             if len(acl) == 3:
                 config.append(f"access-list {acl['id']} {acl['permitDeny']} {acl['ip']}\n")
@@ -348,7 +344,7 @@ class ACLStandard:
  
 # Define a class to manage OSPF (Open Shortest Path First) configurations
 class OSPF:
-    def __init__(self, ospfProcess:str = None, ospfRouterID:str = None, ospfNetworks:str = None) -> None:
+    def __init__(self, ospfProcess:str = None, ospfRouterID:str = None, ospfOriginate:bool = None, ospfAutoSummary:bool = None, ospfNetworks:str = None) -> None:
         if type(ospfProcess) == str:
             self.ospfProcess = ospfProcess
         else:
@@ -359,12 +355,25 @@ class OSPF:
         else:
             raise TypeError()
         
-        self.ospfNetworks = []
         if type(ospfNetworks) == str:
+            self.ospfNetworks = []
             self.getNetworks(ospfNetworks)
         else:
             raise TypeError()
-
+        
+        if type(ospfOriginate) == bool:
+            self.ospfOriginate = ospfOriginate
+        else:
+            raise TypeError()
+        
+        if type(ospfOriginate) == bool:
+            self.ospfAutoSummary = ospfAutoSummary
+        else:
+            raise TypeError()
+        
+    # If ospfNetworks is not empty, it splits the string into individual networks.
+        # For each network, it splits the string into individual fields and appends them as a dictionary to the ospfNetworks list.
+        # It returns the ospfNetworks list.
     def getNetworks(self, ospfNetworks:str) -> list:
         if ospfNetworks:
             networks = ospfNetworks.split(';')
@@ -376,67 +385,67 @@ class OSPF:
     
     # Define the string representation of the class
     def __repr__(self) -> str:
+        ospfAutoSummary = " no auto-summary\n" if self.ospfAutoSummary else ''
+        ospfOriginate = " default-information originate\n" if self.ospfOriginate else ''
         networks = ', '.join([f"{network['networkID']}, {network['networkWM']}, {network['area']}" for network in self.ospfNetworks])
-        return "OSPF Process: " + self.ospfProcess + "\n" + "Router ID: " + self.ospfRouterID + "\n" + "Networks: " + networks + "\n"
+        return "OSPF Process: " + self.ospfProcess + "\n" + "Router ID: " + self.ospfRouterID + "\n" + "Networks: " + networks + "\n" + "Default Information Originate: " + ospfOriginate + "\n" + "Auto Summary: " + ospfAutoSummary + "\n"
 
+    # It initializes an empty list and appends the OSPF process and router ID to it.
+    # For each network in the ospfNetworks list, it appends a string of the network fields to the list.
     # Convert the stored OSPF configurations to a list of configuration commands
     def toConfig(self) -> list:
+        ospfAutoSummary = " no auto-summary\n" if self.ospfAutoSummary else ''
+        ospfOriginate = " default-information originate\n" if self.ospfOriginate else ''
         config = []
         config.append("router ospf " + self.ospfProcess + "\n")
         config.append(f" router-id {self.ospfRouterID}\n")
         for network in self.ospfNetworks:
             config.append(f" network {network['networkID']} {network['networkWM']} area {network['area']}\n")
+        config.append(ospfOriginate)
+        config.append(ospfAutoSummary)
         config.append("!\n")
         return config
 
 #endregion
 #region ACL Extended
 class ACLExtended:
-    def __init__(self, aclListName:str = None, aclList:list = None) -> None:
-        if aclList is None:
+    def __init__(self, aclList:str = None, aclRuleName:str = None) -> None:
+        if type(aclList) == str:
+            # self.aclList = aclList
             self.aclList = []
-        elif type(aclList) == list:
-            self.aclList = aclList
+            self.getACLs(aclList)
         else:
             raise TypeError()
-        if type(aclListName) == str:
-            self.aclListName = aclListName
+        
+        if type(aclRuleName) == str:
+            self.aclRuleName = aclRuleName
         else:
             raise TypeError()
-    
+        
+    # If aclList is not empty, it splits the string into individual ACLs.
+    # For each ACL, it splits the string into individual fields and appends them as a dictionary to the aclList list.
+    # It returns the aclList list.
     def getACLs(self, aclList:str) -> list:
         if aclList:
             ACLs = aclList.split(";")
             for ACL in ACLs:
                 if ACL:
-                    id, permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, port = ACL.split(",")
-                    self.aclList.append({'id': id, 'permitDeny': permitDeny, 'protocol': protocol, 'sourceIP': sourceIP, 'sourceWM': sourceWM, 'destIP': destIP, 'destWM': destWM, 'port': port})
+                    permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, port = ACL.split(",")
+                    self.aclList.append({'permitDeny': permitDeny, 'protocol': protocol, 'sourceIP': sourceIP, 'sourceWM': sourceWM, 'destIP': destIP, 'destWM': destWM, 'port': port})
         return self.aclList
     
     def __repr__(self) -> str:
-        return "AccessListName: " + self.aclListName + "\n" + json.dumps(self.aclList, indent=4)
+        return self.aclRuleName + json.dumps(self.aclList, indent=4)
 
+
+     # It initializes an empty list and appends the ACL rule name to it.
+        # For each ACL in the aclList list, it appends a string of the ACL fields to the list.
+        # It appends a "!" to the list and returns it.
     def toConfig(self) -> list:
-        #! FORMAT ERROR
-        #! FORMAT ERROR
-        #! FORMAT ERROR
-        #! FORMAT ERROR
-        #^ip access-list extended test
-        #^ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq www
-        #^ permit tcp any any eq www
-        #^!
-        #^ip access-list extended test2
-        #^ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq www
-        #^ permit tcp any any eq www
-
-        #line 437: access-list and id is not required
-        #maybe think about adding a check if any parameter is any
-
-
         config = []
-        config.append(f"ip access-list extended {self.aclListName}\n")
+        config.append(f"ip access-list extended {self.aclRuleName}\n")
         for acl in self.aclList:
-            config.append(f"access-list {acl['id']} {acl['permitDeny']} {acl['protocol']} {acl['sourceIP']} {acl['sourceWM']} {acl['destIP']} {acl['destWM']} {acl['port']}\n")
+            config.append(f" permit {acl['protocol']} {acl['sourceIP']} {acl['sourceWM']} {acl['destIP']} {acl['destWM']} eq {acl['port']}\n")
         config.append("!\n")
         return config
 #endregion
