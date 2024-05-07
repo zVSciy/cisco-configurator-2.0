@@ -370,7 +370,10 @@ class OSPF:
             self.ospfAutoSummary = ospfAutoSummary
         else:
             raise TypeError()
-
+        
+    # If ospfNetworks is not empty, it splits the string into individual networks.
+        # For each network, it splits the string into individual fields and appends them as a dictionary to the ospfNetworks list.
+        # It returns the ospfNetworks list.
     def getNetworks(self, ospfNetworks:str) -> list:
         if ospfNetworks:
             networks = ospfNetworks.split(';')
@@ -387,6 +390,8 @@ class OSPF:
         networks = ', '.join([f"{network['networkID']}, {network['networkWM']}, {network['area']}" for network in self.ospfNetworks])
         return "OSPF Process: " + self.ospfProcess + "\n" + "Router ID: " + self.ospfRouterID + "\n" + "Networks: " + networks + "\n" + "Default Information Originate: " + ospfOriginate + "\n" + "Auto Summary: " + ospfAutoSummary + "\n"
 
+    # It initializes an empty list and appends the OSPF process and router ID to it.
+    # For each network in the ospfNetworks list, it appends a string of the network fields to the list.
     # Convert the stored OSPF configurations to a list of configuration commands
     def toConfig(self) -> list:
         ospfAutoSummary = " no auto-summary\n" if self.ospfAutoSummary else ''
@@ -417,7 +422,10 @@ class ACLExtended:
             self.aclRuleName = aclRuleName
         else:
             raise TypeError()
-    
+        
+    # If aclList is not empty, it splits the string into individual ACLs.
+    # For each ACL, it splits the string into individual fields and appends them as a dictionary to the aclList list.
+    # It returns the aclList list.
     def getACLs(self, aclList:str) -> list:
         if aclList:
             ACLs = aclList.split(";")
@@ -430,6 +438,10 @@ class ACLExtended:
     def __repr__(self) -> str:
         return self.aclRuleName + json.dumps(self.aclList, indent=4)
 
+
+     # It initializes an empty list and appends the ACL rule name to it.
+        # For each ACL in the aclList list, it appends a string of the ACL fields to the list.
+        # It appends a "!" to the list and returns it.
     def toConfig(self) -> list:
         config = []
         config.append(f"ip access-list extended {self.aclRuleName}\n")
@@ -439,8 +451,3 @@ class ACLExtended:
         return config
 #endregion
 
-# acl = ACLExtended()
-# acl.getACLs("test,permit,tcp,1.1.1.0,0.0.0.255,2.2.2.0,0.0.0.255,www;test,permit,tcp,1.1.1.0,0.0.0.255,2.2.2.0,0.0.0.255,www")
-# config = acl.toConfig()
-# for line in config:
-#     print(line, end='')
