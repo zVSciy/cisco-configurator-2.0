@@ -389,6 +389,11 @@ class ConfigManager:
     #region ExtendedACL
 
     def getExtendedACLConfig(self, aclName) -> ACLExtended:
+        """
+        Returns a ACLExtended object with the ACL configuration in the config file
+        It searches for the "ip access-list extended" keyword and reads the configuration
+        It only returns the value of the ACL with the selected name
+        """
         aclLines = self.configEditor.findContentIndexes(f"ip access-list extended {aclName}", "!")
         aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
         #^ ip access-list extended test2
@@ -404,6 +409,10 @@ class ConfigManager:
         return ACLExtended(returnAclRulesStr, aclName)
     
     def getAllACLConfig(self) -> list[ACLExtended]:
+        """
+        Returns a list of ACLExtended objects with the ACL configuration in the config file
+        It searches for the "ip access-list extended" keyword, and then loops over the found ACLs and reads the configuration
+        """
         aclLines = self.configEditor.findMultipleContentIndexes("ip access-list extended", "!")
         returnACLObjects = []
         for acl in aclLines:
@@ -414,48 +423,16 @@ class ConfigManager:
 
     
     def writeExtendedACLConfig(self, aclConfig: ACLExtended) -> None:
+        """
+        Writes the aclConfig to the config file
+        If no acl with the same name was found, it creates a new one, if one was found, it replaces the old one
+        """
         aclLines = self.configEditor.findContentIndexes(f"ip access-list extended {aclConfig.aclRuleName}", "!")
+        #^ ip access-list extended test2
         if(len(aclLines) > 0):
             self.configEditor.removeContentBetweenIndexes(aclLines[0], aclLines[-1])
         self.configEditor.appendContentToFile(aclConfig.toConfig())
         self.configEditor.writeConfig()
-
-
-        # aclLines = self.configEditor.findMultipleContentIndexes(f"ip access-list extended", "!")
-        # outputACLStr = ""
-        # for acl in aclLines:
-        #     aclText = self.configEditor.getContentBetweenIndexes(acl[0], acl[-1])
-        #     aclName = aclText[0].split(" ")[3]
-        #     permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, eq, port = aclText[1].split(" ")
-        #     if(len(outputACLStr) > 0):
-        #         outputACLStr += ";"
-        #     outputACLStr += aclName + "," + permitDeny + "," + protocol + "," + sourceIP + "," + sourceWM + "," + destIP + "," + destWM + "," + port
-
-        
-    # def writeExtendedAclConfig(self, aclConfig: ACLExtended) -> None:
-    #     aclLines = self.configEditor.findMultipleContentIndexes("ip access-list extended", "!")
-
-    #     for acl in aclLines:
-    #         aclText = self.configEditor.getContentBetweenIndexes(acl[0], acl[-1])
-    #         self.configEditor.removeContentBetweenIndexes(acl[0], acl[-1])
-    #     self.configEditor.appendContentToFile(aclConfig.toConfig())
-    #     self.configEditor.writeConfig()
-        # aclLines = self.configEditor.findContentIndexes("ip access-list extended", "!")
-        # if(len(aclLines) > 0):
-        #     self.configEditor.removeContentBetweenIndexes(aclLines[0], aclLines[-1])
-        # self.configEditor.appendContentToFile(aclConfig.toConfig())
-        # self.configEditor.writeConfig()
-
-        
-    # def writeExtendedACLConfig(self, aclConfig: ACLExtended) -> None:
-    #     aclLines = self.configEditor.findContentIndexes("ip access-list", "!")
-    #     aclContent = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
-    #     for i, line in aclContent:
-    #         if int(line[1]) < 100:
-    #             continue
-    #         self.configEditor.removeContentOnIndex(i)
-    #     self.configEditor.appendContentToFile(aclConfig.toConfig())
-    #     self.configEditor.writeConfig()
 
 
     #endregion
@@ -473,10 +450,10 @@ cM = ConfigManager(filePath,outputPath)
 # print(cM.writeExtendedACLConfig(aclconfig))
 
 
-acls = cM.getAllACLConfig()
-for acl in acls:
-    print(acl.toConfig())
-    cM.writeExtendedACLConfig(acl)
+# acls = cM.getAllACLConfig()
+# for acl in acls:
+#     print(acl.toConfig())
+#     cM.writeExtendedACLConfig(acl)
 
 # ospf = cM.getAllOSPFConfig()
 # for i in ospf:
