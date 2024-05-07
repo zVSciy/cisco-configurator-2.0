@@ -434,13 +434,8 @@ class ACLExtended:
         for acl in self.aclList:
             config.append(f"ip access-list extended {acl['id']}\n")
             config.append(f" permit {acl['protocol']} {acl['sourceIP']} {acl['sourceWM']} {acl['destIP']} {acl['destWM']} eq {acl['port']}\n")
-            config.append(f"permit tcp any any")      
-        config.append("!\n")
+            config.append(f" permit tcp any any\n")
+            config.append("!\n")  
         return config
 #endregion
-acl = ACLExtended()
-acl.getACLs("test,permit,tcp,1.1.1.0,0.0.0.255,2.2.2.0,0.0.0.255,80;test2,deny,tcp,2.2.2.0,0.0.0.255,2.2.2.0,0.0.0.255,80")
-config = acl.toConfig()
-for line in config:
-    print(line, end='')
-#VLANS
+
