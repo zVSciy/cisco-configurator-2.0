@@ -360,6 +360,7 @@ class OSPF:
             raise TypeError()
         
         if type(ospfNetworks) == str:
+            self.ospfNetworks = []
             self.getNetworks(ospfNetworks)
         else:
             raise TypeError()
@@ -433,6 +434,7 @@ class ACLExtended:
         for acl in self.aclList:
             config.append(f"ip access-list extended {acl['id']}\n")
             config.append(f" permit {acl['protocol']} {acl['sourceIP']} {acl['sourceWM']} {acl['destIP']} {acl['destWM']} eq {acl['port']}\n")
+            config.append(f"permit tcp any any")      
         config.append("!\n")
         return config
     
