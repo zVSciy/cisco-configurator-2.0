@@ -28,10 +28,12 @@ def basic_config(request, device_type, config_type):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_type": config_type,
+        "hostname": 'test', #!replace 'test' with real hostname that gets loaded from the exampleConfig when the site gets invoked
+        "banner": ''
     }
 
-    print(config_type)
+    # print(config_type)
     return render(request, 'configurations/basic_config.html', config_option)
 
 
