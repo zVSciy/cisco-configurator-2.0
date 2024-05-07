@@ -359,7 +359,6 @@ class OSPF:
         else:
             raise TypeError()
         
-        self.ospfNetworks = []
         if type(ospfNetworks) == str:
             self.getNetworks(ospfNetworks)
         else:
@@ -452,7 +451,7 @@ class ACLExtended:
 
 #endregion
 acl = ACLExtended()
-acl.getACLs("test,permit,tcp,1.1.1.0,0.0.0.255,2.2.2.0,0.0.0.255,www")
+acl.getACLs("test,permit,tcp,1.1.1.0,0.0.0.255,2.2.2.0,0.0.0.255,80;test2,deny,tcp,2.2.2.0,0.0.0.255,2.2.2.0,0.0.0.255,80")
 config = acl.toConfig()
 for line in config:
     print(line, end='')
