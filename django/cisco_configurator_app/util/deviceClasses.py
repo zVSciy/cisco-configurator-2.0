@@ -371,7 +371,7 @@ class OSPF:
             raise TypeError()
         
         if type(ospfOriginate) == bool:
-            self.ospfOriginate = ospfOriginate
+            self.ospfAutoSummary = ospfAutoSummary
         else:
             raise TypeError()
 
@@ -409,7 +409,7 @@ class OSPF:
 #region ACL Extended
 
 class ACLExtended:
-    def __init__(self, aclListName:str = None, aclList:list = None) -> None:
+    def __init__(self, aclList:list = None) -> None:
         if aclList is None:
             self.aclList = []
         elif type(aclList) == list:
@@ -430,6 +430,14 @@ class ACLExtended:
         return "AccessListName: " + self.aclListName + "\n" + json.dumps(self.aclList, indent=4)
 
     def toConfig(self) -> list:
+        config = []
+        for acl in self.aclList:
+            config.append(f"ip access-list extended {acl['id']}\n")
+            config.append(f" permit {acl['protocol']} {acl['sourceIP']} {acl['sourceWM']} {acl['destIP']} {acl['destWM']} eq {acl['port']}\n")
+        config.append("!\n")
+        return config
+    
+
         #! FORMAT ERROR
         #! FORMAT ERROR
         #! FORMAT ERROR
@@ -443,5 +451,9 @@ class ACLExtended:
         #^ permit tcp any any eq www
 
 #endregion
-
+acl = ACLExtended()
+acl.getACLs("test,permit,tcp,1.1.1.0,0.0.0.255,2.2.2.0,0.0.0.255,www")
+config = acl.toConfig()
+for line in config:
+    print(line, end='')
 #VLANS
