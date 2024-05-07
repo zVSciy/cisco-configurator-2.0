@@ -11,7 +11,7 @@
 
 <body>
   <!-- hidden input form to forward the user input into the backend if another site gets opened -->
-  <form method="post" id="inputs_form" action="{% url 'get_inputs_route' device_type='router' config_type=config_type %}" class="menu-form">    {% csrf_token %}
+  <form method="post" id="inputs_form" action="{% url 'get_inputs_route' device_type='router' config_mode=config_mode %}" class="menu-form">    {% csrf_token %}
 
     <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="">
     <!-- basic config -->
@@ -120,7 +120,7 @@
         Extended ACL
       </button>
 
-      <form method="post" action="{% url 'etherchannel_route' device_type='router' config_type=config_type %}" class="menu-form">
+      <form method="post" action="{% url 'etherchannel_route' device_type='router' config_mode=config_mode %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="router">Router</option>
@@ -142,7 +142,7 @@
         </button>
       </form>
 
-      <form method="post" action="{% url 'basic_config_route' device_type='switch'  config_type=config_type %}" class="menu-form">
+      <form method="post" action="{% url 'basic_config_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
@@ -152,7 +152,7 @@
         </button>
       </form>
 
-      <form method="post" action="{% url 'etherchannel_route' device_type='switch'  config_type=config_type %}" class="menu-form">
+      <form method="post" action="{% url 'etherchannel_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
@@ -162,7 +162,7 @@
         </button>
       </form>
 
-      <form method="post" action="{% url 'vlan_route' device_type='switch'  config_type=config_type %}" class="menu-form">
+      <form method="post" action="{% url 'vlan_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
@@ -172,7 +172,7 @@
         </button>
       </form>
 
-      <form method="post" action="{% url 'acl_basic_route' device_type='switch'  config_type=config_type %}" class="menu-form">
+      <form method="post" action="{% url 'acl_basic_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
@@ -182,7 +182,7 @@
         </button>
       </form>
 
-      <form method="post" action="{% url 'acl_extended_route' device_type='switch'  config_type=config_type %}" class="menu-form">
+      <form method="post" action="{% url 'acl_extended_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
@@ -192,7 +192,7 @@
         </button>
       </form>
 
-      <form method="post" action="{% url 'vtp_dtp_route' device_type='switch'  config_type=config_type %}" class="menu-form">
+      <form method="post" action="{% url 'vtp_dtp_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
@@ -202,7 +202,7 @@
         </button>
       </form>
 
-      <form method="post" action="{% url 'stp_route' device_type='switch'  config_type=config_type %}" class="menu-form">
+      <form method="post" action="{% url 'stp_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>

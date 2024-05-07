@@ -23,132 +23,136 @@ def index(request):
     return render(request, 'index.html')
 
 @csrf_exempt
-def basic_config(request, device_type, config_type):
+def basic_config(request, device_type, config_mode):
 
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type,
-        "hostname": 'test', #!replace 'test' with real hostname that gets loaded from the exampleConfig when the site gets invoked
+        "config_mode": config_mode,
+        "hostname": 'test', #! replace 'test' with real hostname that gets loaded from the exampleConfig when the site gets invoked
         "banner": ''
     }
 
-    # print(config_type)
+    # print(config_mode)
     return render(request, 'configurations/basic_config.html', config_option)
 
 
 
-def interface(request, device_type, config_type):
+def interface(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode,
     }
+
+    # for interface in config_option['interfaces']:
+    #     config_option[interface+'_shutdown']
+
     return render(request, 'configurations/interface.html', config_option)
 
  
-def etherchannel(request, device_type, config_type):
+def etherchannel(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/etherchannel.html', config_option)
 
  
-def vlan(request, device_type, config_type):
+def vlan(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/vlan.html', config_option)
 
  
-def ospf(request, device_type, config_type):
+def ospf(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/ospf.html', config_option)
 
  
-def rip(request, device_type, config_type):
+def rip(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/rip.html', config_option)
 
  
-def static_routing(request, device_type, config_type):
+def static_routing(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/static_routing.html', config_option)
 
-def nat(request, device_type, config_type):
+def nat(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/nat.html', config_option)
 
  
-def dhcp(request, device_type, config_type):
+def dhcp(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/dhcp.html', config_option)
 
  
-def acl_basic(request, device_type, config_type):
+def acl_basic(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/acl_basic.html', config_option)
 
  
-def acl_extended(request, device_type, config_type):
+def acl_extended(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/acl_extendet.html', config_option)
 
  
-def vtp_dtp(request, device_type, config_type):
+def vtp_dtp(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/vtp_dtp.html', config_option)
 
  
-def stp(request, device_type, config_type):
+def stp(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
     return render(request, 'configurations/stp.html', config_option)
 
-def get_inputs(request, device_type, config_type):# in this function the input that comes from the hidden form in the frontend gets made accessable for the backend
+def get_inputs(request, device_type, config_mode):# in this function the input that comes from the hidden form in the frontend gets made accessable for the backend
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_type": config_type
+        "config_mode": config_mode
     }
 
     cM = ConfigManager('exampleConfig')
@@ -284,6 +288,6 @@ def get_inputs(request, device_type, config_type):# in this function the input t
 
     # exception for the index route bc index can`t handle the device type
     if forward_to != 'index':
-        return redirect(reverse(forward_to + '_route', kwargs={'device_type': device_type, 'config_type': config_type}))
+        return redirect(reverse(forward_to + '_route', kwargs={'device_type': device_type, 'config_mode': config_mode}))
     else:
         return redirect('index_route')

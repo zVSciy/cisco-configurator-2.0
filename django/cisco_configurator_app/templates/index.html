@@ -10,7 +10,7 @@
 </head>
 
 <h1>Home </h1>
-<form id="configForm" method="post" action="{% url 'get_inputs_route' device_type='router' config_type='new' %}">   {% csrf_token %}
+<form id="configForm" method="post" action="{% url 'get_inputs_route' device_type='router' config_mode='new' %}">   {% csrf_token %}
     <input type="hidden" value="basic_config" name="hidden_forward_to">
     <h2>Select Router or Switch:</h2>
     <select name="deviceType" id="deviceType">
@@ -44,7 +44,7 @@
     function submitForm() {
         let deviceType = document.getElementById("deviceType").value;
         let configType = document.getElementById("configType").value;
-        document.getElementById("configForm").action = "{% url 'get_inputs_route' device_type='router' config_type='new' %}".replace('router', deviceType).replace('new', configType);
+        document.getElementById("configForm").action = "{% url 'get_inputs_route' device_type='router' config_mode='new' %}".replace('router', deviceType).replace('new', configType);
         
         document.getElementById("configForm").submit();
     }
