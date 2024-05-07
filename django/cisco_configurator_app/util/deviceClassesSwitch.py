@@ -78,6 +78,6 @@ class Interface:
         ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
 
             
-        return ["interface " + self.interface + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}', f' {natInside}', f'{natOutside}' + "!\n"]
+        return ["interface " + self.interface + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}' + "!\n"]
 
 #endregion
