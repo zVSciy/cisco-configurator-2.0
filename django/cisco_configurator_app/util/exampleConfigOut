@@ -118,10 +118,6 @@ access-list 1 permit any
 access-list 2 permit 192.168.1.1 123.123.123.123
 !
 !
-ip access-list extended test2
- permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq 11
- permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.111 eq 23
- permit tcp 1.1.1.0 0.0.0.11 2.2.2.0 0.0.0.255 eq 44
 !
 control-plane
 !
@@ -146,5 +142,10 @@ line vty 0 4
 ip access-list extended test
  permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq 22
  permit tcp 1.1.1.2 0.0.0.255 2.2.2.0 0.0.0.255 eq 30
+!
+ip access-list extended test2
+ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq 11
+ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.111 eq 23
+ permit tcp 1.1.1.0 0.0.0.11 2.2.2.0 0.0.0.255 eq 44
 !
 end
