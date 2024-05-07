@@ -409,11 +409,12 @@ class OSPF:
 #region ACL Extended
 
 class ACLExtended:
-    def __init__(self, aclList:list = None) -> None:
+    def __init__(self, aclList:str = None) -> None:
         if aclList is None:
             self.aclList = []
-        elif type(aclList) == list:
+        elif type(aclList) == str:
             self.aclList = aclList
+            self.getACLs(aclList)
         else:
             raise TypeError()
     
@@ -439,3 +440,8 @@ class ACLExtended:
         return config
 #endregion
 
+# acl = ACLExtended()
+# acl.getACLs("test,permit,tcp,1.1.1.0,0.0.0.255,2.2.2.0,0.0.0.255,www;test,permit,tcp,1.1.1.0,0.0.0.255,2.2.2.0,0.0.0.255,www")
+# config = acl.toConfig()
+# for line in config:
+#     print(line, end='')
