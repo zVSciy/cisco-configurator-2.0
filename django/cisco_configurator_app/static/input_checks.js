@@ -629,3 +629,60 @@ function ValidateIndexInput(){
       document.getElementById("IndexErrorMessage").textContent = 'You have entered an invalid IP address!';
   }
 }
+
+
+
+function fillInputs(){
+
+  let interfaces = document.getElementById('interfaces_for_get_inputs').value;
+  let interface_descriptions = document.getElementById('interfaces_descriptions').value;
+  let interface_ips = document.getElementById('interface_ips').value;
+  let interface_sms =  document.getElementById('interface_sms').value;
+  let interface_shutdowns = document.getElementById('interface_shutdowns').value;
+
+  interfaces = extractToList(interfaces, /(?:<Router_Interfaces:\s)(\w+\/\d+)(?=>)/g);
+  interface_descriptions = extractToList(interface_descriptions, /'([^']+)'/g);
+  interface_ips = extractToList(interface_ips, /'([^']+)'/g);
+  interface_sms = extractToList(interface_sms, /'([^']+)'/g);
+  interface_shutdowns = extractBooleans(interface_shutdowns);
+
+  for (let i = 0; i < interfaces.length; i++) {
+    document.getElementById(interfaces[i]+'_description').value = interface_descriptions[i];
+    document.getElementById(interfaces[i]+'_ip').value = interface_ips[i];
+    document.getElementById(interfaces[i]+'_sm').value = interface_sms[i];
+    document.getElementById(interfaces[i]+'_shutdown').checked = interface_shutdowns[i];
+  }
+}
+
+function extractToList(inputString, pattern) {
+  const regex = pattern;
+  const interfaceNames = [];
+  let match;
+  while ((match = regex.exec(inputString)) !== null) {
+    interfaceNames.push(match[1]);
+  }
+  return interfaceNames;
+}
+
+function extractBooleans(inputString) {
+  // Remove '[' and ']' characters from the input string
+  inputString = inputString.replace(/\[|\]/g, '');
+
+  // Split the input string by commas and trim each element
+  let elements = inputString.split(',').map(item => item.trim());
+
+  // Initialize an array to store true and false values
+  let booleanElements = [];
+
+  // Loop through elements and categorize them as true or false
+  elements.forEach(element => {
+      if (element === "True") {
+          booleanElements.push(true);
+      } else if (element === "False") {
+          booleanElements.push(false);
+      }
+  });
+
+  // Return the array containing true and false elements
+  return booleanElements;
+}

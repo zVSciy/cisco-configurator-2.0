@@ -30,7 +30,7 @@ def basic_config(request, device_type, config_mode):
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
         "hostname": 'test', #! replace 'test' with real hostname that gets loaded from the exampleConfig when the site gets invoked
-        "banner": ''
+        "banner": 'test'
     }
 
     # print(config_mode)
@@ -43,10 +43,25 @@ def interface(request, device_type, config_mode):
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
+        "interface_shutdowns": [],
+        "interface_descriptions": [],
+        "interface_ips": [],
+        "interface_sms": []
     }
 
-    # for interface in config_option['interfaces']:
-    #     config_option[interface+'_shutdown']
+
+    #loading
+    interface_list = [] # this List should be filled with Interface Objects (from the Class in the from deviceClasses file)
+
+    # DEBUGGING :(
+    # interface_list.append(Interface('FastEthernet0/0','1.1.1.1','2.2.2.2',False,False,'Test',True)) 
+    # interface_list.append(Interface('FastEthernet0/1','5.5.5.5','2.2.2.2',False,False,'Fa0/1',True))
+
+    for interface in interface_list:
+        config_option["interface_shutdowns"].append(interface.shutdown) 
+        config_option["interface_descriptions"].append(interface.description) 
+        config_option["interface_ips"].append(interface.ip) 
+        config_option["interface_sms"].append(interface.sm)
 
     return render(request, 'configurations/interface.html', config_option)
 
@@ -101,6 +116,8 @@ def nat(request, device_type, config_mode):
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode
     }
+
+    
     return render(request, 'configurations/nat.html', config_option)
 
  
@@ -228,7 +245,7 @@ def get_inputs(request, device_type, config_mode):# in this function the input t
 
     #nat
     nat_status = request.POST.get('hidden_nat_status')  #true = on | false = off
-    # acl_networks = request.POST.get('hidden_nat_info_for_transfer') 
+    acl_networks = request.POST.get('hidden_nat_info_for_transfer') 
     if(nat_status and nat_ingoing and nat_outgoing):
         cM.writeNATConfig(NAT(nat_outgoing, '2'))
 
