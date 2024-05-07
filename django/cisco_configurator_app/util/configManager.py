@@ -19,11 +19,11 @@ class ConfigManager:
         #The configEditor object that will be used to read and write the config file
         self.configEditor = configEditor(self.filePath,self.outputPath)
 
-
     #region BasicConfig
 
-    # Returns a DeviceInfo object with the hostname and motd configuration in the config file
     def getDeviceInfo(self) -> DeviceInfo:
+        """Returns a DeviceInfo object with the hostname and motd configuration in the config file"""
+
         hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
         motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
         hostName = self.configEditor.getContentOnIndex(hostNameLine[0]).split(" ")[1]
@@ -33,6 +33,7 @@ class ConfigManager:
         return DeviceInfo(hostName, motd)
     
     def writeDeviceInfo(self, deviceInfo: DeviceInfo) -> None:
+        """Writes the hostname and motd configuration from DeviceInfo to the config file"""
         hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
         if(len(hostNameLine) > 0):
             self.configEditor.removeContentBetweenIndexes(hostNameLine[0], hostNameLine[-1])
@@ -43,13 +44,17 @@ class ConfigManager:
         self.configEditor.writeConfig()
     #endregion
 
+    getDeviceInfo.__doc__ = """Returns a DeviceInfo object with the hostname and motd configuration in the config file"""
+
 
     #region Interfaces
 
-    # Returns an Interface object based on the interface name.
-    # It searches for the interface name in the config file and returns the object
     #! Note the interfaceName should be the name of the interface without the "interface" keyword -> "FastEthernet0/1" instead of "interface FastEthernet0/1"
     def getInterface(self, interfaceName: str) -> Interface:
+        """
+        Returns an Interface object based on the interface name.
+        It searches for the interface name in the config file and returns the object
+        """
         InterfaceLines = self.configEditor.findContentIndexes("interface " + interfaceName, "!") #Finds the indexes of the interface in the config list
         interfaceText = self.configEditor.getContentBetweenIndexes(InterfaceLines[0], InterfaceLines[-1]) #Gets the content of the interface
         intName, ip, sm, desc, natInside, natOutside, shut = None, None, None, "Default", None, None, True
@@ -276,6 +281,57 @@ class ConfigManager:
 
     #endregion
 
+    #region OSPF
+    
+    # returns a OSPF object that has the instanceID/processID from the input from the config file
+    def getOSPFConfig(self, instanceName) -> OSPF:
+        ospfLines = self.configEditor.findContentIndexes(f"router ospf {instanceName}", "!")
+        ospfText = self.configEditor.getContentBetweenIndexes(ospfLines[0], ospfLines[-1])
+        ospfProcessID = ospfText[0].split(" ")[2]
+        #^router ospf 2
+        ospfNetworks = ""
+        ospfRouterID = ""
+        ospfDefaultInformationOriginate = False
+
+        for line in ospfText:
+            if line.startswith("router-id"):
+                #^ router-id 1.1.1.1
+                ospfRouterID = line.split(" ")[1]
+            elif line.startswith("default-information originate"):
+                #^ default-information originate
+                ospfDefaultInformationOriginate = True
+            elif line.startswith("network"):
+                #^ network 192.168.1.0 0.0.0.255 area 0
+                #^ network 192.168.2.0 0.0.0.255 area 0
+
+                #check fi the ospfNetworks string is empty, if it is not, add a semicolon to separate the networks
+                if len(ospfNetworks) > 0:
+                    ospfNetworks += ";"
+                ospfNetworks += line.split(" ")[1] + "," + line.split(" ")[2] + "," + line.split(" ")[4]
+
+        return OSPF(ospfProcessID, ospfRouterID, ospfNetworks)
+
+    def getAllOSPFConfig(self) -> list[OSPF]:
+        ospfInstancesLines = self.configEditor.findMultipleContentIndexes("router ospf ")
+        returnOspfObjects = []
+        for ospfInstance in ospfInstancesLines:
+            instanceID = self.configEditor.getContentOnIndex(ospfInstance[0]).split(" ")[2]
+            returnOspfObjects.append(self.getOSPFConfig(instanceID))
+        return returnOspfObjects
+
+
+    #writes the OSPF config to the config file, replaces the OSPF configuration with the same processID
+    def writeOSPFConfig(self, ospfConfig: OSPF) -> None:
+        ospfLines = self.configEditor.findContentIndexes(f"router ospf {ospfConfig.ospfProcess}", "!")
+        #check fi ospfLines is not empty, if it is, remove the content between the indexes
+        if(len(ospfLines) > 0):
+            self.configEditor.removeContentBetweenIndexes(ospfLines[0], ospfLines[-1])
+        self.configEditor.appendContentToFile(ospfConfig.toConfig())
+        self.configEditor.writeConfig()
+
+    #endregion
+
+
 
     #region ExtendedACL
 
@@ -302,13 +358,23 @@ class ConfigManager:
     #     self.configEditor.writeConfig()
 
 
+    #endregion
 
 
 # region ExampleUsage
 
-# filePath = "./exampleConfig"
-# outputPath = "./exampleConfigOut"
-# cM = ConfigManager(filePath,outputPath)
+filePath = "./exampleConfig"
+outputPath = "./exampleConfigOut"
+cM = ConfigManager(filePath,outputPath)
+
+
+ospf = cM.getAllOSPFConfig()
+for i in ospf:
+    print(i.toConfig())
+    i.ospfRouterID = "3.3.3.3"
+    cM.writeOSPFConfig(i)
+
+cM.getDeviceInfo()
 
 # extendedConfig = cM.getExtendedACLConfig("test")
 # print(extendedConfig.toConfig())
@@ -352,4 +418,3 @@ class ConfigManager:
 # cM.writeNATConfig(natConfig)
 
 #endregion
-

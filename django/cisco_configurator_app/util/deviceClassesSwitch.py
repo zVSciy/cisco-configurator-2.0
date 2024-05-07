@@ -81,3 +81,39 @@ class Interface:
         return ["interface " + self.interface + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}' + "!\n"]
 
 #endregion
+
+#region VLAN
+
+class VLANs:
+    def __init__(self, interfaceID:str = None, vlans:str = None) -> None:
+        if type(interfaceID) == str:
+            self.interfaceID = interfaceID
+        else:
+            raise TypeError()
+
+        if type(vlans) == str:
+            self.vlans = vlans
+        else:
+            raise TypeError()
+
+    def getVLANs(self, vlans:str) -> list:
+        if vlans:
+            vlans = vlans.split(';')
+            for vlan in vlans:
+                if vlan:
+                    vlanID, mode = vlan.split(',')
+                    self.vlans.append({"vlanID": vlanID, "mode": mode})
+        return self.vlans
+    
+    def __repr__(self) -> str:
+        return "Interface: " + self.interfaceID + "\n" + "VLANs: " + self.vlans + "\n"
+    
+    def toConfig(self) -> list:
+        config = []
+        config.append("interface " + self.interfaceID + "\n")
+        for vlan in self.vlans:
+            config.append(f" switchport mode {vlan['mode']}\n")
+            config.append(f" switchport {vlan['mode']} allowed vlan {vlan['vlanID']}\n")
+        config.append("!\n")    
+        return config
+#endregion
