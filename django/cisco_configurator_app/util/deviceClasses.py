@@ -414,7 +414,7 @@ class ACLExtended:
             raise TypeError()
         
         if type(aclRuleName) == str:
-            self.aclListName = aclRuleName
+            self.aclRuleName = aclRuleName
         else:
             raise TypeError()
     
