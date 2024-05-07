@@ -167,7 +167,7 @@ class RipRouting:
 
     # Define the string representation of the class
     def __repr__(self) -> str:
-        ripSumState = "Auto Summary: " + self.ripSumState + "\n" if self.ripSumState else ''
+        ripSumState = "auto-summary" + self.ripSumState + "\n" if self.ripSumState else ''
         ripOriginate = "Default Information Originate: " + self.ripOriginate + "\n" if self.ripOriginate else ''
 
         return "RIP Version: " + self.ripVersion + "\n" + "Auto Summary: " + ripSumState + "\n" + "Default Information Originate: " + ripOriginate + "\n" + "Networks: " + ', '.join(self.ripNetworks) + "\n"
@@ -175,7 +175,7 @@ class RipRouting:
     # Convert the stored RIP routing configurations to a list of configuration commands
     def toConfig(self) -> list:
         ripSumState = "Auto Summary: " + self.ripSumState + "\n" if self.ripSumState else ''
-        ripOriginate = "Default Information Originate: " + self.ripOriginate + "\n" if self.ripOriginate else ''
+        ripOriginate = "default-information originate" + self.ripOriginate + "\n" if self.ripOriginate else ''
         config = []
         config.append("router rip\n")
         config.append(f" version {self.ripVersion}\n")
@@ -348,7 +348,7 @@ class ACLStandard:
  
 # Define a class to manage OSPF (Open Shortest Path First) configurations
 class OSPF:
-    def __init__(self, ospfProcess:str = None, ospfRouterID:str = None, ospfNetworks:str = None) -> None:
+    def __init__(self, ospfProcess:str = None, ospfRouterID:str = None, ospfOriginate:bool = None, ospfAutoSummary:bool = None, ospfNetworks:str = None) -> None:
         if type(ospfProcess) == str:
             self.ospfProcess = ospfProcess
         else:
@@ -364,6 +364,16 @@ class OSPF:
             self.getNetworks(ospfNetworks)
         else:
             raise TypeError()
+        
+        if type(ospfOriginate) == bool:
+            self.ospfOriginate = ospfOriginate
+        else:
+            raise TypeError()
+        
+        if type(ospfOriginate) == bool:
+            self.ospfOriginate = ospfOriginate
+        else:
+            raise TypeError()
 
     def getNetworks(self, ospfNetworks:str) -> list:
         if ospfNetworks:
@@ -376,16 +386,22 @@ class OSPF:
     
     # Define the string representation of the class
     def __repr__(self) -> str:
+        ospfAutoSummary = " no auto-summary\n" if self.ospfAutoSummary else ''
+        ospfOriginate = " default-information originate\n" if self.ospfOriginate else ''
         networks = ', '.join([f"{network['networkID']}, {network['networkWM']}, {network['area']}" for network in self.ospfNetworks])
-        return "OSPF Process: " + self.ospfProcess + "\n" + "Router ID: " + self.ospfRouterID + "\n" + "Networks: " + networks + "\n"
+        return "OSPF Process: " + self.ospfProcess + "\n" + "Router ID: " + self.ospfRouterID + "\n" + "Networks: " + networks + "\n" + "Default Information Originate: " + ospfOriginate + "\n" + "Auto Summary: " + ospfAutoSummary + "\n"
 
     # Convert the stored OSPF configurations to a list of configuration commands
     def toConfig(self) -> list:
+        ospfAutoSummary = " no auto-summary\n" if self.ospfAutoSummary else ''
+        ospfOriginate = " default-information originate\n" if self.ospfOriginate else ''
         config = []
         config.append("router ospf " + self.ospfProcess + "\n")
         config.append(f" router-id {self.ospfRouterID}\n")
         for network in self.ospfNetworks:
             config.append(f" network {network['networkID']} {network['networkWM']} area {network['area']}\n")
+        config.append({ospfOriginate})
+        config.append({ospfAutoSummary})
         config.append("!\n")
         return config
 
@@ -398,10 +414,6 @@ class ACLExtended:
             self.aclList = []
         elif type(aclList) == list:
             self.aclList = aclList
-        else:
-            raise TypeError()
-        if type(aclListName) == str:
-            self.aclListName = aclListName
         else:
             raise TypeError()
     
@@ -430,16 +442,6 @@ class ACLExtended:
         #^ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq www
         #^ permit tcp any any eq www
 
-        #line 437: access-list and id is not required
-        #maybe think about adding a check if any parameter is any
-
-
-        config = []
-        config.append(f"ip access-list extended {self.aclListName}\n")
-        for acl in self.aclList:
-            config.append(f"access-list {acl['id']} {acl['permitDeny']} {acl['protocol']} {acl['sourceIP']} {acl['sourceWM']} {acl['destIP']} {acl['destWM']} {acl['port']}\n")
-        config.append("!\n")
-        return config
 #endregion
 
 #VLANS
