@@ -410,10 +410,9 @@ class OSPF:
 
 class ACLExtended:
     def __init__(self, aclList:str = None) -> None:
-        if aclList is None:
+        if type(aclList) == str:
+            # self.aclList = aclList
             self.aclList = []
-        elif type(aclList) == str:
-            self.aclList = aclList
             self.getACLs(aclList)
         else:
             raise TypeError()

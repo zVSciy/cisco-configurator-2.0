@@ -356,7 +356,7 @@ class ConfigManager:
                     ospfNetworks += ";"
                 ospfNetworks += line.split(" ")[1] + "," + line.split(" ")[2] + "," + line.split(" ")[4]
 
-        return OSPF(ospfProcessID, ospfRouterID, ospfNetworks)
+        return OSPF(ospfProcessID, ospfRouterID, ospfAutoSummary, ospfDefaultInformationOriginate, ospfNetworks)
 
     def getAllOSPFConfig(self) -> list[OSPF]:
         """
@@ -388,17 +388,39 @@ class ConfigManager:
 
     #region ExtendedACL
 
-    # def getExtendedACLConfig(self, ACLName:str = None ) -> ACLExtended:
-    #     aclLines = self.configEditor.findContentIndexes(f"ip access-list extended {ACLName}", "!")
-    #     aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
-    #     aclString = ""
+    def getExtendedACLConfig(self) -> ACLExtended:
+        aclLines = self.configEditor.findMultipleContentIndexes(f"ip access-list extended", "!")
+        outputACLStr = ""
+        for acl in aclLines:
+            aclText = self.configEditor.getContentBetweenIndexes(acl[0], acl[-1])
+            aclName = aclText[0].split(" ")[3]
+            permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, eq, port = aclText[1].split(" ")
+            if(len(outputACLStr) > 0):
+                outputACLStr += ";"
+            outputACLStr += aclName + "," + permitDeny + "," + protocol + "," + sourceIP + "," + sourceWM + "," + destIP + "," + destWM + "," + port
 
-    #     aclName = aclText.pop(0)
-    #     for i, content in enumerate(aclText):
-    #         pass
-    
+        return ACLExtended(outputACLStr)
+        # aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
+        # aclName = aclText.pop(0).split(" ")[4]
+        # rules = ""
+        # for rule in aclText:
+        #     if rule.startswith("ip access-list extended"):
+        #         pass
         
-        
+    def writeExtendedAclConfig(self, aclConfig: ACLExtended) -> None:
+        aclLines = self.configEditor.findMultipleContentIndexes("ip access-list extended", "!")
+
+        for acl in aclLines:
+            aclText = self.configEditor.getContentBetweenIndexes(acl[0], acl[-1])
+            self.configEditor.removeContentBetweenIndexes(acl[0], acl[-1])
+        self.configEditor.appendContentToFile(aclConfig.toConfig())
+        self.configEditor.writeConfig()
+        # aclLines = self.configEditor.findContentIndexes("ip access-list extended", "!")
+        # if(len(aclLines) > 0):
+        #     self.configEditor.removeContentBetweenIndexes(aclLines[0], aclLines[-1])
+        # self.configEditor.appendContentToFile(aclConfig.toConfig())
+        # self.configEditor.writeConfig()
+
         
     # def writeExtendedACLConfig(self, aclConfig: ACLExtended) -> None:
     #     aclLines = self.configEditor.findContentIndexes("ip access-list", "!")
@@ -421,13 +443,22 @@ outputPath = "./exampleConfigOut"
 cM = ConfigManager(filePath,outputPath)
 
 
-ospf = cM.getAllOSPFConfig()
-for i in ospf:
-    print(i.toConfig())
-    i.ospfRouterID = "3.3.3.3"
-    cM.writeOSPFConfig(i)
 
-cM.getDeviceInfo()
+aclconfig = cM.getExtendedACLConfig()
+cM.writeExtendedAclConfig(aclconfig)
+
+
+# ospf = cM.getAllOSPFConfig()
+# for i in ospf:
+#     print(i.toConfig())
+#     i.ospfRouterID = "3.3.3.3"
+#     i.ospfOriginate = False
+#     i.ospfAutoSummary = True
+#     cM.writeOSPFConfig(i)
+
+
+
+# cM.getDeviceInfo()
 
 # extendedConfig = cM.getExtendedACLConfig("test")
 # print(extendedConfig.toConfig())
