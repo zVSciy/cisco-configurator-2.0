@@ -400,8 +400,8 @@ class OSPF:
         config.append(f" router-id {self.ospfRouterID}\n")
         for network in self.ospfNetworks:
             config.append(f" network {network['networkID']} {network['networkWM']} area {network['area']}\n")
-        config.append({ospfOriginate})
-        config.append({ospfAutoSummary})
+        config.append(ospfOriginate)
+        config.append(ospfAutoSummary)
         config.append("!\n")
         return config
 
@@ -437,20 +437,6 @@ class ACLExtended:
             config.append(f"permit tcp any any")      
         config.append("!\n")
         return config
-    
-
-        #! FORMAT ERROR
-        #! FORMAT ERROR
-        #! FORMAT ERROR
-        #! FORMAT ERROR
-        #^ip access-list extended test
-        #^ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq www
-        #^ permit tcp any any eq www
-        #^!
-        #^ip access-list extended test2
-        #^ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.255 eq www
-        #^ permit tcp any any eq www
-
 #endregion
 acl = ACLExtended()
 acl.getACLs("test,permit,tcp,1.1.1.0,0.0.0.255,2.2.2.0,0.0.0.255,80;test2,deny,tcp,2.2.2.0,0.0.0.255,2.2.2.0,0.0.0.255,80")
