@@ -427,7 +427,7 @@ class ACLExtended:
         return self.aclList
     
     def __repr__(self) -> str:
-        return "AccessListName: " + self.aclListName + "\n" + json.dumps(self.aclList, indent=4)
+        return json.dumps(self.aclList, indent=4)
 
     def toConfig(self) -> list:
         config = []
