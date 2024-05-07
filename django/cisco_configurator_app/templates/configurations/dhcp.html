@@ -2,6 +2,9 @@
 
 {% block content %}
 
+<input type="hidden" id="dhcp_state" value="{{ dhcp_state }}">
+
+
 <div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu5">
     <h2 class="font-extrabold text-2xl pb-5">DHCP Configuration</h2>
 
@@ -14,10 +17,6 @@
       </h3>
     </div>
 
-
-
-
-
     <div class="bg-base-300 p-4 rounded-2xl mb-4">
       <div class="flex flex-col gap-3">
         <div class="config_item">
@@ -26,7 +25,7 @@
               class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
               id="hostname" for="dhcp_poolName">DHCP Pool Name:</label>
             <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" size="15"
-              id="dhcp_poolName" name="dhcp_poolName" placeholder="e.g. pool1"
+              id="dhcp_poolName" name="dhcp_poolName" placeholder="e.g. pool1" value="{{ dhcp_poolName }}"
               oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')">
           </div>
         </div>
@@ -40,7 +39,7 @@
             <!--TODO currently ' ' is used for seperating -->
             <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" size="20"
               id="dhcp_Network" name="dhcp_Network" placeholder="seperate IP and SM by ( , )"
-              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')">
+              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')" value="{{ dhcp_Network }}">
               <div>Node: Please add a space after the IP</div>
           </div>
         </div>
@@ -52,7 +51,7 @@
               id="hostname">Default Gateway:</label>
             <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" size="15"
               id="dhcp_dG" name="dhcp_dG" placeholder="e.g. 10.0.0.1"
-              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')">
+              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')" value="{{ dhcp_defaultGateway }}">
           </div>
         </div>
 
@@ -63,7 +62,7 @@
               id="hostname">DNS Server:</label>
             <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" size="15"
               id="dhcp_dnsServer" name="dhcp_dnsServer" placeholder="e.g. 8.8.8.8"
-              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')">
+              oninput="checkDhcpInput('dhcp_Network', 'dhcp_dG', 'dhcp_dnsServer', 'dhcp_result'); add_to_config('dhcp')" value="{{ dhcp_DNS_server }}">
           </div>
         </div>
       </div>
@@ -100,7 +99,7 @@
           <div id="added_nat_networks" class="config_item">
             added excluded Addresses:</div>
           <div class="config_item" id="dhcp_pool_result"></div>
-          <input name="dhcp_info" id="dhcp_info_for_transfer"></input>
+          <input name="dhcp_info" id="dhcp_info_for_transfer" value="{{ dhcp_excluded_Adresses }}"></input>
         </div>
       </div>
     </div>
@@ -108,5 +107,18 @@
   </div>
   <script>
       document.getElementById('dhcp_info_for_transfer').style.display = 'none';
+
+    if(document.getElementById('dhcp_state').value == 'true'){
+      document.getElementById('dhcp_status').checked = true;
+      updateStateDescription('dhcp_status', 'dhcp_state_description');
+      console.log(document.getElementById('dhcp_status').checked)
+    }
+
+    let Networks_Array = collectIPAddresses(document.getElementById('dhcp_info_for_transfer').value);
+
+    for (let i = 0; i < Networks_Array.length; i=i+2){
+      let routeInfo = "From: " + Networks_Array[i] + "<br>To: " + Networks_Array[i+1] + '<br><br>';
+      document.getElementById('dhcp_pool_result').innerHTML += routeInfo;
+    }
   </script>
 {% endblock content %}

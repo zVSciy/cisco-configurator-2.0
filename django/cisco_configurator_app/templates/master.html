@@ -9,7 +9,7 @@
   <script src="{% static 'input_checks.js' %}"></script>
 </head>
 
-<body onload="fillInputs()">
+<body>
   <!-- hidden input form to forward the user input into the backend if another site gets opened -->
   <form method="post" id="inputs_form" action="{% url 'get_inputs_route' device_type='router' config_mode=config_mode %}" class="menu-form">    {% csrf_token %}
 

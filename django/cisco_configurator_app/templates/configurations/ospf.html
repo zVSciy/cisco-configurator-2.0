@@ -1,6 +1,7 @@
 {% extends 'master.html' %}
 
 {% block content %}
+<input type="hidden" id="ospf_networks" value="{{ ospf_networks }}">
 
 
 <div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
@@ -16,7 +17,7 @@
           <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="number"
             name="ospf_process" id="ospf_process"
             placeholder="enter process-id"
-            oninput="add_to_config('ospf');checkOspfProcess()" min="1" max="65535">
+            oninput="add_to_config('ospf');checkOspfProcess()" min="1" max="65535" value="{{ process }}">
             <span id="process_id_info"></span>
         </div>
       </div>
@@ -29,7 +30,7 @@
           <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" 
             name="ospf_router_id" id="ospf_router_id"
             placeholder="enter router-id"
-            oninput="add_to_config('ospf'); checkOspfRouterID()">
+            oninput="add_to_config('ospf'); checkOspfRouterID()" value="{{ router_id }}">
             <span id="router_id_info"></span>
         </div>
       </div>
@@ -83,5 +84,12 @@
 
       <script>
         document.getElementById('ospf_info_for_transfer').style.display = 'none';
+
+        let Networks_Array = collectIPAddressesAndAreas(document.getElementById('ospf_networks').value);
+
+        for (let i = 0; i < Networks_Array.length-1; i=i+3){
+          let networksInfo = "IP Address: " + Networks_Array[i] + "<br>Wildcard Mask: " + Networks_Array[i+1] + '<br>Area:'+ Networks_Array[i+2] +'<br><br>';
+          document.getElementById('ospf_info').innerHTML += networksInfo;
+        }
       </script>
 {% endblock content %}

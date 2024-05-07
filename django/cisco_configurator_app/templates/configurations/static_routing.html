@@ -1,6 +1,8 @@
 {% extends 'master.html' %}
 
 {% block content %}
+<input type="hidden" id="static_routes" value="{{ static_routes }}">
+
 
     <div class="bg-base-300 p-4 rounded-2xl flex flex-col gap-3">
       <h3 class="config_item" id="static_routing_heading">
@@ -50,5 +52,14 @@
       <input name="staticRouting_info_for_transfer" id="staticRouting_info_for_transfer" style="display: none;"></input>
     </div>
   </div>
+
+  <script>
+    let Networks_Array = collectIPAddresses(document.getElementById('static_routes').value);
+
+    for (let i = 0; i < Networks_Array.length; i=i+3){
+      let routeInfo = "Target IP: " + Networks_Array[i] + "<br>Subnet Mask: " +  Networks_Array[i+1] + "<br>Next hop IP: " +  Networks_Array[i+2] + "<br><br>";
+      document.getElementById('staticRouting_info').innerHTML += routeInfo;
+    }
+  </script>
 
 {% endblock content %}

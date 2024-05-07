@@ -54,8 +54,8 @@ def interface(request, device_type, config_mode):
     interface_list = [] # this List should be filled with Interface Objects (from the Class in the from deviceClasses file)
 
     # DEBUGGING :(
-    # interface_list.append(Interface('FastEthernet0/0','1.1.1.1','2.2.2.2',False,False,'Test',True)) 
-    # interface_list.append(Interface('FastEthernet0/1','5.5.5.5','2.2.2.2',False,False,'Fa0/1',True))
+    interface_list.append(Interface('FastEthernet0/0','1.1.1.1','2.2.2.2',False,False,'Test',True)) 
+    interface_list.append(Interface('FastEthernet0/1','5.5.5.5','2.2.2.2',False,False,'Fa0/1',True))
 
     for interface in interface_list:
         config_option["interface_shutdowns"].append(interface.shutdown) 
@@ -88,7 +88,10 @@ def ospf(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode
+        "config_mode": config_mode,
+        "process": '5',# string number
+        "router_id": '1.1.1.1', # IP-Address
+        "ospf_networks": '1.1.1.1,2.2.2.2,0;3.3.3.3,4.4.4.4,0;' # replace with real data from config if site gets invoked
     }
     return render(request, 'configurations/ospf.html', config_option)
 
@@ -97,7 +100,12 @@ def rip(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode
+        "config_mode": config_mode,
+        "rip_state": 'true', #'true' or 'false'
+        "rip_version": '2', # must be 1 or 2
+        "rip_sum_state": True, #True or False
+        "rip_originate_state": False, #True or False
+        "rip_networks": '1.1.1.1,2.2.2.2' #True or False
     }
     return render(request, 'configurations/rip.html', config_option)
 
@@ -106,7 +114,8 @@ def static_routing(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode
+        "config_mode": config_mode,
+        "static_routes": '1.1.1.1,2.2.2.2,3.3.3.3;5.5.5.5,6.6.6.6,7.7.7.7;' # replace with real data from config if site gets invoked
     }
     return render(request, 'configurations/static_routing.html', config_option)
 
@@ -114,7 +123,11 @@ def nat(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode
+        "config_mode": config_mode,
+        "nat_state": 'true', #replace 'true' with real nat_state that gets loaded from the exampleConfig when the site gets invoked (can be 'true' or 'false')
+        "ingoing_interface": 'FastEthernet0/1', # replace with real
+        "outgoing_interface": 'FastEthernet0/0', # repleace with real
+        "networks":'1.1.1.1,2.2.2.2;3.3.3.3,4.4.4.4;' # replace with real
     }
 
     
@@ -125,7 +138,14 @@ def dhcp(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode
+        "config_mode": config_mode,
+        "dhcp_state": 'true', #replace 'true' with real dhcp_state that gets loaded from the exampleConfig when the site gets invoked (can be 'true' or 'false')
+        "dhcp_poolName": 'pool1',# replace with real
+        "dhcp_Network": '10.0.0.0 255.255.255.0',# replace with real
+        "dhcp_defaultGateway": '10.0.0.1',# replace with real
+        "dhcp_DNS_server": '8.8.8.8',# replace with real
+        "dhcp_excluded_Adresses": '1.1.1.1,5.5.5.5;1.1.1.1,5.5.5.5;'# replace with real
+
     }
     return render(request, 'configurations/dhcp.html', config_option)
 

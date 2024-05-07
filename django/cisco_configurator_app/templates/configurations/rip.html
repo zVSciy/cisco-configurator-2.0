@@ -2,6 +2,10 @@
 
 {% block content %}
 
+<input type="hidden" id="rip_state_for_input" value="{{ rip_state }}">
+<input type="hidden" id="rip_version_for_input" value="{{ rip_version }}">
+<input type="hidden" id="rip_sum_state_for_input" value="{{ rip_sum_state }}">
+<input type="hidden" id="rip_originate_state_for_input" value="{{ rip_originate_state }}">
 
 <div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
     <h2 class="font-extrabold text-2xl pb-5">Routing Configuration</h2>
@@ -22,7 +26,7 @@
           <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text"
             name="networks_input_routing" id="networks_input_routing"
             placeholder="seperate multiple networks with ( , )"
-            oninput="ValidateIPaddressesDynamicRouting('networks_input_routing','networks_input_routing_info'); add_to_config('rip')">
+            oninput="ValidateIPaddressesDynamicRouting('networks_input_routing','networks_input_routing_info'); add_to_config('rip')" value="{{ rip_networks }}">
         </div>
         <span id="networks_input_routing_info"></span>
       </div>
@@ -59,5 +63,26 @@
       </div>
     </div>
 
+  <script>
+
+    if(document.getElementById('rip_state_for_input').value == 'true'){
+      document.getElementById('rip_state').checked = true;
+      updateStateDescription('rip_state', 'rip_state_description');
+    }
+
+    if(document.getElementById('rip_sum_state_for_input').value == 'True'){
+      document.getElementById('sum_state').checked = true;
+      updateStateDescription('sum_state', 'sum_state_description');
+    }
+
+    if(document.getElementById('rip_originate_state_for_input').value == 'True'){
+      document.getElementById('originate_state').checked = true;
+      updateStateDescription('originate_state', 'originate_state_description');
+    }
+
+    document.getElementById("dropdown_rip_version").value = document.getElementById('rip_version_for_input').value;
+
+
+  </script>
 
 {% endblock content %}

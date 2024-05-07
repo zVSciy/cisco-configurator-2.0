@@ -289,8 +289,7 @@ function addRoute() {
   let subnetMask = document.getElementById('static_routing_subnet_mask').value;
   let nextHopIP = document.getElementById('next_hop_ip').value;
 
-  let routeInfo = "Target IP: " + targetIP + "<br>Subnet Mask: " +
-    subnetMask + "<br>Next hop IP: " + nextHopIP + "<br><br>";
+  let routeInfo = "Target IP: " + targetIP + "<br>Subnet Mask: " + subnetMask + "<br>Next hop IP: " + nextHopIP + "<br><br>";
 
   document.getElementById('staticRouting_info').innerHTML += routeInfo;
   document.getElementById('staticRouting_info_for_transfer').value += targetIP + ',' + subnetMask + ',' + nextHopIP + ';';
@@ -631,28 +630,7 @@ function ValidateIndexInput(){
 }
 
 
-
-function fillInputs(){
-
-  let interfaces = document.getElementById('interfaces_for_get_inputs').value;
-  let interface_descriptions = document.getElementById('interfaces_descriptions').value;
-  let interface_ips = document.getElementById('interface_ips').value;
-  let interface_sms =  document.getElementById('interface_sms').value;
-  let interface_shutdowns = document.getElementById('interface_shutdowns').value;
-
-  interfaces = extractToList(interfaces, /(?:<Router_Interfaces:\s)(\w+\/\d+)(?=>)/g);
-  interface_descriptions = extractToList(interface_descriptions, /'([^']+)'/g);
-  interface_ips = extractToList(interface_ips, /'([^']+)'/g);
-  interface_sms = extractToList(interface_sms, /'([^']+)'/g);
-  interface_shutdowns = extractBooleans(interface_shutdowns);
-
-  for (let i = 0; i < interfaces.length; i++) {
-    document.getElementById(interfaces[i]+'_description').value = interface_descriptions[i];
-    document.getElementById(interfaces[i]+'_ip').value = interface_ips[i];
-    document.getElementById(interfaces[i]+'_sm').value = interface_sms[i];
-    document.getElementById(interfaces[i]+'_shutdown').checked = interface_shutdowns[i];
-  }
-}
+// Functions to get Input from backend to frontend 
 
 function extractToList(inputString, pattern) {
   const regex = pattern;
@@ -685,4 +663,37 @@ function extractBooleans(inputString) {
 
   // Return the array containing true and false elements
   return booleanElements;
+}
+
+
+function collectIPAddresses(string) {
+  // Regular expression to match IP addresses
+  var regex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+  
+  // Match IP addresses in the string
+  var matches = string.match(regex);
+  
+  // Return the array of IP addresses
+  return matches;
+}
+
+function collectIPAddressesAndAreas(inputString) {
+    // Teile den Eingabestring an jedem Semikolon, um die einzelnen Gruppen zu erhalten
+    const groups = inputString.split(';');
+    
+    // Erzeuge ein leeres Array, um die Ergebnisse zu speichern
+    const resultArray = [];
+    
+    // Iteriere über jede Gruppe
+    groups.forEach(group => {
+        // Teile die Gruppe an jedem Komma, um die einzelnen Elemente zu erhalten
+        const elements = group.split(',');
+        
+        // Füge jedes Element zum Ergebnisarray hinzu
+        elements.forEach(element => {
+            resultArray.push(element);
+        });
+    });
+    
+    return resultArray;
 }

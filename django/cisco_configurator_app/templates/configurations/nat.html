@@ -2,6 +2,12 @@
 
 {% block content %}
 
+<input type="hidden" id="nat_state" value="{{ nat_state }}">
+<input type="hidden" id="ingoing_interface"  value="{{ ingoing_interface }}">
+<input type="hidden" id="outgoing_interface"  value="{{ outgoing_interface }}">
+<!-- <input type="hidden" id="networks"  value="{{ networks }}"> -->
+
+
 <div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu4">
     <h2 class="font-extrabold text-2xl pb-5">NAT Configuration</h2>
 
@@ -21,7 +27,7 @@
             class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
             for="ipAdresse">Ingoing Interface:</label>
           <select name="nat_ingoing" id="nat_ingoing"
-            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs"
+            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs "
             onchange="checkInterfacesNat(); add_to_config('nat')">
             {% for interface in interfaces %}
             <option name=" {{ interface }}nat_ingoing" value="{{ interface }}">{{ interface }}</option>
@@ -77,11 +83,28 @@
       <div id="added_nat_networks" class="config_item">
         added permitted Networks:</div>
       <div class="config_item" id="nat_info"></div>
-      <input name="nat_info" id="nat_info_for_transfer"></input>
+      <input name="nat_info" id="nat_info_for_transfer"  value="{{ networks }}"></input>
 
     </div>
   </div>
   <script>
     document.getElementById('nat_info_for_transfer').style.display = 'none'
+
+    document.getElementById("nat_ingoing").value = document.getElementById('ingoing_interface').value;
+    document.getElementById("nat_outgoing").value = document.getElementById('outgoing_interface').value;
+
+    if(document.getElementById('nat_state').value == 'true'){
+      document.getElementById('nat_status').checked = true;
+      updateStateDescription('nat_status', 'nat_state_description');
+    }
+
+    let Networks_Array = collectIPAddresses(document.getElementById('nat_info_for_transfer').value);
+
+    for (let i = 0; i < Networks_Array.length; i=i+2){
+      let routeInfo = "IP Address: " + Networks_Array[i] + "<br>Wildcard Mask: " + Networks_Array[i+1] + '<br><br>';
+
+      document.getElementById('nat_info').innerHTML += routeInfo;
+    }
+
   </script>
 {% endblock content %}
