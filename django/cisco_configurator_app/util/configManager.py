@@ -388,33 +388,58 @@ class ConfigManager:
 
     #region ExtendedACL
 
-    def getExtendedACLConfig(self) -> ACLExtended:
-        aclLines = self.configEditor.findMultipleContentIndexes(f"ip access-list extended", "!")
-        outputACLStr = ""
+    def getExtendedACLConfig(self, aclName) -> ACLExtended:
+        aclLines = self.configEditor.findContentIndexes(f"ip access-list extended {aclName}", "!")
+        aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
+        #^ ip access-list extended test2
+        returnAclRulesStr = ""
+        for line in aclText:
+            if line.startswith("permit") or line.startswith("deny"):
+                #^ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.0 eq 10
+                if len(returnAclRulesStr) > 0:
+                    returnAclRulesStr += ";"
+
+                permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, eq, port = line.split(" ")
+                returnAclRulesStr += permitDeny + "," + protocol + "," + sourceIP + "," + sourceWM + "," + destIP + "," + destWM + "," + port
+        return ACLExtended(returnAclRulesStr, aclName)
+    
+    def getAllACLConfig(self) -> list[ACLExtended]:
+        aclLines = self.configEditor.findMultipleContentIndexes("ip access-list extended", "!")
+        returnACLObjects = []
         for acl in aclLines:
             aclText = self.configEditor.getContentBetweenIndexes(acl[0], acl[-1])
             aclName = aclText[0].split(" ")[3]
-            permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, eq, port = aclText[1].split(" ")
-            if(len(outputACLStr) > 0):
-                outputACLStr += ";"
-            outputACLStr += aclName + "," + permitDeny + "," + protocol + "," + sourceIP + "," + sourceWM + "," + destIP + "," + destWM + "," + port
+            returnACLObjects.append(self.getExtendedACLConfig(aclName))
+        return returnACLObjects
 
-        return ACLExtended(outputACLStr)
-        # aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
-        # aclName = aclText.pop(0).split(" ")[4]
-        # rules = ""
-        # for rule in aclText:
-        #     if rule.startswith("ip access-list extended"):
-        #         pass
-        
-    def writeExtendedAclConfig(self, aclConfig: ACLExtended) -> None:
-        aclLines = self.configEditor.findMultipleContentIndexes("ip access-list extended", "!")
-
-        for acl in aclLines:
-            aclText = self.configEditor.getContentBetweenIndexes(acl[0], acl[-1])
-            self.configEditor.removeContentBetweenIndexes(acl[0], acl[-1])
+    
+    def writeExtendedACLConfig(self, aclConfig: ACLExtended) -> None:
+        aclLines = self.configEditor.findContentIndexes(f"ip access-list extended {aclConfig.aclRuleName}", "!")
+        if(len(aclLines) > 0):
+            self.configEditor.removeContentBetweenIndexes(aclLines[0], aclLines[-1])
         self.configEditor.appendContentToFile(aclConfig.toConfig())
         self.configEditor.writeConfig()
+
+
+        # aclLines = self.configEditor.findMultipleContentIndexes(f"ip access-list extended", "!")
+        # outputACLStr = ""
+        # for acl in aclLines:
+        #     aclText = self.configEditor.getContentBetweenIndexes(acl[0], acl[-1])
+        #     aclName = aclText[0].split(" ")[3]
+        #     permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, eq, port = aclText[1].split(" ")
+        #     if(len(outputACLStr) > 0):
+        #         outputACLStr += ";"
+        #     outputACLStr += aclName + "," + permitDeny + "," + protocol + "," + sourceIP + "," + sourceWM + "," + destIP + "," + destWM + "," + port
+
+        
+    # def writeExtendedAclConfig(self, aclConfig: ACLExtended) -> None:
+    #     aclLines = self.configEditor.findMultipleContentIndexes("ip access-list extended", "!")
+
+    #     for acl in aclLines:
+    #         aclText = self.configEditor.getContentBetweenIndexes(acl[0], acl[-1])
+    #         self.configEditor.removeContentBetweenIndexes(acl[0], acl[-1])
+    #     self.configEditor.appendContentToFile(aclConfig.toConfig())
+    #     self.configEditor.writeConfig()
         # aclLines = self.configEditor.findContentIndexes("ip access-list extended", "!")
         # if(len(aclLines) > 0):
         #     self.configEditor.removeContentBetweenIndexes(aclLines[0], aclLines[-1])
@@ -444,9 +469,14 @@ cM = ConfigManager(filePath,outputPath)
 
 
 
-aclconfig = cM.getExtendedACLConfig()
-cM.writeExtendedAclConfig(aclconfig)
+# aclconfig = cM.getExtendedACLConfig("test")
+# print(cM.writeExtendedACLConfig(aclconfig))
 
+
+acls = cM.getAllACLConfig()
+for acl in acls:
+    print(acl.toConfig())
+    cM.writeExtendedACLConfig(acl)
 
 # ospf = cM.getAllOSPFConfig()
 # for i in ospf:
