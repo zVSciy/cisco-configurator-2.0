@@ -83,6 +83,13 @@ router ospf 1
  network 192.168.2.0 0.0.0.255 area 0
  default-information originate
 !
+router ospf 2
+ router-id 1.1.1.1
+ log-adjacency-changes
+ network 192.168.1.0 0.0.0.255 area 0
+ network 192.168.2.0 0.0.0.255 area 0
+ default-information originate
+!
 ip forward-protocol nd
 ip route 192.168.1.0 255.255.255.0 192.168.1.1
 ip route 192.168.1.0 255.255.255.0 192.168.1.2
