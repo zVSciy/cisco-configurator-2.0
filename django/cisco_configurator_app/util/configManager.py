@@ -166,7 +166,7 @@ class ConfigManager:
             if ripLine.startswith("version"):
                 #^ version 2
                 ripVersion = ripLine.split(" ")[1]
-            elif ripLine.startswith("no-auto summary"):
+            elif ripLine.startswith("no auto-summary"):
                 #^ no auto summary
                 ripSumState = True
             elif ripLine.startswith("default-information originate"):
@@ -334,6 +334,7 @@ class ConfigManager:
         #^router ospf 2
         ospfNetworks = ""
         ospfRouterID = ""
+        ospfAutoSummary = False  
         ospfDefaultInformationOriginate = False
 
         for line in ospfText:
@@ -343,6 +344,9 @@ class ConfigManager:
             elif line.startswith("default-information originate"):
                 #^ default-information originate
                 ospfDefaultInformationOriginate = True
+            elif line.startswith("no auto-summary"):
+                #^ no auto summary
+                ospfAutoSummary = True #Danke Flo für des verkehrt denken
             elif line.startswith("network"):
                 #^ network 192.168.1.0 0.0.0.255 area 0
                 #^ network 192.168.2.0 0.0.0.255 area 0
