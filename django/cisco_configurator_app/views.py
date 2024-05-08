@@ -79,7 +79,9 @@ def vlan(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode
+        "config_mode": config_mode,
+        "vlans": '1,gfhfgh;11,hallo;',# replace with real data from config if site gets invoked (mind the format)
+        "vlan_interfaces":'Ethernet0/0,access,1;Ethernet0/1,trunk,1,11:12;'# replace with real data from config if site gets invoked (mind the format)
     }
     return render(request, 'configurations/vlan.html', config_option)
 
@@ -91,7 +93,7 @@ def ospf(request, device_type, config_mode):
         "config_mode": config_mode,
         "process": '5',# string number
         "router_id": '1.1.1.1', # IP-Address
-        "ospf_networks": '1.1.1.1,2.2.2.2,0;3.3.3.3,4.4.4.4,0;' # replace with real data from config if site gets invoked
+        "ospf_networks": '1.1.1.1,2.2.2.2,0;3.3.3.3,4.4.4.4,0;' # replace with real data from config if site gets invoked (mind the format)
     }
     return render(request, 'configurations/ospf.html', config_option)
 
@@ -309,6 +311,11 @@ def get_inputs(request, device_type, config_mode):# in this function the input t
 
     #extended acl
     extended_acl_info_for_transfer = request.POST.get('hidden_extended_acl_info_for_transfer')
+
+    #vlan
+    vlan_info_for_transfer = request.POST.get('hidden_vlan_info_for_transfer')
+    vlan_interfaces_info_for_transfer = request.POST.get('hidden_vlan_interfaces_info_for_transfer')
+
 
     dl_or_tf = request.POST.get('hidden_dl_or_tf')
     ip = request.POST.get('hidden_ip')

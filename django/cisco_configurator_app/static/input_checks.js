@@ -505,7 +505,104 @@ function ValidateExtendedAclNetwork(info) {
   }
 }
 
+//VLAN
+vlan_list = [];
 
+
+
+function addVlan() {
+  let vlan_name = document.getElementById('vlan_name').value;
+  let vlan_id = document.getElementById('vlan_id').value;
+
+
+  vlan_list.push(vlan_id);
+
+  let vlansInfo = "<b>ID: </b>" + vlan_id +  "<b> Name: </b>" + vlan_name +'<br><br>';
+
+  document.getElementById('vlan_info').innerHTML += vlansInfo;
+  document.getElementById('vlan_info_for_transfer').value += vlan_id + ',' + vlan_name + ';';
+
+  document.getElementById("add_vlan_button").disabled = true;
+
+  //add VLAN to the dropdowns
+
+  let access_vlan_options = document.getElementById('access_vlan');
+  let native_vlan_options = document.getElementById('native_vlan');
+
+
+  // Erstelle ein neues Optionselement für den Access-VLAN
+  let access_option = document.createElement('option');
+  access_option.value = vlan_id;
+  access_option.textContent = vlan_id;
+  access_vlan_options.appendChild(access_option);
+
+  // Erstelle ein neues Optionselement für den Native-VLAN
+  let native_option = document.createElement('option');
+  native_option.value = vlan_id;
+  native_option.textContent = vlan_id;
+  native_vlan_options.appendChild(native_option);
+
+}
+
+function checkVlanId(){
+  let id = document.getElementById('vlan_id').value;
+  let message = document.getElementById('vlan_id_info');
+
+  if (vlan_list.includes(id)){
+    message.textContent = "ID already set!";
+    return false;
+  }else {
+    message.textContent = "";
+    return true;
+  }
+
+}
+
+function addVlanInterface() {
+  let interface = document.getElementById('vlan_interface').value;
+  let mode = document.getElementById('vlan_interface_mode').value;
+  let acces_vlan = document.getElementById('access_vlan').value;
+  let native_vlan = document.getElementById('native_vlan').value;
+  let allowed_vlans = document.getElementById('allowed_vlans').value;
+
+  let vlansInfo = '';
+
+  if (mode == 'access'){
+    vlansInfo = ("<b>Interface: </b>" + interface +  "<b> Mode: </b>" + mode + '<b> Vlan:</b>' + acces_vlan + '<br><br>');
+    document.getElementById('vlan_interfaces_info_for_transfer').value += (interface + ',' + mode + ',' + acces_vlan + ';');
+  }else{
+    vlansInfo = ("<b>Interface: </b>" + interface +  "<b> Mode: </b>" + mode + '<b> native VLAN:</b>' + native_vlan + '<b> allowed VLANs: </b>'+ allowed_vlans +'<br><br>');
+    document.getElementById('vlan_interfaces_info_for_transfer').value += (interface + ',' + mode + ',' + native_vlan + ',' + allowed_vlans + ';');
+  }
+
+  document.getElementById('vlan_interfaces_info').innerHTML += vlansInfo;
+  document.getElementById("add_vlan_interface_button").disabled = true;
+}
+
+function checkNewVlan(){
+  let id = document.getElementById('vlan_id').value;
+  let button =  document.getElementById("add_vlan_button")
+
+  if(id == '' || vlan_list.includes(id) ){
+    button.disabled = true;
+  }else if(isNaN(id)){
+    button.disabled = true;
+  }else{
+    button.disabled = false;
+  }
+}
+
+function checkInterfaceVlan(){
+  let addedInterfaces = document.getElementById('vlan_interfaces_info_for_transfer').value;
+  let vlan_interface = document.getElementById('vlan_interface').value;
+  let button =  document.getElementById("add_vlan_interface_button");
+
+  if(addedInterfaces.includes(vlan_interface)){
+    button.disabled = true;
+  }else{
+    button.disabled = false;
+  }
+}
 
 // add to Config for backend
 function add_to_config(page) {
@@ -607,6 +704,14 @@ function add_to_config(page) {
     let extended_acl_info_for_transfer_to_set = document.getElementById('extended_acl_info_for_transfer').value 
 
     document.getElementById('hidden_extended_acl_info_for_transfer').value = extended_acl_info_for_transfer_to_set;
+  }
+
+  if (page == "vlan"){
+    let vlan_info_for_transfer_to_set = document.getElementById('vlan_info_for_transfer').value 
+    let vlan_interfaces_info_for_transfer_to_set = document.getElementById('vlan_interfaces_info_for_transfer').value 
+
+    document.getElementById('hidden_vlan_info_for_transfer').value = vlan_info_for_transfer_to_set;
+    document.getElementById('hidden_vlan_interfaces_info_for_transfer').value = vlan_interfaces_info_for_transfer_to_set;
   }
 }
 

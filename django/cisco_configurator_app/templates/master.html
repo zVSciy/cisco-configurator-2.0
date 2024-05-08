@@ -11,7 +11,7 @@
 
 <body>
   <!-- hidden input form to forward the user input into the backend if another site gets opened -->
-  <form method="post" id="inputs_form" action="{% url 'get_inputs_route' device_type='router' config_mode=config_mode %}" class="menu-form">    {% csrf_token %}
+  <form method="post" id="inputs_form" action="{% url 'get_inputs_route' device_type=device_type config_mode=config_mode %}" class="menu-form">    {% csrf_token %}
 
     <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="">
     <!-- basic config -->
@@ -64,6 +64,11 @@
 
     <!-- extended ACLs -->
     <input type="hidden" id="hidden_extended_acl_info_for_transfer" name="hidden_extended_acl_info_for_transfer">
+
+    <!-- VLAN -->
+    <input type="hidden" id="hidden_vlan_interfaces_info_for_transfer" name="hidden_vlan_interfaces_info_for_transfer">
+    <input type="hidden" id="hidden_vlan_info_for_transfer" name="hidden_vlan_info_for_transfer">
+
   </form>
 
   <div class="menu-container justify-between flex py-2 pt-10 items-center">
@@ -142,15 +147,9 @@
         </button>
       </form>
 
-      <form method="post" action="{% url 'basic_config_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="switch">Switch</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          Hostname & Banner (Basic Config)
-        </button>
-      </form>
+      <button type="button" class="menu-button" onclick="submitForm('basic_config')">
+        Hostname & Banner (Basic Config)
+      </button>
 
       <form method="post" action="{% url 'etherchannel_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
         {% csrf_token %}
@@ -162,15 +161,10 @@
         </button>
       </form>
 
-      <form method="post" action="{% url 'vlan_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="switch">Switch</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          VLAN
-        </button>
-      </form>
+
+      <button type="button" class="menu-button" id="basic-config-button" name="basic-config-button" onclick="submitForm('vlan')">
+        VLAN
+      </button>
 
       <form method="post" action="{% url 'acl_basic_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
         {% csrf_token %}

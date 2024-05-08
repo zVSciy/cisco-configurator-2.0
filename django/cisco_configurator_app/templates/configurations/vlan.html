@@ -3,6 +3,156 @@
 {% block content %}
 
 
+<div class="menu-content bg-base-200 rounded-lg mb-4 p-8" id="menu1">
+    <h2 class="font-extrabold text-2xl pb-5">VLAN Configuration</h2>
+    <h3 class="font-extrabold text-2xl pb-5">Create new VLAN:</h3>
+    <div class="relative flex items-center gap-3">
+        <label id="Hostname"
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">VLAN-ID:</label>
+        <input placeholder="e.g. 1" class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text"
+            size="15" id="vlan_id" name="vlan_id" oninput="checkNewVlan()">
+        <span id="vlan_id_info"></span>
+    </div>
+    <br>
+    <div class="relative flex items-center gap-3">
+        <label
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            id="Banner">VLAN name:</label>
+        <input placeholder="e.g. VLAN1" class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs"
+            type="textarea" size="50" height="10" id="vlan_name" name="vlan_name">
+    </div>
+    <p></p>
+
+    <button type="button" class="config_item btn max-w-xs" id="add_vlan_button"
+        onclick="addVlan(); add_to_config('vlan');">create VLAN</button>
+    <p></p>
+    <div id="created_vlans" class="config_item">
+        created VLANs:</div>
+    <div class="config_item" id="vlan_info"></div>
+    <input name="vlan_info_for_transfer" id="vlan_info_for_transfer" value="{{ vlans }}"></input>
+
+    <h3 class="font-extrabold text-2xl pb-5">Assign VLANs to Interfaces (add some VLANs bevore this step)</h3>
+
+    <label class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+        id="Banner">Choose Interface:</label>
+    <select name="vlan_interface" id="vlan_interface"
+        class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" onchange="checkInterfaceVlan()">
+        {% for interface in interfaces %}
+        <option name=" {{ interface }}_vlan" value="{{ interface }}">{{ interface }}</option>
+        {% endfor %}
+    </select>
+
+    <label class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+        id="Banner">Mode:</label>
+    <select name="vlan_interface_mode" id="vlan_interface_mode"
+        class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" onclick="updateVLanMenu()">
+        <option value="access">Access Interface</option>
+        <option value="trunk">Trunking Interface</option>
+    </select>
+
+    <div id="acces_vlan_config">
+        <label
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            id="Banner">Choose Access VLAN:</label>
+        <select name="access_vlan" id="access_vlan"
+            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs ">
+        </select>
+    </div>
+
+    <div id="trunk_vlan_config" hidden>
+        <label
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            id="Banner">Choose Native VLAN:</label>
+        <select name="native_vlan" id="native_vlan"
+            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs ">
+        </select>
+
+        <label>Allowed VLANs:</label>
+        <input name="allowed_vlans" id="allowed_vlans" placeholder="e.g. 2:3:5"></input>
+        <span>Please seperate allowed VLANs with ':'</span>
+    </div>
+
+    <button type="button" class="config_item btn max-w-xs" id="add_vlan_interface_button"
+        onclick="addVlanInterface(); add_to_config('vlan');">add Interface</button>
+
+    <div id="created_vlans" class="config_item">
+        added Interfaces:</div>
+    <div class="config_item" id="vlan_interfaces_info"></div>
+    <input name="vlan_interfaces_info_for_transfer" id="vlan_interfaces_info_for_transfer"
+        value="{{ vlan_interfaces }}"></input>
+
+    <script>
+        document.getElementById('vlan_info_for_transfer').style.display = 'none';
+        document.getElementById('vlan_interfaces_info_for_transfer').style.display = 'none';
+
+        function updateVLanMenu() {
+            let dropdown = document.getElementById('vlan_interface_mode').value
+            let trunking = document.getElementById('trunk_vlan_config');
+            let access = document.getElementById('acces_vlan_config');
+
+            if (dropdown == 'trunk') {
+                trunking.style.display = 'block';
+                access.style.display = 'none';
+            } else {
+                access.style.display = 'block';
+                trunking.style.display = 'none';
+            }
+        }
+
+        //data forwarding from backend to frontend
+
+        //vlans
+
+        let Vlans_Array = collectIPAddressesAndAreas(document.getElementById('vlan_info_for_transfer').value);
+
+        for (let i = 0; i < Vlans_Array.length - 1; i = i + 2) {
+
+            let vlansInfo = "<b>ID: </b>" + Vlans_Array[i] + "<b> Name: </b>" + Vlans_Array[i + 1] + '<br><br>';
+            document.getElementById('vlan_info').innerHTML += vlansInfo;
+            extended_acl_ids.push(Vlans_Array[i])
 
 
-{% endblock content %}
+            let access_vlan_options = document.getElementById('access_vlan');
+            let native_vlan_options = document.getElementById('native_vlan');
+
+
+            // Erstelle ein neues Optionselement für den Access-VLAN
+            let access_option = document.createElement('option');
+            access_option.value = Vlans_Array[i];
+            access_option.textContent = Vlans_Array[i];
+            access_vlan_options.appendChild(access_option);
+
+            // Erstelle ein neues Optionselement für den Native-VLAN
+            let native_option = document.createElement('option');
+            native_option.value = Vlans_Array[i];
+            native_option.textContent = Vlans_Array[i];
+            native_vlan_options.appendChild(native_option);
+        }
+
+        //vlans interfaces
+
+        let Vlan_Interfaces_Array = collectIPAddressesAndAreas(document.getElementById('vlan_interfaces_info_for_transfer').value);
+
+        let x= 0
+
+        for (let i = 0; i < Vlan_Interfaces_Array.length - 1; i = i + x) {
+
+            let vlansInfo = '';
+
+            if (Vlan_Interfaces_Array[i+1] == 'access') {
+                vlansInfo = ("<b>Interface: </b>" + Vlan_Interfaces_Array[i] + "<b> Mode: </b>" + Vlan_Interfaces_Array[i+1] + '<b> Vlan:</b>' + Vlan_Interfaces_Array[i+2] + '<br><br>');
+                x=3;
+            } else {
+                vlansInfo = ("<b>Interface: </b>" + Vlan_Interfaces_Array[i] + "<b> Mode: </b>" + Vlan_Interfaces_Array[i+1] + '<b> native VLAN:</b>' + Vlan_Interfaces_Array[i+2] + '<b> allowed VLANs: </b>' + Vlan_Interfaces_Array[i+3] + '<br><br>');
+                x=4;
+            }
+            document.getElementById('vlan_interfaces_info').innerHTML += vlansInfo;
+
+        }
+
+        checkInterfaceVlan();
+
+    </script>
+
+
+    {% endblock content %}
