@@ -55,7 +55,7 @@ def interface(request, device_type, config_mode):
 
     # DEBUGGING :(
     interface_list.append(Interface('FastEthernet0/0','1.1.1.1','2.2.2.2',False,False,'Test',True)) 
-    interface_list.append(Interface('FastEthernet0/1','5.5.5.5','2.2.2.2',False,False,'Fa0/1',True))
+    interface_list.append(Interface('FastEthernet0/1','5.5.5.5','2.2.2.2',False,False,'Fa0/1',False))
 
     for interface in interface_list:
         config_option["interface_shutdowns"].append(interface.shutdown) 
@@ -141,7 +141,7 @@ def dhcp(request, device_type, config_mode):
         "config_mode": config_mode,
         "dhcp_state": 'true', #replace 'true' with real dhcp_state that gets loaded from the exampleConfig when the site gets invoked (can be 'true' or 'false')
         "dhcp_poolName": 'pool1',# replace with real
-        "dhcp_Network": '10.0.0.0 255.255.255.0',# replace with real
+        "dhcp_Network": '10.0.0.0, 255.255.255.0',# replace with real
         "dhcp_defaultGateway": '10.0.0.1',# replace with real
         "dhcp_DNS_server": '8.8.8.8',# replace with real
         "dhcp_excluded_Adresses": '1.1.1.1,5.5.5.5;1.1.1.1,5.5.5.5;'# replace with real
@@ -154,7 +154,9 @@ def acl_basic(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode
+        "config_mode": config_mode,
+        "ACLs": '1,permit,1.1.1.1,2.2.2.2;2,permit,8.8.8.8,0.0.0.255;' #replace with real ACLs that gets loaded from the exampleConfig when the site gets invoked (mind the format)
+
     }
     return render(request, 'configurations/acl_basic.html', config_option)
 
@@ -163,7 +165,8 @@ def acl_extended(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode
+        "config_mode": config_mode,
+        "ACLs":'1,permit,1.1.1.1,2.2.2.2,3.3.3.3,4.4.4.4,80;5,deny,5.5.5.5,6.6.6.6,7.7.7.7,8.8.8.8,443;'
     }
     return render(request, 'configurations/acl_extendet.html', config_option)
 

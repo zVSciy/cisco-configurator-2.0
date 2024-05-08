@@ -101,12 +101,20 @@
         <div id="added_acls" class="config_item">
           added ACLs:</div>
         <div class="config_item" id="extended_acl_info"></div>
-        <input name="extended_acl_info" id="extended_acl_info_for_transfer"></input>
+        <input name="extended_acl_info" id="extended_acl_info_for_transfer" value="{{ ACLs }}"></input>
 
       </div>
 
       <script>
         document.getElementById('extended_acl_info_for_transfer').style.display = 'none';
+
+        let Networks_Array = collectIPAddressesAndAreas(document.getElementById('extended_acl_info_for_transfer').value);
+
+        for (let i = 0; i < Networks_Array.length-1; i=i+7){
+          let networksInfo = "<b>ID: </b>" + Networks_Array[i] +  "<b> Option: </b>" + Networks_Array[i+1] + " <b> Source IP-Address: </b>" + Networks_Array[i+2] + "<b> Source Wildcard Mask: </b>" + Networks_Array[i+3] + "<b> Destination IP-Adress: </b>" + Networks_Array[i+4] + "<b> Destination Wildcard Mask: </b>" + Networks_Array[i+5] + "<b> Port: </b>"+ Networks_Array[i+6] +'<br><br>';
+          document.getElementById('extended_acl_info').innerHTML += networksInfo;
+          extended_acl_ids.push(Networks_Array[i])
+        }
       </script>
 
 

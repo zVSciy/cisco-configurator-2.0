@@ -2,7 +2,6 @@
 
 {% block content %}
 
-
 <div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
     <h2 class="font-extrabold text-2xl pb-5">Basic ACL Configuration</h2>
     <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
@@ -66,12 +65,20 @@
         <div id="added_acls" class="config_item">
           added ACLs:</div>
         <div class="config_item" id="basic_acl_info"></div>
-        <input name="basic_acl_info" id="basic_acl_info_for_transfer"></input>
+        <input name="basic_acl_info" id="basic_acl_info_for_transfer" value="{{ ACLs }}"></input>
 
       </div>
 
       <script>
         document.getElementById('basic_acl_info_for_transfer').style.display = 'none';
+
+        let Networks_Array = collectIPAddressesAndAreas(document.getElementById('basic_acl_info_for_transfer').value);
+
+        for (let i = 0; i < Networks_Array.length-1; i=i+4){
+          let networksInfo = "<b>ID: </b>" + Networks_Array[i] +  "<b> Option: </b>" + Networks_Array[i+1] + " <b>IP-Address: </b>" + Networks_Array[i+2] + "<b> Wildcard Mask: </b>" + Networks_Array[i+3] +'<br><br>';
+          document.getElementById('basic_acl_info').innerHTML += networksInfo;
+          basic_acl_ids.push(Networks_Array[i])
+        }
       </script>
 
 

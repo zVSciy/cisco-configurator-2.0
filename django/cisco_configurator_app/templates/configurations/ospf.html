@@ -1,8 +1,6 @@
 {% extends 'master.html' %}
 
 {% block content %}
-<input type="hidden" id="ospf_networks" value="{{ ospf_networks }}">
-
 
 <div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
     <h2 class="font-extrabold text-2xl pb-5">OSPF Configuration</h2>
@@ -78,14 +76,14 @@
         <div id="added_ospf_networks" class="config_item">
           added permitted Networks:</div>
         <div class="config_item" id="ospf_info"></div>
-        <input name="ospf_info" id="ospf_info_for_transfer"></input>
+        <input name="ospf_info" id="ospf_info_for_transfer" value="{{ ospf_networks }}"></input>
 
       </div>
 
       <script>
         document.getElementById('ospf_info_for_transfer').style.display = 'none';
 
-        let Networks_Array = collectIPAddressesAndAreas(document.getElementById('ospf_networks').value);
+        let Networks_Array = collectIPAddressesAndAreas(document.getElementById('ospf_info_for_transfer').value);
 
         for (let i = 0; i < Networks_Array.length-1; i=i+3){
           let networksInfo = "IP Address: " + Networks_Array[i] + "<br>Wildcard Mask: " + Networks_Array[i+1] + '<br>Area:'+ Networks_Array[i+2] +'<br><br>';
