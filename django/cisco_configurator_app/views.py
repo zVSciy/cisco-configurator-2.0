@@ -166,7 +166,7 @@ def acl_extended(request, device_type, config_mode):
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "ACLs":'1,permit,1.1.1.1,2.2.2.2,3.3.3.3,4.4.4.4,80;5,deny,5.5.5.5,6.6.6.6,7.7.7.7,8.8.8.8,443;'
+        "ACLs":'1,permit,1.1.1.1,2.2.2.2,3.3.3.3,4.4.4.4,80;5,deny,5.5.5.5,6.6.6.6,7.7.7.7,8.8.8.8,443;'#replace with real ACLs that gets loaded from the exampleConfig when the site gets invoked (mind the format)
     }
     return render(request, 'configurations/acl_extendet.html', config_option)
 
