@@ -5,6 +5,9 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from .util.configManager import ConfigManager
 from .util.deviceClasses import *
+from .util.fileManager import *
+from .util.inputChecks import *
+import os
 
 # Create your views here.
 
@@ -130,7 +133,7 @@ def stp(request, device_type):
 
 
 def index(request):
-    #! reset running-config file content
+    emptyConfigFile('running-config')
     return render(request, 'index.html')
 
 def create_objects(cm):
@@ -140,7 +143,8 @@ def create_objects(cm):
         cm.getStaticRoutes(), 
         cm.getRIPConfig(), 
         cm.getDhcpConfig(), 
-        cm.getNATConfig()
+        cm.getNATConfig(),
+        cm.getACLConfig(),
     ]
 
 def get_inputs(request, device_type, config_mode):
@@ -150,19 +154,18 @@ def get_inputs(request, device_type, config_mode):
         'interfaces':  get_interfaces(device_type)
     }
 
-    forward_to = request.POST.get('hidden_forward_to')
+    ip = request.POST.get('hidden_ip')
+    user = request.POST.get('hidden_user')
+    pw = request.POST.get('hidden_pw')
 
-    #! if file leer
-    if(config_option.get('config_mode') == 'create'):
-        if(config_option.get('device_type') == 'router'):
-            #! template-config-router in running-config
-            pass
-        elif(config_option.get('device_type') == 'switch'):
-            #! template-config-switch in running-config
-            pass
-    elif(config_option.get('config_mode') == 'load'):
-        #! loaded-config in running-config
-        pass
+    if os.path.getsize('./util/running-config') == 0:
+        if(config_option.get('config_mode') == 'create'):
+            if(config_option.get('device_type') == 'router'):
+                copyConfigFile('template-config-router.txt','running-config')
+            elif(config_option.get('device_type') == 'switch'):
+                copyConfigFile('template-config-switch.txt','running-config')
+        elif(config_option.get('config_mode') == 'load'):
+            transfer_config(ip, user, pw, direction='get')
 
     cm = ConfigManager('running-config')
     config_objects = create_objects(cm)
@@ -174,107 +177,111 @@ def get_inputs(request, device_type, config_mode):
     hostname = request.POST.get('hidden_hostname')
     banner = request.POST.get('hidden_banner')
 
-    #! serversided check for hostname and banner
-
-    config_objects[0].hostname = hostname
-    config_objects[0].banner = banner
+    config_objects[0].hostname = checkHostname(hostname)
+    config_objects[0].banner = checkBanner(banner)
     cm.writeDeviceInfo(config_objects[0])
 
 ########################################################################
 
+    #interfaces
+    for i in config_option["interfaces"]:
+        interfaces_shutdown = request.POST.get('hidden_' + i.port_name + '_shutdown')
+        interfaces_description = request.POST.get('hidden_' + i.port_name + '_description')
+        interfaces_ip = request.POST.get('hidden_' + i.port_name + '_ip')
+        interfaces_sm = request.POST.get('hidden_' + i.port_name + '_sm')
 
-    nat_ingoing = request.POST.get('hidden_nat_ingoing')
-    nat_outgoing = request.POST.get('hidden_nat_outgoing')  
+        for j in config_objects[1]:
+            if j.interface == i.port_name:
+                j.shutdown == checkIntShutdown(interfaces_shutdown)
+                j.description == checkIntDescription(interfaces_description)
+                j.ip == checkIntIP(interfaces_ip)
+                j.sm == checkIntSM(interfaces_sm)
+                cm.writeInterface(j)
 
-    #Interfaces
-    Interface_List = [] # ! List to store the Interfaces as an Interface Object in 
-
-    if request.POST.get('hidden_'+config_option["interfaces"][0].port_name+'_shutdown') != '':
-        for i in config_option["interfaces"]:
-            interfaces_shutdown = request.POST.get('hidden_'+i.port_name+'_shutdown')
-            interfaces_description = request.POST.get('hidden_'+i.port_name+'_description')
-            interfaces_ip = request.POST.get('hidden_'+i.port_name+'_ip')
-            interfaces_sm = request.POST.get('hidden_'+i.port_name+'_sm')
-            nat_inside = False
-            nat_outside = False
-            if nat_ingoing == i.port_name:
-                nat_inside = True
-            if nat_outgoing == i.port_name:
-                nat_outside = True
-                
-            interfaces_shutdown = True if interfaces_shutdown == 'true' else False
-
-            Interface_List.append(Interface(i.port_name, interfaces_ip, interfaces_sm, nat_inside, nat_outside, interfaces_description, interfaces_shutdown))
-
-    print(Interface_List)
-    ##DEBUG
-    # FastEthernet01_shutdown = True
-    # FastEthernet00_shutdown = True
-
-    # if(nat_ingoing and nat_outgoing):
-    #     if(nat_ingoing == 'FastEthernet00' and nat_outgoing == 'FastEthernet01'):
-    #         fe00 = cM.getInterface("FastEthernet0/0")
-    #         fe01 = cM.getInterface("FastEthernet0/1")
-    #         fe00.ipNatInside = True
-    #         fe00.ipNatOutside = False
-
-    #         fe01.ipNatInside = False
-    #         fe01.ipNatOutside = True
-    #         cM.writeInterface(fe00)
-    #         cM.writeInterface(fe01)
-    #     else:
-    #         fe00 = cM.getInterface("FastEthernet0/0")
-    #         fe01 = cM.getInterface("FastEthernet0/1")
-    #         fe00.ipNatInside = False
-    #         fe00.ipNatOutside = True
-
-    #         fe01.ipNatInside = True
-    #         fe01.ipNatOutside = False
-    #         cM.writeInterface(fe00)
-    #         cM.writeInterface(fe01)
-    # elif (FastEthernet00_ip):
-    #     cM.writeInterface(Interface('FastEthernet0/0', FastEthernet00_ip, FastEthernet00_sm, False, False, FastEthernet00_description, FastEthernet00_shutdown))
-    #     cM.writeInterface(Interface('FastEthernet0/1', FastEthernet01_ip, FastEthernet01_sm, False, False, FastEthernet01_description, FastEthernet01_shutdown))
-
-    #nat
-    nat_status = request.POST.get('hidden_nat_status')  #true = on | false = off
-    # acl_networks = request.POST.get('hidden_nat_info_for_transfer') 
-    if(nat_status and nat_ingoing and nat_outgoing):
-        cM.writeNATConfig(NAT(nat_outgoing, '2'))
-
-    #dhcp
-    dhcp_status = request.POST.get('hidden_dhcp_status')  #true = on | false = off
-    dhcp_poolName = request.POST.get('hidden_dhcp_poolName')
-    dhcp_network = request.POST.get('hidden_dhcp_Network')
-    if dhcp_network:
-        dhcp_network_IP = dhcp_network.split(',')[0]
-        dhcp_network_SM = dhcp_network.split(',')[1]
-    dhcp_dG = request.POST.get('hidden_dhcp_dG') 
-    dhcp_dnsServer = request.POST.get('hidden_dhcp_dnsServer') 
-    dhcp_info_for_transfer = request.POST.get('hidden_dhcp_info_for_transfer') 
-    if(dhcp_status and dhcp_poolName and dhcp_network and dhcp_dG and dhcp_dnsServer and dhcp_info_for_transfer):
-        cM.writeDhcpConfig(DHCP(dhcp_network_IP, dhcp_network_SM, dhcp_dG, dhcp_dnsServer, dhcp_info_for_transfer, dhcp_poolName))
-
-    #rip
-    rip_state = request.POST.get('hidden_rip_state')
-    rip_version = request.POST.get('hidden_dropdown_rip_version')
-    rip_sum_state = bool(request.POST.get('hidden_sum_state'))
-    rip_originate_state = bool(request.POST.get('hidden_originate_state'))
-    rip_networks = request.POST.get('hidden_networks_input_routing')
-    if(rip_state and rip_version and rip_sum_state and rip_originate_state and rip_networks):
-        cM.writeRIPConfig(RipRouting(rip_version, rip_sum_state, rip_originate_state, rip_networks))
+########################################################################
 
     #static routing
     static_routes = request.POST.get('hidden_staticRouting_info_for_transfer')
-    if(static_routes):
-        cM.writeStaticRoutes(StaticRoute(static_routes))
 
-    dl_or_tf = request.POST.get('hidden_dl_or_tf')
-    ip = request.POST.get('hidden_ip')
-    user = request.POST.get('hidden_user')
-    pw = request.POST.get('hidden_pw')
+    config_objects[2].staticRouting = checkStaticRoutes(static_routes)
+    cm.writeStaticRoutes(config_objects[2])
+
+########################################################################
+
+    #rip
+    rip_version = request.POST.get('hidden_dropdown_rip_version')
+    rip_sum_state = request.POST.get('hidden_sum_state')
+    rip_originate_state = request.POST.get('hidden_originate_state')
+    rip_networks = request.POST.get('hidden_networks_input_routing')
+
+    config_objects[3].ripVersion = checkRIPversion(rip_version)
+    config_objects[3].ripSumState = checkRIPsumState(rip_sum_state)
+    config_objects[3].ripOriginate = checkRIPoriginateState(rip_originate_state)
+    config_objects[3].ripNetworks = checkRIPnetworks(rip_networks)
+    cm.writeRIPConfig(config_objects[3])
+
+########################################################################
+
+    #dhcp
+    dhcp_poolName = request.POST.get('hidden_dhcp_poolName')
+    dhcp_network_IP = ''
+    dhcp_network_SM = ''
+    with request.POST.get('hidden_dhcp_Network') as network:
+        if network:
+            dhcp_network_IP = network.split(',')[0]
+            dhcp_network_SM = network.split(',')[1]
+    dhcp_dG = request.POST.get('hidden_dhcp_dG') 
+    dhcp_dnsServer = request.POST.get('hidden_dhcp_dnsServer') 
+    dhcp_excludedAreas = request.POST.get('hidden_dhcp_info_for_transfer') 
+
+    config_objects[4].dhcpPoolName = checkDHCPpoolName(dhcp_poolName)
+    config_objects[4].dhcpNetworkIP = checkDHCPnetworkIP(dhcp_network_IP)
+    config_objects[4].dhcpNetworkSM = checkDHCPnetworkSM(dhcp_network_SM)
+    config_objects[4].dhcpGateway = checkDHCPgateway(dhcp_dG)
+    config_objects[4].dhcpDNS = checkDHCPdns(dhcp_dnsServer)
+    config_objects[4].dhcpExcludedAreas = checkDHCPexcludedAreas(dhcp_excludedAreas)
+    cm.writeDhcpConfig(config_objects[4])
+
+########################################################################
+
+    #nat
+    nat_ingoing = request.POST.get('hidden_nat_ingoing')
+    nat_outgoing = request.POST.get('hidden_nat_outgoing')
+    acl_networks = request.POST.get('hidden_nat_info_for_transfer')
+
+    #! serversided check for nat values
+
+    current_interfaces = cm.getAllInterfaces()
+
+    for i in current_interfaces:
+        if i.interface == nat_ingoing:
+            i.ipNatInside = True
+        if i.interface == nat_outgoing:
+            i.ipNatOutside = True
+        cm.writeInterface(i)
+
+    config_objects[5].interfaceName = nat_outgoing
+    config_objects[5].aclName = '1'
+    cm.writeNATConfig(config_objects[5])
+
+    current_acls = cm.getACLConfig()
+
+    to_remove = []
+    for i, acl in enumerate(current_acls.ACLs):
+        if acl.id == '1':
+            to_remove.append(i)
+    for index in reversed(to_remove):
+        del current_acls.ACLs[index]
+    
+    current_acls.getACLs(acl_networks) # adding acls to ACLs list
+    cm.writeACLConfig(config_objects[6])
+
+########################################################################
+
 
     response = ''
+
+    dl_or_tf = request.POST.get('hidden_dl_or_tf')
 
     if dl_or_tf == 'download':
         response = download_config()
@@ -284,15 +291,9 @@ def get_inputs(request, device_type, config_mode):
     if response:
         return response
 
-
-
-
-    # exception for the index route bc index can`t handle the device type
+    forward_to = request.POST.get('hidden_forward_to')
+    # exception for the index route because index can`t handle the device type
     if forward_to != 'index':
         return redirect(reverse(forward_to + '_route', kwargs={'device_type': device_type}))
     else:
         return redirect('index_route')
-
-
-
-
