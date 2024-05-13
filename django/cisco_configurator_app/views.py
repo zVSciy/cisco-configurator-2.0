@@ -82,6 +82,8 @@ def vlan(request, device_type, config_mode):
         "config_mode": config_mode,
         "vlans": '1,gfhfgh;11,hallo;',# replace with real data from config if site gets invoked (mind the format)
         "vlan_interfaces":'Ethernet0/0,access,1;Ethernet0/1,trunk,1,11:12;'# replace with real data from config if site gets invoked (mind the format)
+        #Acces Interface Fomrat: [Interface],[access],[vlan_id];
+        #Trunking Interface Fomrat: [Interface],[trunk],[native_vlan_id],[allowed_vlan:allowed_vlan...];
     }
     return render(request, 'configurations/vlan.html', config_option)
 
