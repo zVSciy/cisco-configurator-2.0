@@ -1,14 +1,14 @@
 from ..models import Router_Interfaces
 import re
 
-ip_pattern = r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
-sm_pattern = r'^((255|254|252|248|240|224|192|128|0)\.){3}(255|254|252|248|240|224|192|128|0)$'
-
 def get_interfaces(device_type):
     if device_type == 'router':
         return Router_Interfaces.objects.filter(router_id=1)
     elif device_type == 'switch':
         return Router_Interfaces.objects.filter(router_id=2)
+
+ip_pattern = r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
+sm_pattern = r'^((255|254|252|248|240|224|192|128|0)\.){3}(255|254|252|248|240|224|192|128|0)$'
 
 def checkHostname(hostname):
     if isinstance(hostname, str):
