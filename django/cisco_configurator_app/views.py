@@ -285,7 +285,7 @@ def create_objects(cm):
         cm.getAllInterfaces(), 
         cm.getStaticRoutes(), 
         cm.getRIPConfig(), 
-        cm.getDhcpConfig(), 
+        cm.getDhcpConfig("172"), #! hardcoded for now, 172 is the default id for the dhcp config
         cm.getNATConfig(),
         cm.getACLConfig(),
     ]
@@ -301,8 +301,15 @@ def get_inputs(request, device_type, config_mode):
     user = request.POST.get('hidden_user')
     pw = request.POST.get('hidden_pw')
 
-    if os.path.getsize('./util/running-config') == 0:
-        if(config_option.get('config_mode') == 'create'):
+
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    # Join the script directory with the file path
+    # outputPath = outputPath if outputPath != None else filePath
+    # filePath = os.path.join(script_dir, filePath)
+    runningConfigPath = os.path.join(script_dir, 'util/running-config')
+    
+    if os.path.getsize(runningConfigPath) == 0:
+        if(config_option.get('config_mode') == 'new'):
             if(config_option.get('device_type') == 'router'):
                 copyConfigFile('template-config-router.txt','running-config')
             elif(config_option.get('device_type') == 'switch'):
@@ -346,7 +353,7 @@ def get_inputs(request, device_type, config_mode):
     #static routing
     static_routes = request.POST.get('hidden_staticRouting_info_for_transfer')
 
-    config_objects[2].staticRouting = checkStaticRoutes(static_routes)
+    config_objects[2].getRoutes(checkStaticRoutes(static_routes))
     cm.writeStaticRoutes(config_objects[2])
 
 ########################################################################
@@ -369,10 +376,14 @@ def get_inputs(request, device_type, config_mode):
     dhcp_poolName = request.POST.get('hidden_dhcp_poolName')
     dhcp_network_IP = ''
     dhcp_network_SM = ''
-    with request.POST.get('hidden_dhcp_Network') as network:
-        if network:
-            dhcp_network_IP = network.split(',')[0]
-            dhcp_network_SM = network.split(',')[1]
+    network = request.POST.get('hidden_dhcp_Network')
+    try:
+        dhcp_network_IP = network.split(',')[0]
+        dhcp_network_SM = network.split(',')[1]
+    except:
+        dhcp_network_IP = ""
+        dhcp_network_SM = ""
+
     dhcp_dG = request.POST.get('hidden_dhcp_dG') 
     dhcp_dnsServer = request.POST.get('hidden_dhcp_dnsServer') 
     dhcp_excludedAreas = request.POST.get('hidden_dhcp_info_for_transfer') 

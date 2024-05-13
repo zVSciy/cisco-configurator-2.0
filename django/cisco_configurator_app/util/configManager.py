@@ -26,10 +26,17 @@ class ConfigManager:
 
         hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
         motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
-        hostName = self.configEditor.getContentOnIndex(hostNameLine[0]).split(" ")[1]
-        #^hostname R1
-        motd = self.configEditor.getContentOnIndex(motdLine[0])
-        #^banner motd ^Chello^C
+        if len(motdLine) > 0:
+            motd = self.configEditor.getContentOnIndex(motdLine[0])
+            #^banner motd ^Chello^C
+        else:
+            motd = "^C^C"
+
+        if len(hostNameLine) > 0:
+            hostName = self.configEditor.getContentOnIndex(hostNameLine[0]).split(" ")[1]
+            #^hostname R1
+        else :
+            hostName = "DefaultHostname"
         return DeviceInfo(hostName, motd)
     
     def writeDeviceInfo(self, deviceInfo: DeviceInfo) -> None:
@@ -82,6 +89,12 @@ class ConfigManager:
                 shut = False if intLine == "shutdown" else True
             if natInside == None: natInside = False
             if natOutside == None: natOutside = False
+
+            if ip == None:
+                ip = ""
+            if sm == None:
+                sm = ""
+
         return Interface(intName, ip, sm, natInside, natOutside, desc, shut)
     
     # returns a list of all Interfaces in the config file
@@ -123,6 +136,8 @@ class ConfigManager:
         It searches for the "ip route" keyword and reads the configuration of each static route
         """
         staticRoutesLines = self.configEditor.findContentIndexes("ip route ")
+        if len(staticRoutesLines) == 0:
+            return StaticRoute("")
         returnStaticRoutes = ""
         for routeIndex in staticRoutesLines:
             routeText = self.configEditor.getContentOnIndex(routeIndex).split(" ")
@@ -144,7 +159,8 @@ class ConfigManager:
         Replaces all current static routes with the ones inside the staticRoutes object
         """
         staticRouteLines = self.configEditor.findContentIndexes("ip route ")
-        self.configEditor.removeContentBetweenIndexes(staticRouteLines[0], staticRouteLines[-1])
+        if len(staticRouteLines) > 0: 
+            self.configEditor.removeContentBetweenIndexes(staticRouteLines[0], staticRouteLines[-1])
         self.configEditor.appendContentToFile(staticRoutes.toConfig())
         self.configEditor.writeConfig()
     #endregion
@@ -159,6 +175,8 @@ class ConfigManager:
         It searches for the "router rip" keyword and reads the configuration
         """
         ripLines = self.configEditor.findContentIndexes("router rip", "!")
+        if len(ripLines) == 0:
+            return RipRouting("", False, False, "") #If no RIP configuration is found, return an empty RipRouting object
         ripText = self.configEditor.getContentBetweenIndexes(ripLines[0], ripLines[-1])
         ripNetworks = []
         ripVersion, ripSumState, ripOriginate, ripNetworks = None, False, False, ""
@@ -189,7 +207,9 @@ class ConfigManager:
         Replaces the current RIP configuration with the one in the ripConfig object
         """
         ripLines = self.configEditor.findContentIndexes("router rip", "!")
-        self.configEditor.removeContentBetweenIndexes(ripLines[0], ripLines[-1])
+        if(len(ripLines) > 0):
+            self.configEditor.removeContentBetweenIndexes(ripLines[0], ripLines[-1])
+
         self.configEditor.appendContentToFile(ripConfig.toConfig())
         self.configEditor.writeConfig()
     #endregion
@@ -204,6 +224,8 @@ class ConfigManager:
         Also searches for excluded addresses and adds them to the DHCP object, because they are in a seperate part of the configuration
         """
         dhcpLines = self.configEditor.findContentIndexes(f"ip dhcp pool {inputPoolName}", "!")
+        if len(dhcpLines) == 0:
+            return DHCP("", "", "", "", "", "")
         dhcpText = self.configEditor.getContentBetweenIndexes(dhcpLines[0], dhcpLines[-1])
         excludedLines = self.configEditor.findContentIndexes("ip dhcp excluded-address", "!")
         excludedText = self.configEditor.getContentBetweenIndexes(excludedLines[0], excludedLines[-1])
@@ -260,6 +282,8 @@ class ConfigManager:
         Returns an ACLStandard object with the ACL configuration in the config file
         """
         aclLines = self.configEditor.findContentIndexes("access-list ", "!")
+        if len(aclLines) == 0:
+            return ACLStandard("")
         aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
         ACLs = "" #^"ACLID,deny|permit,IP,WM;ACLID,deny|permit,IP,SM;ACLID,IP,WM"
         #Iterates over the lines of the ACL configuration and adds them to the ACLs string
@@ -300,6 +324,8 @@ class ConfigManager:
         Returns a NAT object with the NAT configuration in the config file
         """
         natLines = self.configEditor.findContentIndexes("ip nat inside ", "!")
+        if len(natLines) == 0:
+            return NAT("", "")
         natText = self.configEditor.getContentBetweenIndexes(natLines[0], natLines[-1])
         #^ip nat inside source list 1 interface Ethernet0/1 overload
         for line in natText:

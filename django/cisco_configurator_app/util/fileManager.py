@@ -35,6 +35,8 @@ def download_config():
         return HttpResponseBadRequest(ex)
 
 def emptyConfigFile(file):
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    file = os.path.join(script_dir, file)
     try:
         with open(file, 'w'): pass
     except Exception as ex:
@@ -43,8 +45,11 @@ def emptyConfigFile(file):
 
 def copyConfigFile(src_file, dest_file):
     try:
-        with open(src_file, 'r') as src:
-            with open(dest_file, 'w') as dest:
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+        src_dir = os.path.join(script_dir, src_file)
+        dest_dir = os.path.join(script_dir, dest_file)
+        with open(src_dir, 'r') as src:
+            with open(dest_dir, 'w') as dest:
                 dest.write(src.read())
     except Exception as ex:
         print(ex)
