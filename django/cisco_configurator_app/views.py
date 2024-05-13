@@ -297,10 +297,9 @@ def get_inputs(request, device_type, config_mode):
         'interfaces':  get_interfaces(device_type)
     }
 
-    ip = request.POST.get('hidden_ip')
-    user = request.POST.get('hidden_user')
-    pw = request.POST.get('hidden_pw')
-
+    load_ip = request.POST.get('loadFromIpAddress')
+    load_user = request.POST.get('loadFromUsername')
+    load_pw = request.POST.get('loadFromPassword')
 
     script_dir = os.path.dirname(os.path.realpath(__file__))
     # Join the script directory with the file path
@@ -315,7 +314,7 @@ def get_inputs(request, device_type, config_mode):
             elif(config_option.get('device_type') == 'switch'):
                 copyConfigFile('template-config-switch.txt','running-config')
         elif(config_option.get('config_mode') == 'load'):
-            transfer_config(ip, user, pw, direction='get')
+            transfer_config(load_ip, load_user, load_pw, direction='get')
 
     cm = ConfigManager('running-config')
     config_objects = create_objects(cm)
@@ -432,6 +431,9 @@ def get_inputs(request, device_type, config_mode):
 
 ########################################################################
 
+    ip = request.POST.get('hidden_ip')
+    user = request.POST.get('hidden_user')
+    pw = request.POST.get('hidden_pw')
 
     response = ''
 
