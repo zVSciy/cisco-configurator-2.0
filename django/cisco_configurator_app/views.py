@@ -15,6 +15,8 @@ routerID = 1
 
 cm = config_manager = ConfigManager(configFilePath="exampleConfig")
 
+#every function named after an configuration possibility calles the correspondig site and gives the needed data to the site via the config_option dict
+
 def get_interfaces(device_type):
     if device_type == 'router':
         return Router_Interfaces.objects.filter(router_id=1)
@@ -58,6 +60,7 @@ def interface(request, device_type, config_mode):
     #loading
     interface_list = [] # this List should be filled with Interface Objects (from the Class in the from deviceClasses file)
 
+
     # DEBUGGING :(
     # interface_list.append(Interface('FastEthernet0/0','1.1.1.1','2.2.2.2',False,False,'Test',True)) 
     # interface_list.append(Interface('FastEthernet0/1','5.5.5.5','2.2.2.2',False,False,'Fa0/1',False))
@@ -84,18 +87,18 @@ def etherchannel(request, device_type, config_mode):
     return render(request, 'configurations/etherchannel.html', config_option)
 
  
-def vlan(request, device_type, config_mode):
+# def vlan(request, device_type, config_mode):
 
-    config_option = {
-        "device_type": device_type,
-        "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode,
-        "vlans": '1,gfhfgh;11,hallo;',# replace with real data from config if site gets invoked (mind the format)
-        "vlan_interfaces":'Ethernet0/0,access,1;Ethernet0/1,trunk,1,11:12;'# replace with real data from config if site gets invoked (mind the format)
-        #Acces Interface Fomrat: [Interface],[access],[vlan_id];
-        #Trunking Interface Fomrat: [Interface],[trunk],[native_vlan_id],[allowed_vlan:allowed_vlan...];
-    }
-    return render(request, 'configurations/vlan.html', config_option)
+#     config_option = {
+#         "device_type": device_type,
+#         "interfaces":  get_interfaces(device_type),
+#         "config_mode": config_mode,
+#         "vlans": '1,gfhfgh;11,hallo;',# replace with real data from config if site gets invoked (mind the format)
+#         "vlan_interfaces":'Ethernet0/0,access,1;Ethernet0/1,trunk,1,11:12;'# replace with real data from config if site gets invoked (mind the format)
+#         #Acces Interface Fomrat: [Interface],[access],[vlan_id];
+#         #Trunking Interface Fomrat: [Interface],[trunk],[native_vlan_id],[allowed_vlan:allowed_vlan...];
+#     }
+#     return render(request, 'configurations/vlan.html', config_option)
 
  
 def ospf(request, device_type, config_mode):
@@ -395,6 +398,14 @@ def get_inputs(request, device_type, config_mode):
     config_objects[4].dhcpDNS = checkDHCPdns(dhcp_dnsServer)
     config_objects[4].dhcpExcludedAreas = checkDHCPexcludedAreas(dhcp_excludedAreas)
     cm.writeDhcpConfig(config_objects[4])
+
+########################################################################
+
+#vlan
+    # vlan_vlans = request.POST.get('hidden_vlan_info_for_transfer')
+    # vlan_interfaces = request.POST.get('hidden_vlan_interfaces_info_for_transfer')
+
+
 
 ########################################################################
 
