@@ -455,16 +455,18 @@ function ValidateBasicAclNetwork(info) {
 let extended_acl_ids = []
 
 function checkExtendedAclId(){
-  let id = document.getElementById('extended_acl_id').value;
-  let message = document.getElementById('extended_acl_id_info');
+  // let id = document.getElementById('extended_acl_id').value;
+  // let message = document.getElementById('extended_acl_id_info');
 
-  if (extended_acl_ids.includes(id)){
-    message.textContent = "ID already set!";
-    return false;
-  }else {
-    message.textContent = "";
-    return true;
-  }
+  // if (extended_acl_ids.includes(id)){
+  //   message.textContent = "ID already set!";
+  //   return false;
+  // }else {
+  //   message.textContent = "";
+  //   return true;
+  // }
+
+  return true;
 
 }
 

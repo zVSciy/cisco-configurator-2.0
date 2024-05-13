@@ -176,7 +176,7 @@ class ConfigManager:
                 #^ network 192.168.0.1
                 #If the ripNetworks string is not empty, add a semicolon to separate the networks
                 if len(ripNetworks) > 0:
-                    ripNetworks += ";"
+                    ripNetworks += ","
                 ripNetworks += ripLine.split(" ")[1]
             
         return RipRouting(ripVersion, ripSumState, ripOriginate, ripNetworks)

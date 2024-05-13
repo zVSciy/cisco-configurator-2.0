@@ -13,6 +13,8 @@ import os
 
 routerID = 1
 
+cm = config_manager = ConfigManager(configFilePath="exampleConfig")
+
 def get_interfaces(device_type):
     if device_type == 'router':
         return Router_Interfaces.objects.filter(router_id=1)
@@ -21,23 +23,27 @@ def get_interfaces(device_type):
 
 
 
+
 @csrf_exempt
 def basic_config(request, device_type, config_mode):
+
+    input_data = cm.getDeviceInfo()
 
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "hostname": 'test', #! replace 'test' with real hostname that gets loaded from the exampleConfig when the site gets invoked
-        "banner": 'test'
+        "hostname": input_data.hostname, 
+        "banner": input_data.motd #! banner motd is not getting read out of the config properly
     }
 
-    # print(config_mode)
+    
     return render(request, 'configurations/basic_config.html', config_option)
 
 
 
 def interface(request, device_type, config_mode):
+
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
@@ -53,8 +59,12 @@ def interface(request, device_type, config_mode):
     interface_list = [] # this List should be filled with Interface Objects (from the Class in the from deviceClasses file)
 
     # DEBUGGING :(
-    interface_list.append(Interface('FastEthernet0/0','1.1.1.1','2.2.2.2',False,False,'Test',True)) 
-    interface_list.append(Interface('FastEthernet0/1','5.5.5.5','2.2.2.2',False,False,'Fa0/1',False))
+    # interface_list.append(Interface('FastEthernet0/0','1.1.1.1','2.2.2.2',False,False,'Test',True)) 
+    # interface_list.append(Interface('FastEthernet0/1','5.5.5.5','2.2.2.2',False,False,'Fa0/1',False))
+
+    for interface in config_option['interfaces']:
+        interface_from_config = cm.getInterface(interface.port_name)
+        interface_list.append(interface_from_config)
 
     for interface in interface_list:
         config_option["interface_shutdowns"].append(interface.shutdown) 
@@ -75,6 +85,7 @@ def etherchannel(request, device_type, config_mode):
 
  
 def vlan(request, device_type, config_mode):
+
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
@@ -88,89 +99,158 @@ def vlan(request, device_type, config_mode):
 
  
 def ospf(request, device_type, config_mode):
+
+    input_data = cm.getAllOSPFConfig()
+
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "process": '5',# string number
-        "router_id": '1.1.1.1', # IP-Address
-        "ospf_networks": '1.1.1.1,2.2.2.2,0;3.3.3.3,4.4.4.4,0;' # replace with real data from config if site gets invoked (mind the format)
+        "process": input_data[0].ospfProcess,# string number #!by now GUI only supports 1 ospf process 
+        "router_id": input_data[0].ospfRouterID, # IP-Address
+        "ospf_networks": '' 
     }
+
+    for network in input_data[0].ospfNetworks:
+        config_option['ospf_networks'] += f"{network['networkID']},{network['networkWM']},{network['area']};"
+
+
     return render(request, 'configurations/ospf.html', config_option)
 
  
 def rip(request, device_type, config_mode):
+
+    input_data = cm.getRIPConfig()
+
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "rip_state": 'true', #'true' or 'false'
-        "rip_version": '2', # must be 1 or 2
-        "rip_sum_state": True, #True or False
-        "rip_originate_state": False, #True or False
-        "rip_networks": '1.1.1.1,2.2.2.2' #True or False
+        "rip_state": 'true', #always 'true' (ignore)
+        "rip_version": input_data.ripVersion, # must be 1 or 2
+        "rip_sum_state": input_data.ripSumState, #True or False
+        "rip_originate_state": input_data.ripOriginate, #True or False
+        "rip_networks": '' #Network string
     }
+
+    formatted_rip_networks = ''
+
+    for network in input_data.ripNetworks:
+        formatted_rip_networks += network + ','
+
+    config_option['rip_networks'] = formatted_rip_networks[:-1]
+
     return render(request, 'configurations/rip.html', config_option)
 
  
 def static_routing(request, device_type, config_mode):
+
+    input_data = cm.getStaticRoutes()
+
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "static_routes": '1.1.1.1,2.2.2.2,3.3.3.3;5.5.5.5,6.6.6.6,7.7.7.7;' # replace with real data from config if site gets invoked
+        "static_routes": '' # replace with real data from config if site gets invoked
     }
+
+    for route in input_data.routes:
+        config_option['static_routes'] += f"{route['targetNw']},{route['targetSm']},{route['nextHop']};"
+
+
+
     return render(request, 'configurations/static_routing.html', config_option)
 
 def nat(request, device_type, config_mode):
+
+    input_data_NAT = cm.getNATConfig()
+    input_data_ACL = cm.getACLConfig()
+    input_data_Interfaces = cm.getAllInterfaces()
+
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "nat_state": 'true', #replace 'true' with real nat_state that gets loaded from the exampleConfig when the site gets invoked (can be 'true' or 'false')
-        "ingoing_interface": 'FastEthernet0/1', # replace with real
-        "outgoing_interface": 'FastEthernet0/0', # repleace with real
-        "networks":'1.1.1.1,2.2.2.2;3.3.3.3,4.4.4.4;' # replace with real
+        "nat_state": 'true', #always true (ignore)
+        "ingoing_interface": '', # replace with real
+        "outgoing_interface": '', # repleace with real
+        "networks":'' # replace with real
     }
+
+    for interface in input_data_Interfaces:
+        if interface.ipNatInside == True:
+            config_option['ingoing_interface'] = interface.interface
+        if interface.ipNatOutside == True:
+            config_option['outgoing_interface'] = interface.interface
+
+    for acl in input_data_ACL.ACLs:
+        if acl['id'] == input_data_NAT.accessList:
+            config_option['networks'] += f"{acl['ip']},{acl['sm']};"
 
     
     return render(request, 'configurations/nat.html', config_option)
 
  
 def dhcp(request, device_type, config_mode):
+
+    input_data = cm.getDhcpConfig('172')
+
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "dhcp_state": 'true', #replace 'true' with real dhcp_state that gets loaded from the exampleConfig when the site gets invoked (can be 'true' or 'false')
-        "dhcp_poolName": 'pool1',# replace with real
-        "dhcp_Network": '10.0.0.0, 255.255.255.0',# replace with real
-        "dhcp_defaultGateway": '10.0.0.1',# replace with real
-        "dhcp_DNS_server": '8.8.8.8',# replace with real
-        "dhcp_excluded_Adresses": '1.1.1.1,5.5.5.5;1.1.1.1,5.5.5.5;'# replace with real
+        "dhcp_state": 'true', # always true (ignore)
+        "dhcp_poolName": input_data.dhcpPoolName,# replace with real
+        "dhcp_Network": input_data.dhcpNetworkIP +', '+ input_data.dhcpNetworkSM,# replace with real
+        "dhcp_defaultGateway": input_data.dhcpGateway,# replace with real
+        "dhcp_DNS_server": input_data.dhcpDNS,# replace with real
+        "dhcp_excluded_Adresses": ''# replace with real
 
     }
+
+    for area in input_data.areas:
+        config_option['dhcp_excluded_Adresses'] += f"{area['AreaFromIP']},{area['AreaToIP']};"
+
     return render(request, 'configurations/dhcp.html', config_option)
 
  
 def acl_basic(request, device_type, config_mode):
+
+    input_data = cm.getACLConfig()
+
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "ACLs": '1,permit,1.1.1.1,2.2.2.2;2,permit,8.8.8.8,0.0.0.255;' #replace with real ACLs that gets loaded from the exampleConfig when the site gets invoked (mind the format)
+        "ACLs": '' #replace with real ACLs that gets loaded from the exampleConfig when the site gets invoked (mind the format)
 
     }
+
+    for acl in input_data.ACLs:
+        config_option['ACLs'] += f"{acl['id']},{acl['permitDeny']},{acl['ip']},"
+        if 'sm' in acl:
+            config_option['ACLs'] += acl['sm'] + ';'
+        else:
+            config_option['ACLs'] += ';'
+
     return render(request, 'configurations/acl_basic.html', config_option)
 
  
 def acl_extended(request, device_type, config_mode):
+
+    input_data = cm.getAllACLConfig()
+
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "ACLs":'1,permit,1.1.1.1,2.2.2.2,3.3.3.3,4.4.4.4,80;5,deny,5.5.5.5,6.6.6.6,7.7.7.7,8.8.8.8,443;'#replace with real ACLs that gets loaded from the exampleConfig when the site gets invoked (mind the format)
+        "ACLs":''
     }
+
+    for acl in input_data: 
+        for rule in acl.aclList:
+            config_option['ACLs'] += f"{acl.aclRuleName},{rule['permitDeny']},{rule['sourceIP']},{rule['sourceWM']},{rule['destIP']},{rule['destWM']},{rule['port']};"
+
     return render(request, 'configurations/acl_extendet.html', config_option)
 
  
