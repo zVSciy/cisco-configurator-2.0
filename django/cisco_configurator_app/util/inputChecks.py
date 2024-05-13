@@ -50,6 +50,8 @@ def checkStaticRoutes(routes):
     validation = True
     splitted_routes = routes.split(';')
     for route in splitted_routes:
+        if len(routes) != 3:
+            continue
         route = route.split(',')
         targetNW = route[0]
         targetSM = route[1]
