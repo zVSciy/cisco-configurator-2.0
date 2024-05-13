@@ -1,3 +1,4 @@
+from views import get_interfaces
 import re
 
 ip_pattern = r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
@@ -121,13 +122,46 @@ def checkDHCPdns(dns):
     else: return ''
 
 def checkDHCPexcludedAreas(areas):
+    if areas in ('', None):
+        return ''
+    validation = True
+    splitted_areas = areas.split(';')
+    for areas in splitted_areas:
+        area = areas.split(',')
+        from_ip = area[0]
+        to_ip = area[1]
+        if not re.match(ip_pattern, from_ip):
+            validation = False
+        if to_ip != '':
+            if not re.match(ip_pattern, to_ip):
+                validation = False
+    if validation:
+        return areas
+    else: return ''
+
+def checkNATingoing(int, device):
+    for i in get_interfaces(device):
+        if i.port_name == int:
+            return int
     return ''
 
-def checkNATingoing(int):
-    return ''
-
-def checkNAtoutgoing(int):
+def checkNAToutgoing(int, device):
+    for i in get_interfaces(device):
+        if i.port_name == int:
+            return int
     return ''
 
 def checkACLnetworks(networks):
-    return ''
+    if networks in ('', None):
+        return ''
+    validation = True
+    splitted_networks = networks.split(';')
+    for network in splitted_networks:
+        network = network.split(',')
+        network_ip = network[0]
+        network_wcm = network[1]
+        if not re.match(ip_pattern, network_ip) or not re.match(sm_pattern, network_wcm):
+            validation = False
+    if validation:
+        return networks
+    else: return ''

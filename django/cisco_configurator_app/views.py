@@ -105,18 +105,27 @@ def ospf(request, device_type, config_mode):
 
     input_data = cm.getAllOSPFConfig()
 
-    config_option = {
-        "device_type": device_type,
-        "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode,
-        "process": input_data[0].ospfProcess,# string number #!by now GUI only supports 1 ospf process 
-        "router_id": input_data[0].ospfRouterID, # IP-Address
-        "ospf_networks": '' 
-    }
+    if len(input_data) == 0:
+        config_option = {
+            "device_type": device_type,
+            "interfaces":  get_interfaces(device_type),
+            "config_mode": config_mode,
+            "process": '',
+            "router_id": '',
+            "ospf_networks": '' 
+        }
+    else:
+        config_option = {
+            "device_type": device_type,
+            "interfaces":  get_interfaces(device_type),
+            "config_mode": config_mode,
+            "process": input_data[0].ospfProcess,# string number #!by now GUI only supports 1 ospf process 
+            "router_id": input_data[0].ospfRouterID, # IP-Address
+            "ospf_networks": '' 
+        }
 
-    for network in input_data[0].ospfNetworks:
-        config_option['ospf_networks'] += f"{network['networkID']},{network['networkWM']},{network['area']};"
-
+        for network in input_data[0].ospfNetworks:
+            config_option['ospf_networks'] += f"{network['networkID']},{network['networkWM']},{network['area']};"
 
     return render(request, 'configurations/ospf.html', config_option)
 
@@ -358,7 +367,7 @@ def get_inputs(request, device_type, config_mode):
     #static routing
     static_routes = request.POST.get('hidden_staticRouting_info_for_transfer')
 
-    if None != static_routes:
+    if '' != checkStaticRoutes(static_routes):
 
         config_objects[2].getRoutes(checkStaticRoutes(static_routes))
         cm.writeStaticRoutes(config_objects[2])
@@ -412,8 +421,6 @@ def get_inputs(request, device_type, config_mode):
     # vlan_vlans = request.POST.get('hidden_vlan_info_for_transfer')
     # vlan_interfaces = request.POST.get('hidden_vlan_interfaces_info_for_transfer')
 
-
-
 ########################################################################
 
     #nat
@@ -421,7 +428,7 @@ def get_inputs(request, device_type, config_mode):
     nat_outgoing = request.POST.get('hidden_nat_outgoing')
     acl_networks = request.POST.get('hidden_nat_info_for_transfer')
 
-    if '' not in (checkNATingoing(nat_ingoing), checkNAtoutgoing(nat_outgoing), checkACLnetworks(acl_networks)):
+    if '' not in (checkNATingoing(nat_ingoing, device_type), checkNAToutgoing(nat_outgoing, device_type), checkACLnetworks(acl_networks)):
 
         current_interfaces = cm.getAllInterfaces()
 
