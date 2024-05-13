@@ -4,9 +4,10 @@ from netmiko import ConnectHandler, SCPConn
 from django.http import FileResponse, HttpResponseBadRequest
 import os
 
-config_file = './django/cisco_configurator_app/util/exampleConfig'
+local_config_file = './django/cisco_configurator_app/util/running-config'
+remote_config_file = 'system:running-config'
 
-def transfer_config(ip, user, pw):
+def transfer_config(ip, user, pw, direction='put'):
     try:
         target = {
             'device_type': 'cisco_ios',
@@ -16,7 +17,11 @@ def transfer_config(ip, user, pw):
         }
         net_conn = ConnectHandler(**target)
         scp_conn = SCPConn(net_conn)
-        scp_conn.scp_transfer_file(config_file, 'system:running-config')
+        if direction == 'put':
+            scp_conn.scp_transfer_file(local_config_file, remote_config_file)
+        elif direction == 'get':
+            scp_conn.scp_transfer_file(remote_config_file, local_config_file)
+        else: raise ValueError('Invalid direction.')
         net_conn.disconnect()
     except Exception as ex:
         print(ex)
@@ -24,7 +29,23 @@ def transfer_config(ip, user, pw):
 
 def download_config():
     try:
-        return FileResponse(open(config_file, 'rb'), as_attachment=True, filename='config.txt')
+        return FileResponse(open(local_config_file, 'rb'), as_attachment=True, filename='config.txt')
+    except Exception as ex:
+        print(ex)
+        return HttpResponseBadRequest(ex)
+
+def emptyConfigFile(file):
+    try:
+        with open(file, 'w'): pass
+    except Exception as ex:
+        print(ex)
+        return HttpResponseBadRequest(ex)
+
+def copyConfigFile(src_file, dest_file):
+    try:
+        with open(src_file, 'r') as src:
+            with open(dest_file, 'w') as dest:
+                dest.write(src.read())
     except Exception as ex:
         print(ex)
         return HttpResponseBadRequest(ex)

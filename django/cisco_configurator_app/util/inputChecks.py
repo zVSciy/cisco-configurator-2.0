@@ -1,0 +1,117 @@
+import re
+
+ip_pattern = r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
+sm_pattern = r'^((255|254|252|248|240|224|192|128|0)\.){3}(255|254|252|248|240|224|192|128|0)$'
+
+def checkHostname(hostname):
+    if isinstance(hostname, str):
+        return hostname
+    else: return ''
+
+def checkBanner(banner):
+    if isinstance(banner, str):
+        return banner
+    else: return ''
+
+def checkIntShutdown(shutdown):
+    if shutdown == 'true':
+        return True
+    else: return False
+
+def checkIntDescription(description):
+    if isinstance(description, str):
+        return description
+    else: return ''
+
+def checkIntIP(ip):
+    if re.match(ip_pattern, ip):
+        return ip
+    else: return ''
+
+def checkIntSM(sm):
+    if re.match(sm_pattern, sm):
+        return sm
+    else: return ''
+
+def checkStaticRoutes(routes):
+    validation = True
+    splitted_routes = routes.split(';')
+    for route in splitted_routes:
+        route = route.split(',')
+        targetNW = route[0]
+        targetSM = route[1]
+        nextHOP = route[2]
+        if not re.match(ip_pattern, targetNW) or not re.match(sm_pattern, targetSM) or not re.match(ip_pattern, nextHOP):
+            validation = False
+    if validation:
+        return routes
+    else: return ''
+
+def checkRIPversion(version):
+    if version in ('1', '2'):
+        return version
+    else: return ''
+
+def checkRIPsumState(state):
+    if state in ('true', 'false'):
+        if state == 'true':
+            return True
+        else: return False
+    else: return ''
+
+def checkRIPoriginateState(state):
+    if state in ('true', 'false'):
+        if state == 'true':
+            return True
+        else: return False
+    else: return ''
+
+def checkRIPnetworks(networks):
+    validation = True
+    splitted_networks = networks.split(';')
+    for network in splitted_networks:
+        network = network.split(',')
+        network_ip = network[0]
+        network_wcm = network[1]
+        if not re.match(ip_pattern, network_ip) or not re.match(sm_pattern, network_wcm):
+            validation = False
+    if validation:
+        return networks
+    else: return ''
+
+def checkDHCPpoolName(name):
+    if isinstance(name, str):
+        return name
+    else: return ''
+
+def checkDHCPnetworkIP(ip):
+    if re.match(ip_pattern, ip):
+        return ip
+    else: return ''
+
+def checkDHCPnetworkSM(sm):
+    if re.match(sm_pattern, sm):
+        return sm
+    else: return ''
+
+def checkDHCPgateway(gateway):
+    if re.match(ip_pattern, gateway):
+        return gateway
+    else: return ''
+
+def checkDHCPdns(dns):
+    if re.match(ip_pattern, dns):
+        return dns
+    else: return ''
+
+def checkDHCPexcludedAreas(areas):
+    return True
+
+def checkNATingoing(int):
+    return True
+
+def checkNAtoutgoing(int):
+    return True
+
+def checkACLnetworks(networks):
+    return True

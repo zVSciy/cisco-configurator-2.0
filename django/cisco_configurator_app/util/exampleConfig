@@ -4,9 +4,7 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 no service password-encryption
 !
-hostname R1
 !
-banner motd ^Chello^C
 !
 boot-start-marker
 boot-end-marker
@@ -136,6 +134,10 @@ line con 0
 line aux 0
 line vty 0 4
 !
+!
+hostname blabla
+!
+banner motd ^Cbanner motd ^Chello^C^C
 !
 ip route 1.1.1.1 2.2.2.2 3.3.3.3
 ip route 5.5.5.5 6.6.6.6 7.7.7.7
