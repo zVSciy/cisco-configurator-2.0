@@ -466,9 +466,9 @@ class ConfigManager:
 
 # region ExampleUsage
 
-filePath = "./exampleConfig"
-outputPath = "./exampleConfigOut"
-cM = ConfigManager(filePath,outputPath)
+# filePath = "./exampleConfig"
+# outputPath = "./exampleConfigOut"
+# cM = ConfigManager(filePath,outputPath)
 
 
 

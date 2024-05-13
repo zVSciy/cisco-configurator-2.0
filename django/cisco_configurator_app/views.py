@@ -276,7 +276,7 @@ def stp(request, device_type, config_mode):
 
 
 def index(request):
-    emptyConfigFile('running-config')
+    emptyConfigFile('running-config',cm=cm)
     return render(request, 'index.html')
 
 def create_objects(cm):
@@ -310,13 +310,12 @@ def get_inputs(request, device_type, config_mode):
     if os.path.getsize(runningConfigPath) == 0:
         if(config_option.get('config_mode') == 'new'):
             if(config_option.get('device_type') == 'router'):
-                copyConfigFile('template-config-router.txt','running-config')
+                copyConfigFile('template-config-router.txt','running-config', cm = cm)
             elif(config_option.get('device_type') == 'switch'):
-                copyConfigFile('template-config-switch.txt','running-config')
+                copyConfigFile('template-config-switch.txt','running-config', cm = cm)
         elif(config_option.get('config_mode') == 'load'):
             transfer_config(load_ip, load_user, load_pw, direction='get')
 
-    cm = ConfigManager('running-config')
     config_objects = create_objects(cm)
 
 
@@ -356,7 +355,7 @@ def get_inputs(request, device_type, config_mode):
     #static routing
     static_routes = request.POST.get('hidden_staticRouting_info_for_transfer')
 
-    if '' != static_routes:
+    if None != static_routes:
 
         config_objects[2].getRoutes(checkStaticRoutes(static_routes))
         cm.writeStaticRoutes(config_objects[2])
