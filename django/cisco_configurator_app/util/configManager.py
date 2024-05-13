@@ -22,21 +22,24 @@ class ConfigManager:
     #region BasicConfig
 
     def getDeviceInfo(self) -> DeviceInfo:
+        self.configEditor.readFile()
         """Returns a DeviceInfo object with the hostname and motd configuration in the config file"""
 
         hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
-        motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
+        motdLine = self.configEditor.findContentIndexes("banner motd", "!")
         if len(motdLine) > 0:
             motd = self.configEditor.getContentOnIndex(motdLine[0])
             #^banner motd ^Chello^C
         else:
-            motd = "^C^C"
+            motd = ""
 
         if len(hostNameLine) > 0:
             hostName = self.configEditor.getContentOnIndex(hostNameLine[0]).split(" ")[1]
             #^hostname R1
         else :
             hostName = "DefaultHostname"
+        motd = motd.replace("banner motd ", "")
+        motd = motd.replace("^C", "")
         return DeviceInfo(hostName, motd)
     
     def writeDeviceInfo(self, deviceInfo: DeviceInfo) -> None:

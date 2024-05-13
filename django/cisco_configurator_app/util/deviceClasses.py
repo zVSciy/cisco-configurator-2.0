@@ -26,7 +26,7 @@ class DeviceInfo:
     
     # Convert the device information to a configuration list
     def toConfig(self) -> list:
-        return [f"hostname {self.hostname}\n", "!\n" f"banner motd ^C{self.motd}^C\n", "!\n"]
+        return [f"hostname {self.hostname}\n", "!\n", f"banner motd ^C{self.motd}^C\n", "!\n"]
 #endregion
 #region Interfaces
 
