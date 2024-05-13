@@ -121,13 +121,13 @@ def checkDHCPdns(dns):
     else: return ''
 
 def checkDHCPexcludedAreas(areas):
-    return True
+    return ''
 
 def checkNATingoing(int):
-    return True
+    return ''
 
 def checkNAtoutgoing(int):
-    return True
+    return ''
 
 def checkACLnetworks(networks):
-    return True
+    return ''
