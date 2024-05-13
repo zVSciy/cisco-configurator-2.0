@@ -24,16 +24,22 @@ def checkIntDescription(description):
     else: return ''
 
 def checkIntIP(ip):
+    if ip == None:
+        return ''
     if re.match(ip_pattern, ip):
         return ip
     else: return ''
 
 def checkIntSM(sm):
+    if sm == None:
+        return ''
     if re.match(sm_pattern, sm):
         return sm
     else: return ''
 
 def checkStaticRoutes(routes):
+    if routes in ('', None):
+        return ''
     validation = True
     splitted_routes = routes.split(';')
     for route in splitted_routes:
@@ -67,6 +73,8 @@ def checkRIPoriginateState(state):
     else: return ''
 
 def checkRIPnetworks(networks):
+    if networks in ('', None):
+        return ''
     validation = True
     splitted_networks = networks.split(';')
     for network in splitted_networks:
@@ -85,21 +93,29 @@ def checkDHCPpoolName(name):
     else: return ''
 
 def checkDHCPnetworkIP(ip):
+    if ip == None:
+        return ''
     if re.match(ip_pattern, ip):
         return ip
     else: return ''
 
 def checkDHCPnetworkSM(sm):
+    if sm == None:
+        return ''
     if re.match(sm_pattern, sm):
         return sm
     else: return ''
 
 def checkDHCPgateway(gateway):
+    if gateway == None:
+        return ''
     if re.match(ip_pattern, gateway):
         return gateway
     else: return ''
 
 def checkDHCPdns(dns):
+    if dns == None:
+        return ''
     if re.match(ip_pattern, dns):
         return dns
     else: return ''
