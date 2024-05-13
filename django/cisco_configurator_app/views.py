@@ -397,7 +397,7 @@ def get_inputs(request, device_type, config_mode):
     network = request.POST.get('hidden_dhcp_Network')
     try:
         dhcp_network_IP = network.split(',')[0]
-        dhcp_network_SM = network.split(',')[1]
+        dhcp_network_SM = network.split(',')[1][1:]
     except:
         dhcp_network_IP = ""
         dhcp_network_SM = ""

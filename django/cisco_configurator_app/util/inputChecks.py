@@ -69,16 +69,18 @@ def checkRIPversion(version):
 
 def checkRIPsumState(state):
     if state in ('true', 'false'):
-        if state == 'true':
-            return True
-        else: return False
+        # if state == 'true':
+        #     return True
+        # else: return False
+            return state
     else: return ''
 
 def checkRIPoriginateState(state):
     if state in ('true', 'false'):
-        if state == 'true':
-            return True
-        else: return False
+        # if state == 'true':
+        #     return True
+        # else: return False
+        return state
     else: return ''
 
 def checkRIPnetworks(networks):
@@ -135,6 +137,7 @@ def checkDHCPexcludedAreas(areas):
     if areas in ('', None):
         return ''
     validation = True
+    areas_str = areas
     splitted_areas = areas.split(';')
     for areas in splitted_areas:
         area = areas.split(',')
@@ -148,7 +151,7 @@ def checkDHCPexcludedAreas(areas):
             if not re.match(ip_pattern, to_ip):
                 validation = False
     if validation:
-        return areas
+        return areas_str
     else: return ''
 
 def checkNATingoing(int, device):
@@ -167,6 +170,7 @@ def checkACLnetworks(networks):
     if networks in ('', None):
         return ''
     validation = True
+    networks_str = networks
     splitted_networks = networks.split(';')
     for network in splitted_networks:
         if len(network) != 2:
@@ -177,5 +181,5 @@ def checkACLnetworks(networks):
         if not re.match(ip_pattern, network_ip) or not re.match(sm_pattern, network_wcm):
             validation = False
     if validation:
-        return networks
+        return networks_str
     else: return ''
