@@ -85,6 +85,8 @@ def checkRIPnetworks(networks):
     validation = True
     splitted_networks = networks.split(';')
     for network in splitted_networks:
+        if len(network) != 2:
+            continue
         network = network.split(',')
         network_ip = network[0]
         network_wcm = network[1]
@@ -134,6 +136,8 @@ def checkDHCPexcludedAreas(areas):
     splitted_areas = areas.split(';')
     for areas in splitted_areas:
         area = areas.split(',')
+        if len(area) != 2:
+            continue
         from_ip = area[0]
         to_ip = area[1]
         if not re.match(ip_pattern, from_ip):
@@ -163,6 +167,8 @@ def checkACLnetworks(networks):
     validation = True
     splitted_networks = networks.split(';')
     for network in splitted_networks:
+        if len(network) != 2:
+            continue
         network = network.split(',')
         network_ip = network[0]
         network_wcm = network[1]

@@ -42,6 +42,7 @@ class configEditor:
         return foundIndexes
                 
     def findMultipleContentIndexes(self, startsWith: str, endsWith: str = "!") -> list:
+        self.fileContent, self.fileLength = self.readFile()
         foundIndexes = [] #list of lists with the indexes of the found content
         foundTarget = False
         currentFinds = [] #The indexes of the currently found content (indexes of E0/0)
@@ -79,6 +80,7 @@ class configEditor:
         self.fileContent = self.fileContent.pop(index)
 
     def appendContentToFile(self, content: list) -> list:
+        # self.fileContent, self.fileLength = self.readFile()
         self.fileContent = self.fileContent[:-1] + content + self.fileContent[-1:]
 
 

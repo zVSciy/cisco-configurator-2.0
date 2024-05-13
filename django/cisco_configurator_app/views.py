@@ -340,7 +340,7 @@ def get_inputs(request, device_type, config_mode):
     if '' not in (checkHostname(hostname), checkBanner(banner)):
 
         config_objects[0].hostname = checkHostname(hostname)
-        config_objects[0].banner = checkBanner(banner)
+        config_objects[0].motd = checkBanner(banner)
         cm.writeDeviceInfo(config_objects[0])
 
 ########################################################################

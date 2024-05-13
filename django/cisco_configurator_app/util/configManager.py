@@ -60,6 +60,8 @@ class ConfigManager:
         It searches for the interface name in the config file and returns the object
         """
         InterfaceLines = self.configEditor.findContentIndexes("interface " + interfaceName, "!") #Finds the indexes of the interface in the config list
+        if len(InterfaceLines) == 0:
+            return Interface("", "", "", False, False, "", True)
         interfaceText = self.configEditor.getContentBetweenIndexes(InterfaceLines[0], InterfaceLines[-1]) #Gets the content of the interface
         intName, ip, sm, desc, natInside, natOutside, shut = None, None, None, "Default", None, None, True
         #Iterates over the lines of the interface, splits the line and assigns the values to the variables
@@ -95,7 +97,7 @@ class ConfigManager:
             if sm == None:
                 sm = ""
 
-        return Interface(intName, ip, sm, natInside, natOutside, desc, shut)
+        return Interface(intName, ip, sm, natInside, natOutside, desc, not shut)
     
     # returns a list of all Interfaces in the config file
     def getAllInterfaces(self) -> list[Interface]:
