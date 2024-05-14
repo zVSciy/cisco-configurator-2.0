@@ -1,4 +1,10 @@
 const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+const smRegex = /^((255|254|252|248|240|224|192|128|0)\.){3}(255|254|252|248|240|224|192|128|0)$/;
+
+
+function isValidSm(sm){
+  return smRegex.test(sm);
+}
 
 function isValidIpAddress(ip) {
   return ipRegex.test(ip);
@@ -85,7 +91,7 @@ function checkIpAddress(Int_ip, Int_sm, Int_result) {
   let TButton = document.getElementById("transferButton");
   let background_color = '#4CAF50';
 
-  if (isValidIpAddress(ip.value) && isValidIpAddress(sm.value) || ip.value === "" && sm.value === "" || ip.value === "dhcp" && sm.value === "") {
+  if (isValidIpAddress(ip.value) && isValidSm(sm.value) || ip.value === "" && sm.value === "" || ip.value === "dhcp" && sm.value === "") {
     resultElement.textContent = "";
     //re-able the buttons if they got disabled
     TButton.disabled = false;
@@ -135,7 +141,7 @@ function ValidateIPaddressNat(ipaddress, info) {
   let message = document.getElementById(info);
   let ip = document.getElementById(ipaddress);
   let TButton = document.getElementById("add_nat_ip_button");
-  if (isValidIpAddress(document.getElementById('nat_wm').value) && isValidIpAddress(document.getElementById('nat_ip').value)) {
+  if (isValidSm(document.getElementById('nat_wm').value) && isValidIpAddress(document.getElementById('nat_ip').value)) {
     message.textContent = "";
     TButton.disabled = false;
     return true;
@@ -184,7 +190,7 @@ function checkDhcpInput(Network_Input, Dg_input, dns_input, result) {
   let Network_IP = Network[0].replace(/[\s,]+/g, '');
   let Network_SM = Network[1];
 
-  if (isValidIpAddress(Network_IP) && isValidIpAddress(Network_SM) && isValidIpAddress(Dg) && isValidIpAddress(Dns) && pool_name != "") {
+  if (isValidIpAddress(Network_IP) && isValidSm(Network_SM) && isValidIpAddress(Dg) && isValidIpAddress(Dns) && pool_name != "") {
     resultElement.textContent = "";
     Button.disabled = false;
     Button.style.backgroundColor = "#4CAF50";
@@ -299,7 +305,7 @@ function ValidateIPaddressStaticRouting(ipaddress, info) {
   let message = document.getElementById(info);
   let ip = document.getElementById(ipaddress);
   let TButton = document.getElementById("add_StaticRoute_button");
-  if (isValidIpAddress(document.getElementById('target_ip').value) && isValidIpAddress(document.getElementById('static_routing_subnet_mask').value) && isValidIpAddress(document.getElementById('next_hop_ip').value)) {
+  if (isValidIpAddress(document.getElementById('target_ip').value) && isValidSm(document.getElementById('static_routing_subnet_mask').value) && isValidIpAddress(document.getElementById('next_hop_ip').value)) {
     message.textContent = "";
     TButton.disabled = false;
     return true;
@@ -351,7 +357,7 @@ function ValidateAreaOSPF(area){
 function ValidateOspfNetworks(info) {
   let message = document.getElementById(info);
   let TButton = document.getElementById("add_ospf_ip_button");
-  if (isValidIpAddress(document.getElementById('ospf_wm').value) && isValidIpAddress(document.getElementById('ospf_ip').value) && ValidateAreaOSPF(document.getElementById('ospf_area').value)) {
+  if (isValidSm(document.getElementById('ospf_wm').value) && isValidIpAddress(document.getElementById('ospf_ip').value) && ValidateAreaOSPF(document.getElementById('ospf_area').value)) {
     message.textContent = "";
     TButton.disabled = false;
     return true;
@@ -437,7 +443,7 @@ function addBasicAclIp() {
 function ValidateBasicAclNetwork(info) {
   let message = document.getElementById(info);
   let TButton = document.getElementById("add_basic_acl_button");
-  if (isValidIpAddress(document.getElementById('basic_acl_wm').value) && isValidIpAddress(document.getElementById('basic_acl_ip').value) && checkBasicAclId()) {
+  if (isValidSm(document.getElementById('basic_acl_wm').value) && isValidIpAddress(document.getElementById('basic_acl_ip').value) && checkBasicAclId()) {
     message.textContent = "";
     TButton.disabled = false;
     return true;
@@ -494,7 +500,7 @@ function addExtendedAclIp() {
 function ValidateExtendedAclNetwork(info) {
   let message = document.getElementById(info);
   let TButton = document.getElementById("add_extended_acl_button");
-  if (isValidIpAddress(document.getElementById('extended_acl_src_ip').value) && isValidIpAddress(document.getElementById('extended_acl_src_wm').value) && isValidIpAddress(document.getElementById('extended_acl_dest_ip').value) && isValidIpAddress(document.getElementById('extended_acl_dest_wm').value) && checkExtendedAclId()) {
+  if (isValidIpAddress(document.getElementById('extended_acl_src_ip').value) && isValidSm(document.getElementById('extended_acl_src_wm').value) && isValidIpAddress(document.getElementById('extended_acl_dest_ip').value) && isValidSm(document.getElementById('extended_acl_dest_wm').value) && checkExtendedAclId()) {
     message.textContent = "";
     TButton.disabled = false;
     return true;
