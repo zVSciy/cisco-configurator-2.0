@@ -95,7 +95,9 @@
     document.getElementById(interfaces[i]+'_description').value = interface_descriptions[i];
     document.getElementById(interfaces[i]+'_ip').value = interface_ips[i];
     document.getElementById(interfaces[i]+'_sm').value = interface_sms[i];
+
     document.getElementById(interfaces[i]+'_shutdown').checked = interface_shutdowns[i];
+
     updateInterfaceDescription(interfaces[i]+'_shutdown', interfaces[i]+'_shutdown_description');
   }
 
