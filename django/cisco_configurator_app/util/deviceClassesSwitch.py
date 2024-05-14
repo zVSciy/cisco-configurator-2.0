@@ -34,10 +34,15 @@ class DeviceInfo:
 # Define a class to store interface information
 class Interface:
     # Initialize the class with various parameters
-    def __init__(self, vlanInt:str = None, ip:str = None, sm:str = None, description:str = "Default", shutdown:bool = None ) -> None:
+    def __init__(self, vlanInt:str = None, ip:str = None, sm:str = None, description:str = "Default", shutdown:bool = None, vlans:str = None ) -> None:
         # Check if the interface is a string and store it
         if type(vlanInt) == str:
             self.vlanInt = vlanInt
+        else:
+            raise TypeError()
+        
+        if type(vlans) == str:
+            self.vlans = vlans
         else:
             raise TypeError()
 
@@ -66,17 +71,48 @@ class Interface:
             self.shutdown = shutdown
         else:
             raise TypeError()
+        
+    #^ Interface,trunk,native_vlan,allowed_vlan:allowed_vlan;
+    def getVLANs(self, vlans:str) -> list:
+        if vlans:
+            vlans = vlans.split(';')
+            for vlan in vlans:
+                if vlan:
+                    interfaceID, mode, nativeVLAN, allowedVLANs = vlan.split(',')
+                    # Split allowedVLANs by ':'
+                    allowedVLANs = allowedVLANs.split(':')
+                    self.vlans.append({"interfaceID" : interfaceID, "mode" : mode, "nativeVLAN" : nativeVLAN, "allowedVLANs" : allowedVLANs})
+        return self.vlans
 
     # Define the string representation of the class
     def __repr__(self) -> str:
-        return "Interface: " + self.vlanInt + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + str(self.shutdown) + "\n"
+        return "Interface: " + self.vlanInt + "\n" + "IP: " + self.ip + "\n" + "Subnet Mask: " + self.sm + "\n" + "Description: " + self.description + "\n" + "Shutdown: " + str(self.shutdown) + "\n + VLANs: " + self.vlans + "\n"
         
     # Convert the interface information to a configuration list
     def toConfig(self) -> list:
-        ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
+        shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
+        if self.vlans == "":
+            ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
+            return ["interface " + self.vlanInt + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}' + "!\n"]
+        else:
+            config = []
+            config.append(f"interface {self.vlanInt}\n")
+            config.append(f" {shutdown}\n")
+            config.append(f" description {self.description}\n")
+            for vlan in self.vlans:
+                print(vlan)
+                config.append(f" switchport mode {vlan['mode']}\n")
+                config.append(f" switchport trunk native vlan {vlan['nativeVLAN']}\n")
+                config.append(f" switchport trunk allowed vlan {vlan['allowedVLANs']}\n")
+                config.append(f" switchport {vlan['mode']} encapsulation dot1q\n")
+            config.append("!\n")
+            return config
 
-            
-        return ["interface " + self.vlanInt + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}' + "!\n"]
+vlanINT = Interface(vlanInt='10', ip='192.168.30.100', sm='255.255.255.0', description='TestTest', shutdown=True, vlans='5,trunk,1,10:20:30;15,access,1,10:20:30;')
+config = vlanINT.toConfig()
+for line in config:
+    print(line)
+
 #endregion
 #region VLAN
 
@@ -108,16 +144,7 @@ class createVLANs:
         #     vlanConfig.append('!\n')
         # return vlanConfig
 #endregion
-#^ Interface,trunk,native_vlan,allowed_vlan:allowed_vlan;
-#region apply VLANs
-class applyVLANs:
-    def __init__(self, vlans:str = None) -> None:
-        if type(vlans) == str:
-            self.vlans = vlans
-        else:
-            raise TypeError()
-        
-        
-#endregion
+
+
 
 
