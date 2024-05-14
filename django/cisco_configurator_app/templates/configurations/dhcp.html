@@ -115,10 +115,12 @@
     }
 
     let Networks_Array = collectIPAddresses(document.getElementById('dhcp_info_for_transfer').value);
-
-    for (let i = 0; i < Networks_Array.length; i=i+2){
-      let routeInfo = "From: " + Networks_Array[i] + "<br>To: " + Networks_Array[i+1] + '<br><br>';
-      document.getElementById('dhcp_pool_result').innerHTML += routeInfo;
+    
+    if (Networks_Array != null){
+      for (let i = 0; i < Networks_Array.length; i=i+2){
+        let routeInfo = "From: " + Networks_Array[i] + "<br>To: " + Networks_Array[i+1] + '<br><br>';
+        document.getElementById('dhcp_pool_result').innerHTML += routeInfo;
+      }
     }
   </script>
 {% endblock content %}
