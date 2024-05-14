@@ -77,9 +77,9 @@ function updateInterfaceDescription(checkbox_value, checkbox_description) {
   let interfaceDescription = document.getElementById(checkbox_description);
 
   if (checkbox.checked) {
-    interfaceDescription.innerHTML = "<span class='text-accent'> (on)</span>";
+    interfaceDescription.innerHTML = "<span class='text-accent'> (shutdown)</span>";
   } else {
-    interfaceDescription.innerText = ' (shutdown)';
+    interfaceDescription.innerText = ' (on)';
   }
 }
 

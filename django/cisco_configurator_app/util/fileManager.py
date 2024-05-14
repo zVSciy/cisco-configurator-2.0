@@ -5,13 +5,13 @@ from django.http import FileResponse, HttpResponseBadRequest
 from .configManager import ConfigManager
 import os
 
-local_config_file = './util/running-config'
-remote_config_file = 'system:running-config'
-
 ########################################################################
 
 # this function transfers the config file to or from the cisco device via scp
 def transfer_config(ip, user, pw, direction='put'):
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    local_config_file = os.path.join(script_dir, './running-config')
+    remote_config_file = 'system:running-config'
     try:
         target = {
             'device_type': 'cisco_ios',
@@ -73,3 +73,5 @@ def copyConfigFile(src_file, dest_file, cm: ConfigManager):
     except Exception as ex:
         print(ex)
         return HttpResponseBadRequest(ex)
+
+# transfer_config('192.168.17.224', 'admin', 'admin', direction='get')
