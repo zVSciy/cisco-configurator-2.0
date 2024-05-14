@@ -217,7 +217,7 @@ def nat(request, device_type, config_mode):
 # function to get config data to dhcp site
 def dhcp(request, device_type, config_mode):
 
-    input_data = cm.getDhcpConfig('172')
+    input_data = cm.getDhcpConfig("pool")
 
     config_option = {
         "device_type": device_type,
@@ -225,7 +225,7 @@ def dhcp(request, device_type, config_mode):
         "config_mode": config_mode,
         "dhcp_state": 'true', # always true (ignore)
         "dhcp_poolName": input_data.dhcpPoolName,# replace with real
-        "dhcp_Network": input_data.dhcpNetworkIP +', '+ input_data.dhcpNetworkSM,# replace with real
+        "dhcp_Network": input_data.dhcpNetworkIP +','+ input_data.dhcpNetworkSM,# replace with real
         "dhcp_defaultGateway": input_data.dhcpGateway,# replace with real
         "dhcp_DNS_server": input_data.dhcpDNS,# replace with real
         "dhcp_excluded_Adresses": ''# replace with real
@@ -398,12 +398,19 @@ def get_inputs(request, device_type, config_mode):
     rip_originate_state = request.POST.get('hidden_originate_state')
     rip_networks = request.POST.get('hidden_networks_input_routing')
 
+
+
+
     if '' not in (checkRIPversion(rip_version), checkRIPsumState(rip_sum_state), checkRIPoriginateState(rip_originate_state), checkRIPnetworks(rip_networks)):
 
+        rip_sum_state = True if rip_sum_state == 'true' else False
+        rip_originate_state = True if rip_originate_state == 'true' else False
+
+        
         config_objects[3].ripVersion = checkRIPversion(rip_version)
-        config_objects[3].ripSumState = checkRIPsumState(rip_sum_state)
-        config_objects[3].ripOriginate = checkRIPoriginateState(rip_originate_state)
-        config_objects[3].ripNetworks = checkRIPnetworks(rip_networks)
+        config_objects[3].ripSumState = rip_sum_state
+        config_objects[3].ripOriginate = rip_originate_state
+        config_objects[3].ripNetworks = config_objects[3].getNetworks(checkRIPnetworks(rip_networks))
         cm.writeRIPConfig(config_objects[3])
 
 ########################################################################
@@ -415,7 +422,7 @@ def get_inputs(request, device_type, config_mode):
     network = request.POST.get('hidden_dhcp_Network')
     try:
         dhcp_network_IP = network.split(',')[0]
-        dhcp_network_SM = network.split(',')[1][1:]
+        dhcp_network_SM = network.split(',')[1]
     except:
         dhcp_network_IP = ""
         dhcp_network_SM = ""
@@ -430,7 +437,7 @@ def get_inputs(request, device_type, config_mode):
         config_objects[4].dhcpNetworkSM = checkDHCPnetworkSM(dhcp_network_SM)
         config_objects[4].dhcpGateway = checkDHCPgateway(dhcp_dG)
         config_objects[4].dhcpDNS = checkDHCPdns(dhcp_dnsServer)
-        config_objects[4].dhcpExcludedAreas = checkDHCPexcludedAreas(dhcp_excludedAreas)
+        config_objects[4].getAreas(checkDHCPexcludedAreas(dhcp_excludedAreas))
         cm.writeDhcpConfig(config_objects[4])
 
 ########################################################################
@@ -457,21 +464,23 @@ def get_inputs(request, device_type, config_mode):
                 i.ipNatOutside = True
             cm.writeInterface(i)
 
-        config_objects[5].interfaceName = nat_outgoing
-        config_objects[5].aclName = '1'
+        config_objects[5].interface = nat_outgoing
+        config_objects[5].accessList = '1'
         cm.writeNATConfig(config_objects[5])
 
         current_acls = cm.getACLConfig()
 
         to_remove = []
         for i, acl in enumerate(current_acls.ACLs):
-            if acl.id == '1':
+            if acl.get("id") == '1':
                 to_remove.append(i)
         for index in reversed(to_remove):
             del current_acls.ACLs[index]
-        
+
+
+        acl_networks = "1,permit," + acl_networks
         current_acls.getACLs(acl_networks) # adding acls to ACLs list
-        cm.writeACLConfig(config_objects[6])
+        cm.writeACLConfig(current_acls)
 
 ########################################################################
 
