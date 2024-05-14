@@ -227,6 +227,9 @@ def dhcp(request, device_type, config_mode):
     for area in input_data.areas:
         config_option['dhcp_excluded_Adresses'] += f"{area['AreaFromIP']},{area['AreaToIP']};"
 
+    if config_option['dhcp_Network'] == ',':
+        config_option['dhcp_Network'] = ''
+
     return render(request, 'configurations/dhcp.html', config_option)
 
 
