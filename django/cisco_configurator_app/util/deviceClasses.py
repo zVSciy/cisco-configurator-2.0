@@ -385,7 +385,7 @@ class OSPF:
     
     # Define the string representation of the class
     def __repr__(self) -> str:
-        ospfAutoSummary = " no auto-summary\n" if self.ospfAutoSummary else ''
+        ospfAutoSummary = " no auto-summary\n" if self.ospfAutoSummary else ' auto-summary\n'
         ospfOriginate = " default-information originate\n" if self.ospfOriginate else ''
         networks = ', '.join([f"{network['networkID']}, {network['networkWM']}, {network['area']}" for network in self.ospfNetworks])
         return "OSPF Process: " + self.ospfProcess + "\n" + "Router ID: " + self.ospfRouterID + "\n" + "Networks: " + networks + "\n" + "Default Information Originate: " + ospfOriginate + "\n" + "Auto Summary: " + ospfAutoSummary + "\n"

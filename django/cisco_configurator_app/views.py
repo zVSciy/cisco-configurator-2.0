@@ -225,7 +225,7 @@ def dhcp(request, device_type, config_mode):
         "config_mode": config_mode,
         "dhcp_state": 'true', # always true (ignore)
         "dhcp_poolName": input_data.dhcpPoolName,# replace with real
-        "dhcp_Network": input_data.dhcpNetworkIP +', '+ input_data.dhcpNetworkSM,# replace with real
+        "dhcp_Network": input_data.dhcpNetworkIP +','+ input_data.dhcpNetworkSM,# replace with real
         "dhcp_defaultGateway": input_data.dhcpGateway,# replace with real
         "dhcp_DNS_server": input_data.dhcpDNS,# replace with real
         "dhcp_excluded_Adresses": ''# replace with real
