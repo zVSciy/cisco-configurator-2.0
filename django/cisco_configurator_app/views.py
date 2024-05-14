@@ -398,11 +398,18 @@ def get_inputs(request, device_type, config_mode):
     rip_originate_state = request.POST.get('hidden_originate_state')
     rip_networks = request.POST.get('hidden_networks_input_routing')
 
+
+
+
     if '' not in (checkRIPversion(rip_version), checkRIPsumState(rip_sum_state), checkRIPoriginateState(rip_originate_state), checkRIPnetworks(rip_networks)):
 
+        rip_sum_state = True if rip_sum_state == 'true' else False
+        rip_originate_state = True if rip_originate_state == 'true' else False
+
+        
         config_objects[3].ripVersion = checkRIPversion(rip_version)
-        config_objects[3].ripSumState = checkRIPsumState(rip_sum_state)
-        config_objects[3].ripOriginate = checkRIPoriginateState(rip_originate_state)
+        config_objects[3].ripSumState = rip_sum_state
+        config_objects[3].ripOriginate = rip_originate_state
         config_objects[3].ripNetworks = config_objects[3].getNetworks(checkRIPnetworks(rip_networks))
         cm.writeRIPConfig(config_objects[3])
 
