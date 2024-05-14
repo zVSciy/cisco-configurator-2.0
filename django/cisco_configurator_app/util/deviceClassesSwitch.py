@@ -96,8 +96,8 @@ class Interface:
             ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
             return ["interface " + self.vlanInt + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}' + "!\n"]
         else:
-            #! NOW WORKING YET - NEED TO IMPLEMENT
-            #^ only working 
+            #! NOT WORKING YET - NEED TO IMPLEMENT
+            #^ only working for itself
             config = []
             for vlan in self.vlans:
                 print(vlan)
@@ -111,7 +111,7 @@ class Interface:
                 config.append("!\n")
             return config
 
-#^ Testing vlan Config
+#~ Testing vlan Config
 # vlanINT = Interface(vlanInt='10', ip='192.168.30.100', sm='255.255.255.0', description='TestTest', shutdown=True, vlans='5,trunk,1,10:20:30;15,access,1,10:20:30;')
 # config = vlanINT.toConfig()
 # for line in config:
