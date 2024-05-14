@@ -92,7 +92,7 @@ class Interface:
     # Convert the interface information to a configuration list
     def toConfig(self) -> list:
         shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
-        if self.vlans == "": #! Only trigger without a vlan config (NOT WORKING YET)
+        if len(self.vlans) > 0: 
             ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
             return ["interface " + self.vlanInt + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}' + "!\n"]
         else:
