@@ -42,7 +42,8 @@ class Interface:
             raise TypeError()
         
         if type(vlans) == str:
-            self.vlans = vlans
+            self.vlans = []
+            self.vlans = self.getVLANs(vlans)
         else:
             raise TypeError()
 
@@ -91,21 +92,22 @@ class Interface:
     # Convert the interface information to a configuration list
     def toConfig(self) -> list:
         shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
-        if self.vlans == "":
+        if self.vlans == "": #! Only trigger without a vlan config (NOT WORKING YET)
             ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
             return ["interface " + self.vlanInt + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}' + "!\n"]
         else:
+            #^ Working 
             config = []
-            config.append(f"interface {self.vlanInt}\n")
-            config.append(f" {shutdown}\n")
-            config.append(f" description {self.description}\n")
             for vlan in self.vlans:
                 print(vlan)
+                config.append(f"interface {vlan['interfaceID']}\n")
                 config.append(f" switchport mode {vlan['mode']}\n")
                 config.append(f" switchport trunk native vlan {vlan['nativeVLAN']}\n")
                 config.append(f" switchport trunk allowed vlan {vlan['allowedVLANs']}\n")
                 config.append(f" switchport {vlan['mode']} encapsulation dot1q\n")
-            config.append("!\n")
+                config.append(f" {shutdown}")
+                config.append(f" description {self.description}\n")
+                config.append("!\n")
             return config
 
 vlanINT = Interface(vlanInt='10', ip='192.168.30.100', sm='255.255.255.0', description='TestTest', shutdown=True, vlans='5,trunk,1,10:20:30;15,access,1,10:20:30;')
