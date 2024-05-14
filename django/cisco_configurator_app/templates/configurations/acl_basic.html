@@ -42,7 +42,7 @@
                 class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
                 for="description">Ip Address:</label>
               <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="basic_acl_ip"
-                id="basic_acl_ip" placeholder="empty equals 0" oninput="ValidateBasicAclNetwork('basic_acl_input_info')">
+                id="basic_acl_ip" placeholder="e.g. 10.0.0.1" oninput="ValidateBasicAclNetwork('basic_acl_input_info')">
             </div>
           </div>
 
@@ -52,7 +52,7 @@
                 class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
                 for="description">Wildcard Mask:</label>
               <input type="text" name="basic_acl_wm"
-                id="basic_acl_wm" placeholder="empty equals 0" oninput="ValidateBasicAclNetwork('basic_acl_input_info')">
+                id="basic_acl_wm" placeholder="e.g. 0.0.255.255" oninput="ValidateBasicAclNetwork('basic_acl_input_info')">
 
             </div>
             <div id="basic_acl_input_info"></div>
