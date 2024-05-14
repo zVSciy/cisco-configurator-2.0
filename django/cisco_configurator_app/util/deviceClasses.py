@@ -33,7 +33,7 @@ class DeviceInfo:
 # Define a class to store interface information
 class Interface:
     # Initialize the class with various parameters
-    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = "Default", shutdown:bool = None ) -> None:
+    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = "Default", shutdown:bool = None , etherchannels:str = None) -> None:
         # Check if the interface is a string and store it
         if type(interface) == str:
             self.interface = interface
@@ -77,6 +77,14 @@ class Interface:
             self.ipNatOutside = ipNatOutside
         else:
             raise TypeError()
+        
+        if type(etherchannels) == str:
+            self.etherchannels = []
+            self.etherchannels = self.getEtherchannels(etherchannels)
+        
+    def getEtherchannels(self, etherchannels:str) -> list:
+        #! NOT WORKING YET 
+        return etherchannels.split(',')
 
     # Define the string representation of the class
     def __repr__(self) -> str:
@@ -449,4 +457,3 @@ class ACLExtended:
         config.append("!\n")
         return config
 #endregion
-

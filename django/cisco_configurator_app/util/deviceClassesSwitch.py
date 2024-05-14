@@ -96,7 +96,8 @@ class Interface:
             ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
             return ["interface " + self.vlanInt + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}' + "!\n"]
         else:
-            #^ Working 
+            #! NOW WORKING YET - NEED TO IMPLEMENT
+            #^ only working 
             config = []
             for vlan in self.vlans:
                 print(vlan)
