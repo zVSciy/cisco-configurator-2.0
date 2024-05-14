@@ -15,8 +15,7 @@ routerID = 1
 
 cm = ConfigManager(configFilePath="running-config")
 
-#every function named after an configuration possibility calles the correspondig site and gives the needed data to the site via the config_option dict
-
+#return the interface names of router or switch
 def get_interfaces(device_type):
     if device_type == 'router':
         return Router_Interfaces.objects.filter(router_id=1)
@@ -24,10 +23,12 @@ def get_interfaces(device_type):
         return Router_Interfaces.objects.filter(router_id=2)
 
 
+#every function named after an configuration possibility calles the correspondig site and gives the needed data to the site via the config_option dict
 
 
+# function to get config data to basic-config site
 @csrf_exempt
-def basic_config(request, device_type, config_mode):
+def basic_config(request, device_type, config_mode): 
 
     input_data = cm.getDeviceInfo()
 
@@ -44,6 +45,7 @@ def basic_config(request, device_type, config_mode):
 
 
 
+# function to get config data to interface site
 def interface(request, device_type, config_mode):
 
     config_option = {
@@ -100,7 +102,8 @@ def etherchannel(request, device_type, config_mode):
 #     }
 #     return render(request, 'configurations/vlan.html', config_option)
 
- 
+
+# function to get config data to ospf site
 def ospf(request, device_type, config_mode):
 
     input_data = cm.getAllOSPFConfig()
@@ -129,7 +132,8 @@ def ospf(request, device_type, config_mode):
 
     return render(request, 'configurations/ospf.html', config_option)
 
- 
+
+# function to get config data to rip site
 def rip(request, device_type, config_mode):
 
     input_data = cm.getRIPConfig()
@@ -145,6 +149,8 @@ def rip(request, device_type, config_mode):
         "rip_networks": '' #Network string
     }
 
+    #get inputs
+
     formatted_rip_networks = ''
 
     for network in input_data.ripNetworks:
@@ -154,7 +160,8 @@ def rip(request, device_type, config_mode):
 
     return render(request, 'configurations/rip.html', config_option)
 
- 
+
+# function to get config data to static_routing site
 def static_routing(request, device_type, config_mode):
 
     input_data = cm.getStaticRoutes()
@@ -173,6 +180,8 @@ def static_routing(request, device_type, config_mode):
 
     return render(request, 'configurations/static_routing.html', config_option)
 
+
+# function to get config data to nat site
 def nat(request, device_type, config_mode):
 
     input_data_NAT = cm.getNATConfig()
@@ -184,10 +193,12 @@ def nat(request, device_type, config_mode):
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
         "nat_state": 'true', #always true (ignore)
-        "ingoing_interface": '', # replace with real
-        "outgoing_interface": '', # repleace with real
-        "networks":'' # replace with real
+        "ingoing_interface": '', 
+        "outgoing_interface": '', 
+        "networks":'' 
     }
+
+    #get inputs
 
     for interface in input_data_Interfaces:
         if interface.ipNatInside == True:
@@ -202,7 +213,8 @@ def nat(request, device_type, config_mode):
     
     return render(request, 'configurations/nat.html', config_option)
 
- 
+
+# function to get config data to dhcp site
 def dhcp(request, device_type, config_mode):
 
     input_data = cm.getDhcpConfig("pool")
@@ -225,7 +237,8 @@ def dhcp(request, device_type, config_mode):
 
     return render(request, 'configurations/dhcp.html', config_option)
 
- 
+
+# function to get config data to basic acl site
 def acl_basic(request, device_type, config_mode):
 
     input_data = cm.getACLConfig()
@@ -247,7 +260,8 @@ def acl_basic(request, device_type, config_mode):
 
     return render(request, 'configurations/acl_basic.html', config_option)
 
- 
+
+# function to get config data to extendet acl site
 def acl_extended(request, device_type, config_mode):
 
     input_data = cm.getAllACLConfig()
@@ -291,6 +305,8 @@ def index(request):
     emptyConfigFile('running-config',cm=cm)
     return render(request, 'index.html')
 
+
+# return an array with all config objects
 def create_objects(cm):
     return [
         cm.getDeviceInfo(), 
@@ -302,6 +318,8 @@ def create_objects(cm):
         cm.getACLConfig(),
     ]
 
+
+# gets the inputs from the POST request of the fronend and writes them into the config
 def get_inputs(request, device_type, config_mode):
     config_option = {
         'device_type': device_type,
