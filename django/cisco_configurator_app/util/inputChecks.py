@@ -1,7 +1,7 @@
 from ..models import Router_Interfaces
 import re
 
-#return the interface names of router or switch
+# return the interface names of router or switch
 def get_interfaces(device_type):
     if device_type == 'router':
         return Router_Interfaces.objects.filter(router_id=1)
@@ -11,7 +11,9 @@ def get_interfaces(device_type):
 ip_pattern = r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
 sm_pattern = r'^((255|254|252|248|240|224|192|128|0)\.){3}(255|254|252|248|240|224|192|128|0)$'
 
-# BASIC config
+########################################################################
+
+# BASIC CONFIG
 
 #checks the hostname input
 def checkHostname(hostname):
@@ -25,16 +27,17 @@ def checkBanner(banner):
         return banner
     else: return ''
 
+########################################################################
 
 # INTERFACES
 
-#checks the Interface shutdown state
+#checks the interface shutdown state
 def checkIntShutdown(shutdown):
     if shutdown == 'true':
         return True
     else: return False
 
-#checks the Interface description
+#checks the interface description
 def checkIntDescription(description):
     if isinstance(description, str):
         return description
@@ -56,6 +59,7 @@ def checkIntSM(sm):
         return sm
     else: return ''
 
+########################################################################
 
 # STATIC ROUTING
 
@@ -78,17 +82,17 @@ def checkStaticRoutes(routes):
         return routes
     else: return ''
 
+########################################################################
 
 # RIP
 
-# Checks if rip version is 1 or 2
+#checks if rip version is 1 or 2
 def checkRIPversion(version):
     if version in ('1', '2'):
         return version
     else: return ''
 
-
-# Checks the Auto Summary state of the
+#checks the rip auto summary state
 def checkRIPsumState(state):
     if state in ('true', 'false'):
         # if state == 'true':
@@ -97,7 +101,7 @@ def checkRIPsumState(state):
             return state
     else: return ''
 
-# Checks the Originate State state of the
+#checks the rip originate state
 def checkRIPoriginateState(state):
     if state in ('true', 'false'):
         # if state == 'true':
@@ -106,7 +110,7 @@ def checkRIPoriginateState(state):
         return state
     else: return ''
 
-# Checks the rip network string
+#checks the rip network string
 def checkRIPnetworks(networks):
     if networks in ('', None):
         return ''
@@ -124,16 +128,17 @@ def checkRIPnetworks(networks):
         return networks
     else: return ''
 
+########################################################################
 
 # DHCP
 
-# checks DHCP pool name
+#checks DHCP pool name
 def checkDHCPpoolName(name):
     if isinstance(name, str):
         return name
     else: return ''
 
-# checks DHCP Network IP
+#checks DHCP network ip
 def checkDHCPnetworkIP(ip):
     if ip == None:
         return ''
@@ -141,7 +146,7 @@ def checkDHCPnetworkIP(ip):
         return ip
     else: return ''
 
-# checks DHCP Network SM
+#checks DHCP network sm
 def checkDHCPnetworkSM(sm):
     if sm == None:
         return ''
@@ -149,7 +154,7 @@ def checkDHCPnetworkSM(sm):
         return sm
     else: return ''
 
-# checks DHCP Gateway IP
+#checks DHCP gateway ip
 def checkDHCPgateway(gateway):
     if gateway == None:
         return ''
@@ -157,7 +162,7 @@ def checkDHCPgateway(gateway):
         return gateway
     else: return ''
 
-# checks DHCP DNS IP
+#checks DHCP dns ip
 def checkDHCPdns(dns):
     if dns == None:
         return ''
@@ -165,8 +170,7 @@ def checkDHCPdns(dns):
         return dns
     else: return ''
 
-
-# checks DHCP Excluded Adresses (from - to)
+#checks DHCP excluded areas (from - to)
 def checkDHCPexcludedAreas(areas):
     if areas in ('', None):
         return ''
@@ -188,24 +192,25 @@ def checkDHCPexcludedAreas(areas):
         return areas_str
     else: return ''
 
+########################################################################
 
 # NAT
 
-#Checks the Nat ingoing interface
+#checks the NAT ingoing interface
 def checkNATingoing(int, device):
     for i in get_interfaces(device):
         if i.port_name == int:
             return int
     return ''
 
-#Checks the Nat outgoing interface
+#checks the NAT outgoing interface
 def checkNAToutgoing(int, device):
     for i in get_interfaces(device):
         if i.port_name == int:
             return int
     return ''
 
-#Checks the ACLNetwork string
+#checks the ACL network string
 def checkACLnetworks(networks):
     if networks in ('', None):
         return ''
