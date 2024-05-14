@@ -360,6 +360,8 @@ class ConfigManager:
         Returns a OSPF object that has the instanceID/processID from the input from the config file
         """
         ospfLines = self.configEditor.findContentIndexes(f"router ospf {instanceName}", "!")
+        if len(ospfLines) == 0:
+            return OSPF("", "", False, False, "")
         ospfText = self.configEditor.getContentBetweenIndexes(ospfLines[0], ospfLines[-1])
         ospfProcessID = ospfText[0].split(" ")[2]
         #^router ospf 2
@@ -426,6 +428,8 @@ class ConfigManager:
         It only returns the value of the ACL with the selected name
         """
         aclLines = self.configEditor.findContentIndexes(f"ip access-list extended {aclName}", "!")
+        if len(aclLines) == 0:
+            return ACLExtended("", "")
         aclText = self.configEditor.getContentBetweenIndexes(aclLines[0], aclLines[-1])
         #^ ip access-list extended test2
         returnAclRulesStr = ""

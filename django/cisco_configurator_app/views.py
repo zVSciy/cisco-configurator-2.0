@@ -15,15 +15,14 @@ routerID = 1
 
 cm = ConfigManager(configFilePath="running-config")
 
-#return the interface names of router or switch
+# return the interface names of router or switch
 def get_interfaces(device_type):
     if device_type == 'router':
         return Router_Interfaces.objects.filter(router_id=1)
     elif device_type == 'switch':
         return Router_Interfaces.objects.filter(router_id=2)
 
-
-#every function named after an configuration possibility calles the correspondig site and gives the needed data to the site via the config_option dict
+# every function named after an configuration possibility calles the correspondig site and gives the needed data to the site via the config_option dict
 
 
 # function to get config data to basic-config site
@@ -40,9 +39,7 @@ def basic_config(request, device_type, config_mode):
         "banner": input_data.motd #! banner motd is not getting read out of the config properly
     }
 
-    
     return render(request, 'configurations/basic_config.html', config_option)
-
 
 
 # function to get config data to interface site
@@ -58,10 +55,8 @@ def interface(request, device_type, config_mode):
         "interface_sms": []
     }
 
-
     #loading
     interface_list = [] # this List should be filled with Interface Objects (from the Class in the from deviceClasses file)
-
 
     # DEBUGGING :(
     # interface_list.append(Interface('FastEthernet0/0','1.1.1.1','2.2.2.2',False,False,'Test',True)) 
@@ -79,7 +74,7 @@ def interface(request, device_type, config_mode):
 
     return render(request, 'configurations/interface.html', config_option)
 
- 
+
 def etherchannel(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
@@ -88,7 +83,7 @@ def etherchannel(request, device_type, config_mode):
     }
     return render(request, 'configurations/etherchannel.html', config_option)
 
- 
+
 # def vlan(request, device_type, config_mode):
 
 #     config_option = {
@@ -149,7 +144,7 @@ def rip(request, device_type, config_mode):
         "rip_networks": '' #Network string
     }
 
-    #get inputs
+    # get inputs
 
     formatted_rip_networks = ''
 
@@ -176,8 +171,6 @@ def static_routing(request, device_type, config_mode):
     for route in input_data.routes:
         config_option['static_routes'] += f"{route['targetNw']},{route['targetSm']},{route['nextHop']};"
 
-
-
     return render(request, 'configurations/static_routing.html', config_option)
 
 
@@ -198,7 +191,7 @@ def nat(request, device_type, config_mode):
         "networks":'' 
     }
 
-    #get inputs
+    # get inputs
 
     for interface in input_data_Interfaces:
         if interface.ipNatInside == True:
@@ -229,11 +222,13 @@ def dhcp(request, device_type, config_mode):
         "dhcp_defaultGateway": input_data.dhcpGateway,# replace with real
         "dhcp_DNS_server": input_data.dhcpDNS,# replace with real
         "dhcp_excluded_Adresses": ''# replace with real
-
     }
 
     for area in input_data.areas:
         config_option['dhcp_excluded_Adresses'] += f"{area['AreaFromIP']},{area['AreaToIP']};"
+
+    if config_option['dhcp_Network'] == ',':
+        config_option['dhcp_Network'] = ''
 
     return render(request, 'configurations/dhcp.html', config_option)
 
@@ -247,8 +242,7 @@ def acl_basic(request, device_type, config_mode):
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "ACLs": '' #replace with real ACLs that gets loaded from the exampleConfig when the site gets invoked (mind the format)
-
+        "ACLs": '' # replace with real ACLs that gets loaded from the exampleConfig when the site gets invoked (mind the format)
     }
 
     for acl in input_data.ACLs:
@@ -279,7 +273,7 @@ def acl_extended(request, device_type, config_mode):
 
     return render(request, 'configurations/acl_extendet.html', config_option)
 
- 
+
 def vtp_dtp(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
@@ -288,7 +282,6 @@ def vtp_dtp(request, device_type, config_mode):
     }
     return render(request, 'configurations/vtp_dtp.html', config_option)
 
- 
 def stp(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
@@ -298,9 +291,7 @@ def stp(request, device_type, config_mode):
     return render(request, 'configurations/stp.html', config_option)
 
 
-
-
-
+# empties the running-config file every time the index page is called
 def index(request):
     emptyConfigFile('running-config',cm=cm)
     return render(request, 'index.html')
@@ -332,7 +323,7 @@ def get_inputs(request, device_type, config_mode):
     load_pw = request.POST.get('loadFromPassword')
 
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    # Join the script directory with the file path
+    # join the script directory with the file path
     # outputPath = outputPath if outputPath != None else filePath
     # filePath = os.path.join(script_dir, filePath)
     runningConfigPath = os.path.join(script_dir, 'util/running-config')
@@ -348,13 +339,13 @@ def get_inputs(request, device_type, config_mode):
 
     config_objects = create_objects(cm)
 
-
 ########################################################################
 
     #basic config
     hostname = request.POST.get('hidden_hostname')
     banner = request.POST.get('hidden_banner')
 
+    #check values
     if '' not in (checkHostname(hostname), checkBanner(banner)):
 
         config_objects[0].hostname = checkHostname(hostname)
@@ -370,6 +361,7 @@ def get_inputs(request, device_type, config_mode):
         interfaces_ip = request.POST.get('hidden_' + i.port_name + '_ip')
         interfaces_sm = request.POST.get('hidden_' + i.port_name + '_sm')
 
+        #check values
         if '' not in (checkIntShutdown(interfaces_shutdown), checkIntDescription(interfaces_description), checkIntIP(interfaces_ip), checkIntSM(interfaces_sm)):
 
             for j in config_objects[1]:
@@ -385,6 +377,7 @@ def get_inputs(request, device_type, config_mode):
     #static routing
     static_routes = request.POST.get('hidden_staticRouting_info_for_transfer')
 
+    #check values
     if '' != checkStaticRoutes(static_routes):
 
         config_objects[2].getRoutes(checkStaticRoutes(static_routes))
@@ -398,15 +391,12 @@ def get_inputs(request, device_type, config_mode):
     rip_originate_state = request.POST.get('hidden_originate_state')
     rip_networks = request.POST.get('hidden_networks_input_routing')
 
-
-
-
+    #check values
     if '' not in (checkRIPversion(rip_version), checkRIPsumState(rip_sum_state), checkRIPoriginateState(rip_originate_state), checkRIPnetworks(rip_networks)):
 
         rip_sum_state = True if rip_sum_state == 'true' else False
         rip_originate_state = True if rip_originate_state == 'true' else False
 
-        
         config_objects[3].ripVersion = checkRIPversion(rip_version)
         config_objects[3].ripSumState = rip_sum_state
         config_objects[3].ripOriginate = rip_originate_state
@@ -430,6 +420,7 @@ def get_inputs(request, device_type, config_mode):
     dhcp_dnsServer = request.POST.get('hidden_dhcp_dnsServer') 
     dhcp_excludedAreas = request.POST.get('hidden_dhcp_info_for_transfer') 
 
+    #check values
     if '' not in (checkDHCPpoolName(dhcp_poolName), checkDHCPnetworkIP(dhcp_network_IP), checkDHCPnetworkSM(dhcp_network_SM), checkDHCPgateway(dhcp_dG), checkDHCPdns(dhcp_dnsServer), checkDHCPexcludedAreas(dhcp_excludedAreas)):
 
         config_objects[4].dhcpPoolName = checkDHCPpoolName(dhcp_poolName)
@@ -442,9 +433,9 @@ def get_inputs(request, device_type, config_mode):
 
 ########################################################################
 
-#vlan
-    # vlan_vlans = request.POST.get('hidden_vlan_info_for_transfer')
-    # vlan_interfaces = request.POST.get('hidden_vlan_interfaces_info_for_transfer')
+    #vlan
+        # vlan_vlans = request.POST.get('hidden_vlan_info_for_transfer')
+        # vlan_interfaces = request.POST.get('hidden_vlan_interfaces_info_for_transfer')
 
 ########################################################################
 
@@ -453,6 +444,7 @@ def get_inputs(request, device_type, config_mode):
     nat_outgoing = request.POST.get('hidden_nat_outgoing')
     acl_networks = request.POST.get('hidden_nat_info_for_transfer')
 
+    #check values
     if '' not in (checkNATingoing(nat_ingoing, device_type), checkNAToutgoing(nat_outgoing, device_type), checkACLnetworks(acl_networks)):
 
         current_interfaces = cm.getAllInterfaces()
@@ -476,7 +468,6 @@ def get_inputs(request, device_type, config_mode):
                 to_remove.append(i)
         for index in reversed(to_remove):
             del current_acls.ACLs[index]
-
 
         acl_networks = "1,permit," + acl_networks
         current_acls.getACLs(acl_networks) # adding acls to ACLs list

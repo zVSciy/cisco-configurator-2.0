@@ -14,7 +14,7 @@
             for="description">Process:</label>
           <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="number"
             name="ospf_process" id="ospf_process"
-            placeholder="enter process-id"
+            placeholder="process-id"
             oninput="add_to_config('ospf');checkOspfProcess()" min="1" max="65535" value="{{ process }}">
             <span id="process_id_info"></span>
         </div>
@@ -27,7 +27,7 @@
             for="description">Router-ID:</label>
           <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" 
             name="ospf_router_id" id="ospf_router_id"
-            placeholder="enter router-id"
+            placeholder="router-id"
             oninput="add_to_config('ospf'); checkOspfRouterID()" value="{{ router_id }}">
             <span id="router_id_info"></span>
         </div>

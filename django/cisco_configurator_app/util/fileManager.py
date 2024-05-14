@@ -8,6 +8,9 @@ import os
 local_config_file = './util/running-config'
 remote_config_file = 'system:running-config'
 
+########################################################################
+
+# this function transfers the config file to or from the cisco device via scp
 def transfer_config(ip, user, pw, direction='put'):
     try:
         target = {
@@ -28,6 +31,9 @@ def transfer_config(ip, user, pw, direction='put'):
         print(ex)
         return HttpResponseBadRequest(ex)
 
+########################################################################
+
+# this function offers the user a file download for the running-config file
 def download_config():
     script_dir = os.path.dirname(os.path.realpath(__file__))
     local_config_file = os.path.join(script_dir, 'running-config')
@@ -37,6 +43,9 @@ def download_config():
         print(ex)
         return HttpResponseBadRequest(ex)
 
+########################################################################
+
+# this function resets the content of the running-config file
 def emptyConfigFile(file, cm: ConfigManager):
     script_dir = os.path.dirname(os.path.realpath(__file__))
     file = os.path.join(script_dir, file)
@@ -48,6 +57,9 @@ def emptyConfigFile(file, cm: ConfigManager):
         print(ex)
         return HttpResponseBadRequest(ex)
 
+########################################################################
+
+# this function copies the content of one text file to another
 def copyConfigFile(src_file, dest_file, cm: ConfigManager):
     try:
         script_dir = os.path.dirname(os.path.realpath(__file__))
