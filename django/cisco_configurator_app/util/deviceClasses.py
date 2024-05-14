@@ -166,23 +166,23 @@ class RipRouting:
         return ripNetworks.split(',')
 
     # Define the string representation of the class
+    # Define the string representation of the class
     def __repr__(self) -> str:
-        ripSumState = "auto-summary" + self.ripSumState + "\n" if self.ripSumState else ''
-        ripOriginate = "Default Information Originate: " + self.ripOriginate + "\n" if self.ripOriginate else ''
+        ripSumState = "no auto-summary\n " if self.ripSumState else 'auto-summary\n'
+        ripOriginate = "default-information originate " if self.ripOriginate else ''
 
-        return "RIP Version: " + self.ripVersion + "\n" + "Auto Summary: " + ripSumState + "\n" + "Default Information Originate: " + ripOriginate + "\n" + "Networks: " + ', '.join(self.ripNetworks) + "\n"
-    
+        return "RIP Version: " + self.ripVersion + "\n" + ripSumState + ripOriginate + "Networks: " + ', '.join(self.ripNetworks) + "\n"
+
     # Convert the stored RIP routing configurations to a list of configuration commands
     def toConfig(self) -> list:
-        ripSumState = "Auto Summary: " + self.ripSumState + "\n" if self.ripSumState else ''
-        ripOriginate = "default-information originate" + self.ripOriginate + "\n" if self.ripOriginate else ''
+        ripSumState = " no auto-summary\n" if self.ripSumState else " auto-summary\n"
+        ripOriginate = " default-information originate\n " if self.ripOriginate else ''
         config = []
         config.append("router rip\n")
         config.append(f" version {self.ripVersion}\n")
-        if self.ripSumState:
-            config.append(f" {ripSumState}")
+        config.append(ripSumState)
         if self.ripOriginate:
-            config.append(f" {ripOriginate}")
+            config.append(ripOriginate)
         for network in self.ripNetworks:
             config.append(f" network {network}\n")
         config.append("!\n")
