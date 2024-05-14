@@ -174,14 +174,15 @@ function checkInterfacesNat() {
 
 //DHCP
 function checkDhcpInput(Network_Input, Dg_input, dns_input, result) {
-  let Network = document.getElementById(Network_Input).value.split(' ');
+  let Network = document.getElementById(Network_Input).value.split(',');
   let Dg = document.getElementById(Dg_input).value;
   let Dns = document.getElementById(dns_input).value;
   let resultElement = document.getElementById(result);
   let Button = document.getElementById("transferButton")
   let pool_name = document.getElementById("dhcp_poolName").value
 
-  let Network_IP = Network[0].replace(/[\s,]+/g, '');
+  console.log(Network);
+  let Network_IP = Network[0];
   let Network_SM = Network[1];
 
   if (isValidIpAddress(Network_IP) && isValidIpAddress(Network_SM) && isValidIpAddress(Dg) && isValidIpAddress(Dns) && pool_name != "") {
