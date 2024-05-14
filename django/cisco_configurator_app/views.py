@@ -274,21 +274,21 @@ def acl_extended(request, device_type, config_mode):
     return render(request, 'configurations/acl_extendet.html', config_option)
 
 
-# def vtp_dtp(request, device_type, config_mode):
-#     config_option = {
-#         "device_type": device_type,
-#         "interfaces":  get_interfaces(device_type),
-#         "config_mode": config_mode
-#     }
-#     return render(request, 'configurations/vtp_dtp.html', config_option)
+def vtp_dtp(request, device_type, config_mode):
+    config_option = {
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type),
+        "config_mode": config_mode
+    }
+    return render(request, 'configurations/vtp_dtp.html', config_option)
 
-# def stp(request, device_type, config_mode):
-#     config_option = {
-#         "device_type": device_type,
-#         "interfaces":  get_interfaces(device_type),
-#         "config_mode": config_mode
-#     }
-#     return render(request, 'configurations/stp.html', config_option)
+def stp(request, device_type, config_mode):
+    config_option = {
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type),
+        "config_mode": config_mode
+    }
+    return render(request, 'configurations/stp.html', config_option)
 
 
 # empties the running-config file every time the index page is called
