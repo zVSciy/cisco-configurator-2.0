@@ -123,7 +123,11 @@ class Interface:
     def toConfig(self) -> list:
         shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
         if len(self.vlans) > 0: 
-            
+            config.append(f"interface {self.interface}\n")
+            config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
+            config.append(f" description {self.description}\n")
+            config.append(f" {shutdown}")
+            config. cappend("!\n")
         else:
             #! NOT WORKING YET - NEED TO IMPLEMENT
             #^ only working for itself
