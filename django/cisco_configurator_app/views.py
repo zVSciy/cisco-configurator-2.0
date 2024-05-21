@@ -469,7 +469,12 @@ def get_inputs(request, device_type, config_mode):
         for index in reversed(to_remove):
             del current_acls.ACLs[index]
 
-        acl_networks = "1,permit," + acl_networks
+        acl_networks = acl_networks.split(';')
+        for i, network in enumerate(acl_networks):
+            if len(network) == 0:
+                continue
+            acl_networks[i] = '1,permit,' + network
+        acl_networks = ';'.join(acl_networks)
         current_acls.getACLs(acl_networks) # adding acls to ACLs list
         cm.writeACLConfig(current_acls)
 
