@@ -225,7 +225,7 @@ class RipRouting:
     # Convert the stored RIP routing configurations to a list of configuration commands
     def toConfig(self) -> list:
         ripSumState = " no auto-summary\n" if self.ripSumState else " auto-summary\n"
-        ripOriginate = " default-information originate\n " if self.ripOriginate else ''
+        ripOriginate = " default-information originate\n" if self.ripOriginate else ''
         config = []
         config.append("router rip\n")
         config.append(f" version {self.ripVersion}\n")
