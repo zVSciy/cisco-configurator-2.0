@@ -45,18 +45,18 @@ def checkIntDescription(description):
 
 #checks the interface ip
 def checkIntIP(ip):
-    if type(ip) == str:
-        if re.match(ip_pattern, ip):
-            return ip
+    if ip == None:
         return ''
+    if re.match(ip_pattern, ip):
+        return ip
     else: return ''
 
 #checks the interface subnet mask
 def checkIntSM(sm):
-    if type(sm) == str:
-        if re.match(sm_pattern, sm):
-            return sm
+    if sm == None:
         return ''
+    if re.match(sm_pattern, sm):
+        return sm
     else: return ''
 
 ########################################################################
@@ -65,15 +65,14 @@ def checkIntSM(sm):
 
 #checks the static routing input string
 def checkStaticRoutes(routes):
-    if type(routes) != str or routes == '':
+    if routes in ('', None):
         return ''
     validation = True
     splitted_routes = routes.split(';')
     for route in splitted_routes:
-        route = route.split(',')
         if len(routes) != 3:
-            validation = False
-            break
+            continue
+        route = route.split(',')
         targetNW = route[0]
         targetSM = route[1]
         nextHOP = route[2]
@@ -96,27 +95,34 @@ def checkRIPversion(version):
 #checks the rip auto summary state
 def checkRIPsumState(state):
     if state in ('true', 'false'):
-        if state == 'true':
-            return True
-        else: return False
+        # if state == 'true':
+        #     return True
+        # else: return False
+            return state
     else: return ''
 
 #checks the rip originate state
 def checkRIPoriginateState(state):
     if state in ('true', 'false'):
-        if state == 'true':
-            return True
-        else: return False
+        # if state == 'true':
+        #     return True
+        # else: return False
+        return state
     else: return ''
 
 #checks the rip network string
 def checkRIPnetworks(networks):
-    if type(networks) != str or networks == '':
+    if networks in ('', None):
         return ''
     validation = True
     splitted_networks = networks.split(';')
     for network in splitted_networks:
-        if not re.match(ip_pattern, network):
+        if len(network) != 2:
+            continue
+        network = network.split(',')
+        network_ip = network[0]
+        network_wcm = network[1]
+        if not re.match(ip_pattern, network_ip) or not re.match(sm_pattern, network_wcm):
             validation = False
     if validation:
         return networks
@@ -134,39 +140,39 @@ def checkDHCPpoolName(name):
 
 #checks DHCP network ip
 def checkDHCPnetworkIP(ip):
-    if type(ip) == str:
-        if re.match(ip_pattern, ip):
-            return ip
+    if ip == None:
         return ''
+    if re.match(ip_pattern, ip):
+        return ip
     else: return ''
 
 #checks DHCP network sm
 def checkDHCPnetworkSM(sm):
-    if type(sm) == str:
-        if re.match(sm_pattern, sm):
-            return sm
+    if sm == None:
         return ''
+    if re.match(sm_pattern, sm):
+        return sm
     else: return ''
 
 #checks DHCP gateway ip
 def checkDHCPgateway(gateway):
-    if type(gateway) == str:
-        if re.match(ip_pattern, gateway):
-            return gateway
+    if gateway == None:
         return ''
+    if re.match(ip_pattern, gateway):
+        return gateway
     else: return ''
 
 #checks DHCP dns ip
 def checkDHCPdns(dns):
-    if type(dns) == str:
-        if re.match(ip_pattern, dns):
-            return dns
+    if dns == None:
         return ''
+    if re.match(ip_pattern, dns):
+        return dns
     else: return ''
 
 #checks DHCP excluded areas (from - to)
 def checkDHCPexcludedAreas(areas):
-    if type(areas) != str or areas == '':
+    if areas in ('', None):
         return ''
     validation = True
     areas_str = areas
@@ -174,8 +180,7 @@ def checkDHCPexcludedAreas(areas):
     for areas in splitted_areas:
         area = areas.split(',')
         if len(area) != 2:
-            validation = False
-            break
+            continue
         from_ip = area[0]
         to_ip = area[1]
         if not re.match(ip_pattern, from_ip):
@@ -207,76 +212,18 @@ def checkNAToutgoing(int, device):
 
 #checks the ACL network string
 def checkACLnetworks(networks):
-    if type(networks) != str or networks == '':
+    if networks in ('', None):
         return ''
     validation = True
     networks_str = networks
     splitted_networks = networks.split(';')
     for network in splitted_networks:
-        network = network.split(',')
         if len(network) != 2:
-            validation = False
-            break
+            continue
+        network = network.split(',')
         network_ip = network[0]
         network_wcm = network[1]
         if not re.match(ip_pattern, network_ip) or not re.match(sm_pattern, network_wcm):
-            validation = False
-    if validation:
-        return networks_str
-    else: return ''
-
-########################################################################
-
-# OSPF
-
-#checks the ospf process id
-def checkOSPFprocess(id):
-    if type(id) == str:
-        if id.isdigit():
-            return id
-        return ''
-    else: return ''
-
-#checks the ospf router id
-def checkOSPFrouterID(ip):
-    if ip == None:
-        return ''
-    if re.match(ip_pattern, ip):
-        return ip
-    return ''
-
-#checks the ospf auto summary state
-def checkOSPFsumState(state):
-    if state in ('true', 'false'):
-        if state == 'true':
-            return True
-        else: return False
-    else: return ''
-
-#checks the ospf originate default route state
-def checkOSPForiginateState(state):
-    if state in ('true', 'false'):
-        if state == 'true':
-            return True
-        else: return False
-    else: return ''
-
-#checks the ospf networks
-def checkOSPFnetworks(networks):
-    if type(networks) != str or networks == '':
-        return ''
-    validation = True
-    networks_str = networks
-    splitted_networks = networks.split(';')
-    for network in splitted_networks:
-        network = network.split(',')
-        if len(network) != 3:
-            validation = False
-            break
-        network_ip = network[0]
-        network_wcm = network[1]
-        area_id = network[2]
-        if not re.match(ip_pattern, network_ip) or not re.match(sm_pattern, network_wcm) or not area_id.isdigit():
             validation = False
     if validation:
         return networks_str
