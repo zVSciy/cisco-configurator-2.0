@@ -75,6 +75,8 @@ class ConfigManager:
             elif intLine.startswith("ip address"):
                 #^ ip address 192.168.2.1 255.255.255.0
                 ip = intLine.split(" ")[2]
+                #check if the line has a subnet mask, if it does, assign it to the sm variable
+                #if it doesnt have a subnet mask, it may be an indicator to a DHCP configuration
                 if len(intLine.split(" ")) > 3:
                     sm = intLine.split(" ")[3]
                 else :
