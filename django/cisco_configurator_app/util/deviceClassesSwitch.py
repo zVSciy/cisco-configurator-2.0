@@ -34,7 +34,7 @@ class DeviceInfo:
 # Define a class to store interface information
 class Interface:
     # Initialize the class with various parameters
-    def __init__(self, vlanInt:str = None, ip:str = None, sm:str = None, description:str = "Default", shutdown:bool = None, vlans:str = None ) -> None:
+    def __init__(self, vlanInt:str = None, ip:str = None, sm:str = None, description:str = "Default", shutdown:bool = None, vlans:str = None, createChannelGroups:str = None, assignChannelGroups:str = None) -> None:
         # Check if the interface is a string and store it
         if type(vlanInt) == str:
             self.vlanInt = vlanInt
@@ -72,6 +72,17 @@ class Interface:
             self.shutdown = shutdown
         else:
             raise TypeError()
+        if type(createChannelGroups) == str:
+            self.portChannels = []
+            self.getCreateChannelGroups(createChannelGroups)
+        else:
+            raise TypeError()
+        
+        if type(assignChannelGroups) == str:
+            self.channelGroups = []
+            self.getAssignChannelGroups(assignChannelGroups)
+        else:
+            raise TypeError()
         
     #^ Interface,trunk,native_vlan,allowed_vlan:allowed_vlan;
     def getVLANs(self, vlans:str) -> list:
@@ -84,6 +95,25 @@ class Interface:
                     allowedVLANs = allowedVLANs.split(':')
                     self.vlans.append({"interfaceID" : interfaceID, "mode" : mode, "nativeVLAN" : nativeVLAN, "allowedVLANs" : allowedVLANs})
         return self.vlans
+    
+    def getCreateChannelGroups(self, createChannelGroups:str) -> list:
+        if createChannelGroups:
+            portChannels = createChannelGroups.split(';')
+            for portChannel in portChannels:
+                if portChannel:
+                    channelID, channelIP, channelSM = portChannel.split(',')
+                    self.portChannels.append({'channelID': channelID, 'channelIP': channelIP, 'channelSM': channelSM})
+        return self.portChannels
+
+
+    def getAssignChannelGroups(self, assignChannelGroups:str) -> list:
+        if assignChannelGroups:
+            channelGroups = assignChannelGroups.split(';')
+            for channelGroup in channelGroups:
+              if channelGroup:
+                channelInterface, channelID, channelMode = channelGroup.split(',')
+                self.channelGroups.append({'channelInterface': channelInterface, 'channelID': channelID, 'channelMode': channelMode})
+        return self.channelGroups 
 
     # Define the string representation of the class
     def __repr__(self) -> str:
@@ -93,8 +123,7 @@ class Interface:
     def toConfig(self) -> list:
         shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
         if len(self.vlans) > 0: 
-            ipConfig = f' ip address {self.ip} {self.sm}\n' if self.ip.lower() != "dhcp" else ' ip address dhcp\n'
-            return ["interface " + self.vlanInt + "\n", ipConfig, f' description {self.description}\n', f' {self.shutdown}' + "!\n"]
+            
         else:
             #! NOT WORKING YET - NEED TO IMPLEMENT
             #^ only working for itself
