@@ -307,7 +307,6 @@ def create_objects(cm):
         cm.getDhcpConfig("172"), #! hardcoded for now, 172 is the default id for the dhcp config
         cm.getNATConfig(),
         cm.getACLConfig(),
-        cm.getAllOSPFConfig(),
     ]
 
 
@@ -395,12 +394,12 @@ def get_inputs(request, device_type, config_mode):
     #check values
     if '' not in (checkRIPversion(rip_version), checkRIPsumState(rip_sum_state), checkRIPoriginateState(rip_originate_state), checkRIPnetworks(rip_networks)):
 
-        # rip_sum_state = True if rip_sum_state == 'true' else False
-        # rip_originate_state = True if rip_originate_state == 'true' else False
+        rip_sum_state = True if rip_sum_state == 'true' else False
+        rip_originate_state = True if rip_originate_state == 'true' else False
 
         config_objects[3].ripVersion = checkRIPversion(rip_version)
-        config_objects[3].ripSumState = checkRIPsumState(rip_sum_state)
-        config_objects[3].ripOriginate = checkRIPoriginateState(rip_originate_state)
+        config_objects[3].ripSumState = rip_sum_state
+        config_objects[3].ripOriginate = rip_originate_state
         config_objects[3].ripNetworks = config_objects[3].getNetworks(checkRIPnetworks(rip_networks))
         cm.writeRIPConfig(config_objects[3])
 
@@ -443,10 +442,10 @@ def get_inputs(request, device_type, config_mode):
     #nat
     nat_ingoing = request.POST.get('hidden_nat_ingoing')
     nat_outgoing = request.POST.get('hidden_nat_outgoing')
-    nat_acl_networks = request.POST.get('hidden_nat_info_for_transfer')
+    acl_networks = request.POST.get('hidden_nat_info_for_transfer')
 
     #check values
-    if '' not in (checkNATingoing(nat_ingoing, device_type), checkNAToutgoing(nat_outgoing, device_type), checkACLnetworks(nat_acl_networks)):
+    if '' not in (checkNATingoing(nat_ingoing, device_type), checkNAToutgoing(nat_outgoing, device_type), checkACLnetworks(acl_networks)):
 
         current_interfaces = cm.getAllInterfaces()
 
@@ -478,24 +477,6 @@ def get_inputs(request, device_type, config_mode):
         acl_networks = ';'.join(acl_networks)
         current_acls.getACLs(acl_networks) # adding acls to ACLs list
         cm.writeACLConfig(current_acls)
-
-########################################################################
-
-    #ospf
-    ospf_process = request.POST.get('hidden_ospf_process')
-    ospf_router_id = request.POST.get('hidden_ospf_router_id')
-    ospf_sum_state = request.POST.get('hidden_ospf_sum_state')
-    ospf_originate_state = request.POST.get('hidden_ospf_originate_state')
-    ospf_networks = request.POST.get('hidden_ospf_info_for_transfer')
-
-    if '' not in (checkOSPFprocess(ospf_process), checkOSPFrouterID(ospf_router_id), checkOSPFsumState(ospf_sum_state), checkOSPForiginateState(ospf_originate_state), checkOSPFnetworks(ospf_networks)):
-        ospf_instance = config_objects[7][0] # at this time only one OSPF instance is supported
-        ospf_instance.ospfProcess = checkOSPFprocess(ospf_process)
-        ospf_instance.ospfRouterID = checkOSPFrouterID(ospf_router_id)
-        ospf_instance.ospfAutoSummary = checkOSPFsumState(ospf_sum_state)
-        ospf_instance.ospfOriginate = checkOSPForiginateState(ospf_originate_state)
-        ospf_instance.ospfNetworks = ospf_instance.getNetworks(checkOSPFnetworks(ospf_networks))
-        cm.writeOSPFConfig(ospf_instance)
 
 ########################################################################
 
