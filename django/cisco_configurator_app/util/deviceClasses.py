@@ -78,12 +78,12 @@ class Interface:
         else:
             raise TypeError()
         
+        self.portChannels = []
         if type(createChannelGroups) == str:
-            self.portChannels = []
             self.getCreateChannelGroups(createChannelGroups)
         
+        self.channelGroups = []
         if type(assignChannelGroups) == str:
-            self.channelGroups = []
             self.getAssignChannelGroups(assignChannelGroups)
 
         
@@ -121,7 +121,7 @@ class Interface:
         natInside = "ip nat inside\n" if self.ipNatInside else ''
         natOutside = "ip nat outside\n" if self.ipNatOutside else ''
         shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
-        if len (self.channelGroups) < 0:
+        if len (self.channelGroups) == 0:
             config.append(f"interface {self.interface}\n")
             config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
             config.append(f" description {self.description}\n")
