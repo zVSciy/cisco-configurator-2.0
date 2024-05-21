@@ -33,7 +33,7 @@ class DeviceInfo:
 # Define a class to store interface information
 class Interface:
     # Initialize the class with various parameters
-    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = "Default", shutdown:bool = None , createChannelGroups:str = "Default", assignChannelGroups:str = "Default" ) -> None:
+    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = "Default", shutdown:bool = None , createChannelGroups:str = None, assignChannelGroups:str = None ) -> None:
         # Check if the interface is a string and store it
         if type(interface) == str:
             self.interface = interface
@@ -81,8 +81,6 @@ class Interface:
         if type(createChannelGroups) == str:
             self.portChannels = []
             self.getCreateChannelGroups(createChannelGroups)
-        else:
-            raise TypeError()
         
         if type(assignChannelGroups) == str:
             self.channelGroups = []
