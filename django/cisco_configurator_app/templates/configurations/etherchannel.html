@@ -4,4 +4,91 @@
 
 
 
+<div class="menu-content bg-base-200 rounded-lg mb-4 p-8" id="menu1">
+    <h2 class="font-extrabold text-2xl pb-5">Etherchannel (LACP) Configuration</h2>
+    <h3 class="font-extrabold text-2xl pb-5">Create new Channel Group:</h3>
+    <div class="relative flex items-center gap-3">
+        <label id="Hostname"
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">Group-ID:</label>
+        <input placeholder="e.g. 1" class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text"
+            size="15" id="etherchannel_id" name="etherchannel_id" oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')">
+        <span id="etherchannel_id_info"></span>
+    </div>
+    <br>
+    <div class="relative" id="ip-form">
+        <label for="input"
+          class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">
+          IP address:
+        </label>
+        <input placeholder="ip address or dhcp" class="input !pl-3 !outline-offset-0 input-bordered !w-full"
+          type="text" id="etherchannel_ip" name="etherchannel_ip"
+          oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')">
+      </div>
+
+      <div class="relative" id="ip-form">
+        <label
+          class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+          for="subnetMask">Subnet mask:</label>
+        <input class="input !pl-3 !outline-offset-0 input-bordered !w-full" type="text" name="etherchannel_sm"
+          id="etherchannel_sm" placeholder="leave empty if ip is dhcp"
+          oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')">
+        <div id="result_etherchannel"></div>
+      </div>
+    </div>
+  </div>
+    <p></p>
+
+    <button type="button" class="config_item btn max-w-xs" id="add_etherchannel_button"
+        onclick="addChannelGroup(); add_to_config('etherchannel');">create Channel Group</button>
+    <p></p>
+    <div id="created_vlans" class="config_item">
+        created Channel Groups:</div>
+    <div class="config_item" id="etherchannel_info"></div>
+    <input name="etherchannel_info_for_transfer" id="etherchannel_info_for_transfer" value="{{ vlans }}"></input>
+
+    <h3 class="font-extrabold text-2xl pb-5">Assign Channel Groups to Interfaces (add some Channel Groups bevore this step)</h3>
+
+    <label class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+        id="Banner">Choose Interface:</label>
+    <select name="vlan_interface" id="vlan_interface"
+        class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" onchange="checkInterfaceVlan()">
+        {% for interface in interfaces %}
+        <option name=" {{ interface }}_vlan" value="{{ interface }}">{{ interface }}</option>
+        {% endfor %}
+    </select>
+
+    <label class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+        id="Banner">Mode:</label>
+    <select name="vlan_interface_mode" id="vlan_interface_mode"
+        class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" onclick="updateVLanMenu()">
+        <option value="active">Mode Active</option>
+        <option value="passive">Mode passive</option>
+    </select>
+
+    <div id="etherchannel_interface_config">
+        <label
+            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            id="Banner">Choose Channel Group:</label>
+        <select name="etherchannel_select_id" id="etherchannel_select_id"
+            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs ">
+        </select>
+    </div>
+
+    <button type="button" class="config_item btn max-w-xs" id="add_vlan_interface_button"
+        onclick="addVlanInterface(); add_to_config('etherchannel');">add Channel Group to Interface</button>
+
+    <div id="created_vlans" class="config_item">
+        added Interfaces:</div>
+    <div class="config_item" id="vlan_interfaces_info"></div>
+    <input name="etherchannel_interfaces_info_for_transfer" id="vlan_interfaces_info_for_transfer"
+        value="{{ vlan_interfaces }}"></input>
+
+
+    <script>
+        document.getElementById("add_etherchannel_button").disabled = true;
+        document.getElementById("etherchannel_info_for_transfer").style.display = 'none';
+        document.getElementById("etherchannel_interfaces_info_for_transfer").style.display = 'none';
+    </script>
+
+
 {% endblock content %}

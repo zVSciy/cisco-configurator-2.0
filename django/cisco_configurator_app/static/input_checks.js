@@ -343,6 +343,10 @@ function addOspfIp() {
   let wildcardMask = document.getElementById('ospf_wm').value;
   let area = document.getElementById('ospf_area').value
 
+  if(area == ''){
+    area = '0'
+  }
+
   let networksInfo = "IP Address: " + Ip + "<br>Wildcard Mask: " + wildcardMask + '<br>Area:'+ area +'<br><br>';
 
   document.getElementById('ospf_info').innerHTML += networksInfo;
@@ -369,6 +373,7 @@ function ValidateOspfNetworks(info) {
     message.textContent = "Please fill out all fields correctly!";
     TButton.disabled = true;
   }
+
 }
 
 function checkOspfRouterID(){
@@ -613,6 +618,77 @@ function ValidateExtendedAclNetwork(info) {
 //   }
 // }
 
+
+//Etherchannel
+
+
+let etherchannel_list = [];
+
+
+
+function addChannelGroup() {
+  let channel_id = document.getElementById('etherchannel_id').value;
+  let etherchannel_ip = document.getElementById('etherchannel_ip').value;
+  let etherchannel_sm = document.getElementById('etherchannel_sm').value;
+
+
+  etherchannel_list.push(channel_id);
+
+  let etherchannelInfo = "<b>ID: </b>" + channel_id +  "<b> IP: </b>" + etherchannel_ip + "<b> SM: </b>" + etherchannel_sm +'<br><br>';
+
+  document.getElementById('etherchannel_info').innerHTML += etherchannelInfo;
+  document.getElementById('etherchannel_info_for_transfer').value += channel_id + ',' + etherchannel_ip + ',' + etherchannel_sm + ';';
+
+  document.getElementById("add_etherchannel_button").disabled = true;
+  console.log(etherchannel_list)
+
+  //add VLAN to the dropdowns
+
+  let etherchannel_group_options = document.getElementById('etherchannel_select_id');
+
+
+
+  // Erstelle ein neues Optionselement für den Access-VLAN
+  let option = document.createElement('option');
+  option.value = channel_id;
+  option.textContent = channel_id;
+  etherchannel_group_options.appendChild(option);
+
+}
+
+function isValidEtherchannelid(id){
+  
+  if(etherchannel_list.includes(id)){
+    return false
+  }else if(id>=0 && id<4096){
+    return true;
+  }
+}
+
+
+function checkNewLacpGroup(Int_ip, Int_sm, Int_result, channel_id) {
+  let id = document.getElementById(channel_id);
+  let ip = document.getElementById(Int_ip);
+  let sm = document.getElementById(Int_sm);
+  let resultElement = document.getElementById(Int_result);
+  let TButton = document.getElementById("add_etherchannel_button");
+
+  if (isValidIpAddress(ip.value) && isValidSm(sm.value) && isValidEtherchannelid(id.value)) {
+    resultElement.textContent = "";
+    TButton.disabled = false;
+    enableNavigation();
+  } else if (ip.value === "" && sm.value === "" && id.value == ''){
+    TButton.disabled = true;
+    resultElement.textContent = "";
+  } else {
+    resultElement.textContent = "Please check Input.";
+    //disable the buttons
+    TButton.disabled = true;
+    disableNavigation();
+  }
+}
+
+
 // add to Config for backend
 function add_to_config(page) {
 
@@ -696,11 +772,15 @@ function add_to_config(page) {
     let ospf_process_to_set = document.getElementById('ospf_process').value 
     let ospf_router_id_to_set = document.getElementById('ospf_router_id').value 
     let ospf_info_for_transfer_to_set = document.getElementById('ospf_info_for_transfer').value 
+    let ospf_sum_state_to_set = document.getElementById('ospf_sum_state').checked
+    let ospf_originate_state_to_set = document.getElementById('ospf_originate_state').checked
 
 
     document.getElementById('hidden_ospf_process').value = ospf_process_to_set; //true = on | false = off
     document.getElementById('hidden_ospf_router_id').value = ospf_router_id_to_set;
     document.getElementById('hidden_ospf_info_for_transfer').value = ospf_info_for_transfer_to_set;
+    document.getElementById('hidden_ospf_sum_state').value = ospf_sum_state_to_set;
+    document.getElementById('hidden_ospf_originate_state').value = ospf_originate_state_to_set;
   }
 
   if (page == "acl_basic"){
