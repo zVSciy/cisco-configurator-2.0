@@ -120,7 +120,7 @@ class Interface:
 #endregion
 #region VLAN
 
-class createVLANs:
+class CreateVLANs:
     def __init__(self, vlans:str = None) -> None:
         if type(vlans) == str:
             self.vlans = vlans
