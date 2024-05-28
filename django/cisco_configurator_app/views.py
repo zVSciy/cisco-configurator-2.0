@@ -496,13 +496,17 @@ def get_inputs(request, device_type, config_mode):
     ospf_networks = request.POST.get('hidden_ospf_info_for_transfer')
 
     if '' not in (checkOSPFprocess(ospf_process), checkOSPFrouterID(ospf_router_id), checkOSPFsumState(ospf_sum_state), checkOSPForiginateState(ospf_originate_state), checkOSPFnetworks(ospf_networks)):
-        ospf_instance = config_objects[7][0] # at this time only one OSPF instance is supported
-        ospf_instance.ospfProcess = checkOSPFprocess(ospf_process)
-        ospf_instance.ospfRouterID = checkOSPFrouterID(ospf_router_id)
-        ospf_instance.ospfAutoSummary = checkOSPFsumState(ospf_sum_state)
-        ospf_instance.ospfOriginate = checkOSPForiginateState(ospf_originate_state)
-        ospf_instance.ospfNetworks = ospf_instance.getNetworks(checkOSPFnetworks(ospf_networks))
-        cm.writeOSPFConfig(ospf_instance)
+        if len(config_objects[7]) == 0 :
+            config_objects[7].append(OSPF(checkOSPFprocess(ospf_process), checkOSPFrouterID(ospf_router_id), checkOSPForiginateState(ospf_originate_state), checkOSPFsumState(ospf_sum_state), checkOSPFnetworks(ospf_networks)))
+            cm.writeOSPFConfig(config_objects[7][0])
+        else: 
+            ospf_instance = config_objects[7][0] # at this time only one OSPF instance is supported
+            ospf_instance.ospfProcess = checkOSPFprocess(ospf_process)
+            ospf_instance.ospfRouterID = checkOSPFrouterID(ospf_router_id)
+            ospf_instance.ospfAutoSummary = checkOSPFsumState(ospf_sum_state)
+            ospf_instance.ospfOriginate = checkOSPForiginateState(ospf_originate_state)
+            ospf_instance.ospfNetworks = ospf_instance.getNetworks(checkOSPFnetworks(ospf_networks))
+            cm.writeOSPFConfig(ospf_instance)
 
 ########################################################################
 
