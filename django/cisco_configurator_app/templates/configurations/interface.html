@@ -70,8 +70,8 @@
 
   interfaces = extractToList(interfaces, /(?:<Router_Interfaces:\s)(\w+\/\d+)(?=>)/g);
   interface_descriptions = extractToList(interface_descriptions, /'([^']+)'/g);
-  interface_ips = collectIPAddresses(interface_ips);
-  interface_sms = collectIPAddresses(interface_sms);
+  interface_ips = extractIPs(interface_ips);
+  interface_sms = extractIPs(interface_sms);
   interface_shutdowns = extractBooleans(interface_shutdowns);
 
   if (interface_ips == null && interface_sms == null){
@@ -83,18 +83,13 @@
       }
     }
 
-  for (let i = 0; i < interfaces.length-interface_ips.length; i++){
-    interface_ips.push('');
-  }
-  for (let i = 0; i < interfaces.length-interface_sms.length; i++){
-    interface_sms.push('');
-  }
-
 
   for (let i = 0; i < interfaces.length; i++) {
     document.getElementById(interfaces[i]+'_description').value = interface_descriptions[i];
     document.getElementById(interfaces[i]+'_ip').value = interface_ips[i];
     document.getElementById(interfaces[i]+'_sm').value = interface_sms[i];
+
+    console.log(1)
 
     document.getElementById(interfaces[i]+'_shutdown').checked = interface_shutdowns[i];
 

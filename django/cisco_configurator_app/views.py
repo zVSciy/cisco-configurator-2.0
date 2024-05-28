@@ -82,7 +82,9 @@ def etherchannel(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
-        "config_mode": config_mode
+        "config_mode": config_mode,
+        "etherchannel_channel_groups": '', #! get etherchannel channel groups  from the config
+        "etherchannel_interfaces": ''#! get the interfaces with their channel group configuration added  from the config
     }
     return render(request, 'configurations/etherchannel.html', config_option)
 
