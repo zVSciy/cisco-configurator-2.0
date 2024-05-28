@@ -117,7 +117,9 @@ def ospf(request, device_type, config_mode):
             "config_mode": config_mode,
             "process": '',
             "router_id": '',
-            "ospf_networks": '' 
+            "ospf_networks": '',
+            "ospf_autosum": '',
+            "ospf_originate":''
         }
     else:
         config_option = {
@@ -126,7 +128,9 @@ def ospf(request, device_type, config_mode):
             "config_mode": config_mode,
             "process": input_data[0].ospfProcess,# string number #!by now GUI only supports 1 ospf process 
             "router_id": input_data[0].ospfRouterID, # IP-Address
-            "ospf_networks": '' 
+            "ospf_networks": '',
+            "ospf_autosum": input_data[0].ospfAutoSummary,
+            "ospf_originate": input_data[0].ospfOriginate
         }
 
         for network in input_data[0].ospfNetworks:
