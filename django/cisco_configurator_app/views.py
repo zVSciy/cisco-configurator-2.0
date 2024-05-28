@@ -24,6 +24,7 @@ def get_interfaces(device_type):
 
 # every function named after an configuration possibility calles the correspondig site and gives the needed data to the site via the config_option dict
 
+#region basic config view
 
 # function to get config data to basic-config site
 @csrf_exempt
@@ -41,6 +42,7 @@ def basic_config(request, device_type, config_mode):
 
     return render(request, 'configurations/basic_config.html', config_option)
 
+#region interface view
 
 # function to get config data to interface site
 def interface(request, device_type, config_mode):
@@ -74,6 +76,7 @@ def interface(request, device_type, config_mode):
 
     return render(request, 'configurations/interface.html', config_option)
 
+#region etherchannel view
 
 def etherchannel(request, device_type, config_mode):
     config_option = {
@@ -83,20 +86,22 @@ def etherchannel(request, device_type, config_mode):
     }
     return render(request, 'configurations/etherchannel.html', config_option)
 
+#region vlan view
 
-# def vlan(request, device_type, config_mode):
+def vlan(request, device_type, config_mode):
 
-#     config_option = {
-#         "device_type": device_type,
-#         "interfaces":  get_interfaces(device_type),
-#         "config_mode": config_mode,
-#         "vlans": '1,gfhfgh;11,hallo;',# replace with real data from config if site gets invoked (mind the format)
-#         "vlan_interfaces":'Ethernet0/0,access,1;Ethernet0/1,trunk,1,11:12;'# replace with real data from config if site gets invoked (mind the format)
-#         #Acces Interface Fomrat: [Interface],[access],[vlan_id];
-#         #Trunking Interface Fomrat: [Interface],[trunk],[native_vlan_id],[allowed_vlan:allowed_vlan...];
-#     }
-#     return render(request, 'configurations/vlan.html', config_option)
+    config_option = {
+        "device_type": device_type,
+        "interfaces":  get_interfaces(device_type),
+        "config_mode": config_mode,
+        "vlans": '1,gfhfgh;11,hallo;',# replace with real data from config if site gets invoked (mind the format)
+        "vlan_interfaces":'Ethernet0/0,access,1;Ethernet0/1,trunk,1,11:12;'# replace with real data from config if site gets invoked (mind the format)
+        #Acces Interface Fomrat: [Interface],[access],[vlan_id];
+        #Trunking Interface Fomrat: [Interface],[trunk],[native_vlan_id],[allowed_vlan:allowed_vlan...];
+    }
+    return render(request, 'configurations/vlan.html', config_option)
 
+#region ospf view
 
 # function to get config data to ospf site
 def ospf(request, device_type, config_mode):
@@ -127,6 +132,7 @@ def ospf(request, device_type, config_mode):
 
     return render(request, 'configurations/ospf.html', config_option)
 
+#region rip view
 
 # function to get config data to rip site
 def rip(request, device_type, config_mode):
@@ -155,6 +161,7 @@ def rip(request, device_type, config_mode):
 
     return render(request, 'configurations/rip.html', config_option)
 
+#region static routing view
 
 # function to get config data to static_routing site
 def static_routing(request, device_type, config_mode):
@@ -173,6 +180,7 @@ def static_routing(request, device_type, config_mode):
 
     return render(request, 'configurations/static_routing.html', config_option)
 
+#region nat view
 
 # function to get config data to nat site
 def nat(request, device_type, config_mode):
@@ -203,9 +211,9 @@ def nat(request, device_type, config_mode):
         if acl['id'] == input_data_NAT.accessList:
             config_option['networks'] += f"{acl['ip']},{acl['sm']};"
 
-    
     return render(request, 'configurations/nat.html', config_option)
 
+#region dhcp view
 
 # function to get config data to dhcp site
 def dhcp(request, device_type, config_mode):
@@ -232,6 +240,7 @@ def dhcp(request, device_type, config_mode):
 
     return render(request, 'configurations/dhcp.html', config_option)
 
+#region acl basic view
 
 # function to get config data to basic acl site
 def acl_basic(request, device_type, config_mode):
@@ -254,6 +263,7 @@ def acl_basic(request, device_type, config_mode):
 
     return render(request, 'configurations/acl_basic.html', config_option)
 
+#region acl extended view
 
 # function to get config data to extendet acl site
 def acl_extended(request, device_type, config_mode):
@@ -273,6 +283,7 @@ def acl_extended(request, device_type, config_mode):
 
     return render(request, 'configurations/acl_extendet.html', config_option)
 
+#region vtp dtp view
 
 def vtp_dtp(request, device_type, config_mode):
     config_option = {
@@ -282,6 +293,8 @@ def vtp_dtp(request, device_type, config_mode):
     }
     return render(request, 'configurations/vtp_dtp.html', config_option)
 
+#region stp view
+
 def stp(request, device_type, config_mode):
     config_option = {
         "device_type": device_type,
@@ -290,12 +303,14 @@ def stp(request, device_type, config_mode):
     }
     return render(request, 'configurations/stp.html', config_option)
 
+#region index view
 
 # empties the running-config file every time the index page is called
 def index(request):
     emptyConfigFile('running-config',cm=cm)
     return render(request, 'index.html')
 
+#region create objects
 
 # return an array with all config objects
 def create_objects(cm):
@@ -310,6 +325,7 @@ def create_objects(cm):
         cm.getAllOSPFConfig(),
     ]
 
+# region get inputs
 
 # gets the inputs from the POST request of the fronend and writes them into the config
 def get_inputs(request, device_type, config_mode):
@@ -342,6 +358,8 @@ def get_inputs(request, device_type, config_mode):
 
 ########################################################################
 
+#region basic config inputs
+
     #basic config
     hostname = request.POST.get('hidden_hostname')
     banner = request.POST.get('hidden_banner')
@@ -354,6 +372,8 @@ def get_inputs(request, device_type, config_mode):
         cm.writeDeviceInfo(config_objects[0])
 
 ########################################################################
+
+#region interface inputs
 
     #interfaces
     for i in config_option["interfaces"]:
@@ -375,6 +395,8 @@ def get_inputs(request, device_type, config_mode):
 
 ########################################################################
 
+#region static routing inputs
+
     #static routing
     static_routes = request.POST.get('hidden_staticRouting_info_for_transfer')
 
@@ -385,6 +407,8 @@ def get_inputs(request, device_type, config_mode):
         cm.writeStaticRoutes(config_objects[2])
 
 ########################################################################
+
+#region rip inputs
 
     #rip
     rip_version = request.POST.get('hidden_dropdown_rip_version')
@@ -405,6 +429,8 @@ def get_inputs(request, device_type, config_mode):
         cm.writeRIPConfig(config_objects[3])
 
 ########################################################################
+
+#region dhcp inputs
 
     #dhcp
     dhcp_poolName = request.POST.get('hidden_dhcp_poolName')
@@ -434,17 +460,23 @@ def get_inputs(request, device_type, config_mode):
 
 ########################################################################
 
+#region vlan inputs
+
     #vlan
         # vlan_vlans = request.POST.get('hidden_vlan_info_for_transfer')
         # vlan_interfaces = request.POST.get('hidden_vlan_interfaces_info_for_transfer')
 
 ########################################################################
 
+#region etherchannel inputs
+
     #etherchannel
     etherchannel_interfaces = request.POST.get('hidden_etherchannel_interfaces_info_for_transfer')
     ethcerchannel_channel_groups = request.POST.get('hidden_etherchannel_info_for_transfer')
 
 ########################################################################
+
+#region nat inputs
 
     #nat
     nat_ingoing = request.POST.get('hidden_nat_ingoing')
@@ -488,6 +520,8 @@ def get_inputs(request, device_type, config_mode):
 
 ########################################################################
 
+#region ospf inputs
+
     #ospf
     ospf_process = request.POST.get('hidden_ospf_process')
     ospf_router_id = request.POST.get('hidden_ospf_router_id')
@@ -510,6 +544,12 @@ def get_inputs(request, device_type, config_mode):
 
 ########################################################################
 
+#region basic acl inputs
+
+
+########################################################################
+
+#region extended acl inputs
 
 
 ########################################################################
