@@ -2,6 +2,9 @@
 
 {% block content %}
 
+<div id="ospf_autosum" value="{{ ospf_autosum }}"></div>
+<div id="ospf_originate" value="{{ ospf_originate }}"></div>
+
 <div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
     <h2 class="font-extrabold text-2xl pb-5">OSPF Configuration</h2>
     <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
@@ -98,6 +101,16 @@
 
       <script>
         document.getElementById('ospf_info_for_transfer').style.display = 'none';
+        document.getElementById('ospf_autosum').style.display = 'none';
+        document.getElementById('ospf_originate').style.display = 'none';
+
+        if (document.getElementById('ospf_autosum').value == 'False'){
+          document.getElementById('ospf_sum_state').disabled = true;
+        }
+
+        if (document.getElementById('ospf_originate').value == 'False'){
+          document.getElementById('ospf_originate_state').disabled = true;
+        }
 
         let Networks_Array = collectIPAddressesAndAreas(document.getElementById('ospf_info_for_transfer').value);
 
