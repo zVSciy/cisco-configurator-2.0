@@ -618,7 +618,7 @@ function ValidateExtendedAclNetwork(info) {
 //   }
 // }
 
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------
 //Etherchannel
 
 
@@ -648,7 +648,7 @@ function addChannelGroup() {
 
 
 
-  // Erstelle ein neues Optionselement für den Access-VLAN
+  // Erstelle ein neues Optionselement für die Interface Zuweisung
   let option = document.createElement('option');
   option.value = channel_id;
   option.textContent = channel_id;
@@ -658,9 +658,9 @@ function addChannelGroup() {
 
 function isValidEtherchannelid(id){
   
-  if(etherchannel_list.includes(id)){
+  if(etherchannel_list.includes(id) || id == ""){
     return false
-  }else if(id>=0 && id<4096){
+  }else if(Number(id)>=0 && Number(id)<4096){
     return true;
   }
 }
@@ -688,7 +688,41 @@ function checkNewLacpGroup(Int_ip, Int_sm, Int_result, channel_id) {
   }
 }
 
+function addChannelGroupToInterface() {
+  let eth_interface = document.getElementById('etherchannel_interface').value;
+  let interface_mode = document.getElementById('etherchannel_interface_mode').value;
+  let etherchannel_id = document.getElementById('etherchannel_select_id').value;
 
+
+
+  let etherchannelInfo = "<b>Interface: </b>" + eth_interface +  "<b> Mode: </b>" + interface_mode + "<b> Channel-Group: </b>" + etherchannel_id +'<br><br>';
+
+  document.getElementById('etherchannel_interfaces_info').innerHTML += etherchannelInfo;
+  document.getElementById('etherchannel_interfaces_info_for_transfer').value += etherchannel_id + ',' + interface_mode + ',' + eth_interface + ';';
+
+  document.getElementById('etherchannel_interface').value = '';
+
+  checkInterfaceEtherchannel()
+
+
+}
+
+function checkInterfaceEtherchannel(){
+  let addedInterfaces = document.getElementById('etherchannel_interfaces_info_for_transfer').value;
+  let etherchannel_interface = document.getElementById('etherchannel_interface').value;
+  let button =  document.getElementById("add_etherchannel_interface_button");
+  let channel_group = document.getElementById("etherchannel_select_id");
+
+  if(addedInterfaces.includes(etherchannel_interface) || channel_group.value == ''){
+    button.disabled = true;
+  }else{
+    button.disabled = false;
+  }
+}
+
+
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------
 // add to Config for backend
 function add_to_config(page) {
 
@@ -801,6 +835,14 @@ function add_to_config(page) {
 
     document.getElementById('hidden_vlan_info_for_transfer').value = vlan_info_for_transfer_to_set;
     document.getElementById('hidden_vlan_interfaces_info_for_transfer').value = vlan_interfaces_info_for_transfer_to_set;
+  }
+
+  if (page == "etherchannel"){
+    let etherchannel_info_for_transfer_to_set = document.getElementById('etherchannel_info_for_transfer').value 
+    let etherchannel_interfaces_info_for_transfer_to_set = document.getElementById('etherchannel_interfaces_info_for_transfer').value 
+
+    document.getElementById('hidden_etherchannel_info_for_transfer').value = etherchannel_info_for_transfer_to_set;
+    document.getElementById('hidden_etherchannel_interfaces_info_for_transfer').value = etherchannel_interfaces_info_for_transfer_to_set;
   }
 }
 
