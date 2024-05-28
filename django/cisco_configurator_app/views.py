@@ -446,7 +446,6 @@ def get_inputs(request, device_type, config_mode):
     etherchannel_interfaces = request.POST.get('hidden_etherchannel_interfaces_info_for_transfer')
     ethcerchannel_channel_groups = request.POST.get('hidden_etherchannel_info_for_transfer')
 
-
 ########################################################################
 
     #nat
@@ -455,18 +454,18 @@ def get_inputs(request, device_type, config_mode):
     nat_acl_networks = request.POST.get('hidden_nat_info_for_transfer')
 
     #check values
-    if '' not in (checkNATingoing(nat_ingoing, device_type), checkNAToutgoing(nat_outgoing, device_type), checkACLnetworks(nat_acl_networks)):
+    if '' not in (checkNATinterfaces(nat_ingoing, nat_outgoing), checkNATnetworks(nat_acl_networks)):
 
         current_interfaces = cm.getAllInterfaces()
 
         for i in current_interfaces:
-            if i.interface == nat_ingoing:
+            if i.interface == checkNATinterfaces(nat_ingoing, nat_outgoing)[0]:
                 i.ipNatInside = True
-            if i.interface == nat_outgoing:
+            if i.interface == checkNATinterfaces(nat_ingoing, nat_outgoing)[1]:
                 i.ipNatOutside = True
             cm.writeInterface(i)
 
-        config_objects[5].interface = nat_outgoing
+        config_objects[5].interface = checkNATinterfaces(nat_ingoing, nat_outgoing)[1]
         config_objects[5].accessList = '1'
         cm.writeNATConfig(config_objects[5])
 
@@ -479,13 +478,14 @@ def get_inputs(request, device_type, config_mode):
         for index in reversed(to_remove):
             del current_acls.ACLs[index]
 
-        acl_networks = acl_networks.split(';')
-        for i, network in enumerate(acl_networks):
+        nat_acl_networks = nat_acl_networks.split(';')
+        for i, network in enumerate(nat_acl_networks):
             if len(network) == 0:
                 continue
-            acl_networks[i] = '1,permit,' + network
-        acl_networks = ';'.join(acl_networks)
-        current_acls.getACLs(acl_networks) # adding acls to ACLs list
+            nat_acl_networks[i] = '1,permit,' + network
+        nat_acl_networks = ';'.join(nat_acl_networks)
+
+        current_acls.getACLs(nat_acl_networks) # adding acls to ACLs list
         cm.writeACLConfig(current_acls)
 
 ########################################################################
@@ -498,13 +498,21 @@ def get_inputs(request, device_type, config_mode):
     ospf_networks = request.POST.get('hidden_ospf_info_for_transfer')
 
     if '' not in (checkOSPFprocess(ospf_process), checkOSPFrouterID(ospf_router_id), checkOSPFsumState(ospf_sum_state), checkOSPForiginateState(ospf_originate_state), checkOSPFnetworks(ospf_networks)):
-        ospf_instance = config_objects[7][0] # at this time only one OSPF instance is supported
-        ospf_instance.ospfProcess = checkOSPFprocess(ospf_process)
-        ospf_instance.ospfRouterID = checkOSPFrouterID(ospf_router_id)
-        ospf_instance.ospfAutoSummary = checkOSPFsumState(ospf_sum_state)
-        ospf_instance.ospfOriginate = checkOSPForiginateState(ospf_originate_state)
-        ospf_instance.ospfNetworks = ospf_instance.getNetworks(checkOSPFnetworks(ospf_networks))
-        cm.writeOSPFConfig(ospf_instance)
+        if len(config_objects[7]) == 0 :
+            config_objects[7].append(OSPF(checkOSPFprocess(ospf_process), checkOSPFrouterID(ospf_router_id), checkOSPForiginateState(ospf_originate_state), checkOSPFsumState(ospf_sum_state), checkOSPFnetworks(ospf_networks)))
+            cm.writeOSPFConfig(config_objects[7][0])
+        else: 
+            ospf_instance = config_objects[7][0] # at this time only one OSPF instance is supported
+            ospf_instance.ospfProcess = checkOSPFprocess(ospf_process)
+            ospf_instance.ospfRouterID = checkOSPFrouterID(ospf_router_id)
+            ospf_instance.ospfAutoSummary = checkOSPFsumState(ospf_sum_state)
+            ospf_instance.ospfOriginate = checkOSPForiginateState(ospf_originate_state)
+            ospf_instance.ospfNetworks = ospf_instance.getNetworks(checkOSPFnetworks(ospf_networks))
+            cm.writeOSPFConfig(ospf_instance)
+
+########################################################################
+
+
 
 ########################################################################
 
