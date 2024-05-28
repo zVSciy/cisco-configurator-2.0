@@ -439,6 +439,13 @@ def get_inputs(request, device_type, config_mode):
 
 ########################################################################
 
+    #etherchannel
+    etherchannel_interfaces = request.POST.get('hidden_etherchannel_interfaces_info_for_transfer')
+    ethcerchannel_channel_groups = request.POST.get('hidden_etherchannel_info_for_transfer')
+
+
+########################################################################
+
     #nat
     nat_ingoing = request.POST.get('hidden_nat_ingoing')
     nat_outgoing = request.POST.get('hidden_nat_outgoing')

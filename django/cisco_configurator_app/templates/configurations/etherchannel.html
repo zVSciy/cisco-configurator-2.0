@@ -20,7 +20,7 @@
           class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">
           IP address:
         </label>
-        <input placeholder="ip address or dhcp" class="input !pl-3 !outline-offset-0 input-bordered !w-full"
+        <input placeholder="ip address" class="input !pl-3 !outline-offset-0 input-bordered !w-full"
           type="text" id="etherchannel_ip" name="etherchannel_ip"
           oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')">
       </div>
@@ -30,7 +30,7 @@
           class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
           for="subnetMask">Subnet mask:</label>
         <input class="input !pl-3 !outline-offset-0 input-bordered !w-full" type="text" name="etherchannel_sm"
-          id="etherchannel_sm" placeholder="leave empty if ip is dhcp"
+          id="etherchannel_sm" placeholder="e.g. 255.255.255.0"
           oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')">
         <div id="result_etherchannel"></div>
       </div>
@@ -50,17 +50,18 @@
 
     <label class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
         id="Banner">Choose Interface:</label>
-    <select name="vlan_interface" id="vlan_interface"
-        class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" onchange="checkInterfaceVlan()">
+    <select name="etherchannel_interface" id="etherchannel_interface"
+        class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" onchange="checkInterfaceEtherchannel()">
+        <option value=""></option>
         {% for interface in interfaces %}
-        <option name=" {{ interface }}_vlan" value="{{ interface }}">{{ interface }}</option>
+        <option id="etherchannel_{{ interface }}" name="etherchannel_{{ interface }}" value="{{ interface }}">{{ interface }}</option>
         {% endfor %}
     </select>
 
     <label class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
         id="Banner">Mode:</label>
-    <select name="vlan_interface_mode" id="vlan_interface_mode"
-        class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" onclick="updateVLanMenu()">
+    <select name="etherchannel_interface_mode" id="etherchannel_interface_mode"
+        class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs">
         <option value="active">Mode Active</option>
         <option value="passive">Mode passive</option>
     </select>
@@ -69,18 +70,19 @@
         <label
             class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
             id="Banner">Choose Channel Group:</label>
-        <select name="etherchannel_select_id" id="etherchannel_select_id"
+        <select name="etherchannel_select_id" id="etherchannel_select_id" onchange="checkInterfaceEtherchannel()"
             class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs ">
+            <option value=""></option>
         </select>
     </div>
 
-    <button type="button" class="config_item btn max-w-xs" id="add_vlan_interface_button"
-        onclick="addVlanInterface(); add_to_config('etherchannel');">add Channel Group to Interface</button>
+    <button type="button" class="config_item btn max-w-xs" id="add_etherchannel_interface_button"
+        onclick="addChannelGroupToInterface(); add_to_config('etherchannel');">add Channel Group to Interface</button>
 
     <div id="created_vlans" class="config_item">
         added Interfaces:</div>
-    <div class="config_item" id="vlan_interfaces_info"></div>
-    <input name="etherchannel_interfaces_info_for_transfer" id="vlan_interfaces_info_for_transfer"
+    <div class="config_item" id="etherchannel_interfaces_info"></div>
+    <input name="etherchannel_interfaces_info_for_transfer" id="etherchannel_interfaces_info_for_transfer"
         value="{{ vlan_interfaces }}"></input>
 
 
@@ -88,6 +90,8 @@
         document.getElementById("add_etherchannel_button").disabled = true;
         document.getElementById("etherchannel_info_for_transfer").style.display = 'none';
         document.getElementById("etherchannel_interfaces_info_for_transfer").style.display = 'none';
+        document.getElementById("add_etherchannel_interface_button").disabled = true;
+        checkInterfaceEtherchannel()
     </script>
 
 
