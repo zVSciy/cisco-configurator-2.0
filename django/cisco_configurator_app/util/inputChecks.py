@@ -13,7 +13,7 @@ sm_pattern = r'^((255|254|252|248|240|224|192|128|0)\.){3}(255|254|252|248|240|2
 
 ########################################################################
 
-# BASIC CONFIG
+#region BASIC CONFIG
 
 #checks the hostname input
 def checkHostname(hostname):
@@ -29,7 +29,7 @@ def checkBanner(banner):
 
 ########################################################################
 
-# INTERFACES
+#region INTERFACES
 
 #checks the interface shutdown state
 def checkIntShutdown(shutdown):
@@ -61,7 +61,7 @@ def checkIntSM(sm):
 
 ########################################################################
 
-# STATIC ROUTING
+#region STATIC ROUTING
 
 #checks the static routing input string
 def checkStaticRoutes(routes):
@@ -87,7 +87,7 @@ def checkStaticRoutes(routes):
 
 ########################################################################
 
-# RIP
+#region RIP
 
 #checks if rip version is 1 or 2
 def checkRIPversion(version):
@@ -128,7 +128,7 @@ def checkRIPnetworks(networks):
 
 ########################################################################
 
-# DHCP
+#region DHCP
 
 #checks DHCP pool name
 def checkDHCPpoolName(name):
@@ -195,7 +195,7 @@ def checkDHCPexcludedAreas(areas):
 
 ########################################################################
 
-# NAT
+#region NAT
 
 #checks the NAT ingoing interface
 def checkNATingoing(int):
@@ -243,7 +243,7 @@ def checkNATnetworks(networks):
 
 ########################################################################
 
-# OSPF
+#region OSPF
 
 #checks the ospf process id
 def checkOSPFprocess(id):
