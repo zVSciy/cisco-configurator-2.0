@@ -868,6 +868,18 @@ function ValidateIndexInput(){
 
 // Functions to get Input from backend to frontend 
 
+function extractIPs(inputString) {
+  // Entferne die eckigen Klammern und splitte den String an den Anführungszeichen
+  let parts = inputString.replace(/[\[\]]/g, '').split("', '");
+
+  // Entferne eventuell verbleibende Anführungszeichen
+  let cleanedParts = parts.map(part => part.replace(/'/g, ''));
+
+  return cleanedParts;
+}
+
+
+
 function extractToList(inputString, pattern) {
   const regex = pattern;
   const interfaceNames = [];

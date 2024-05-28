@@ -44,7 +44,7 @@
     <div id="created_vlans" class="config_item">
         created Channel Groups:</div>
     <div class="config_item" id="etherchannel_info"></div>
-    <input name="etherchannel_info_for_transfer" id="etherchannel_info_for_transfer" value="{{ vlans }}"></input>
+    <input name="etherchannel_info_for_transfer" id="etherchannel_info_for_transfer" value="{{ etherchannel_channel_groups }}"></input>
 
     <h3 class="font-extrabold text-2xl pb-5">Assign Channel Groups to Interfaces (add some Channel Groups bevore this step)</h3>
 
@@ -83,7 +83,7 @@
         added Interfaces:</div>
     <div class="config_item" id="etherchannel_interfaces_info"></div>
     <input name="etherchannel_interfaces_info_for_transfer" id="etherchannel_interfaces_info_for_transfer"
-        value="{{ vlan_interfaces }}"></input>
+        value="{{ etherchannel_channel_groups }}"></input>
 
 
     <script>
