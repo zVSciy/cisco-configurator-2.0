@@ -446,18 +446,18 @@ def get_inputs(request, device_type, config_mode):
     nat_acl_networks = request.POST.get('hidden_nat_info_for_transfer')
 
     #check values
-    if '' not in (checkNATingoing(nat_ingoing, device_type), checkNAToutgoing(nat_outgoing, device_type), checkACLnetworks(nat_acl_networks)):
+    if '' not in (checkNATinterfaces(nat_ingoing, nat_outgoing), checkNATnetworks(nat_acl_networks)):
 
         current_interfaces = cm.getAllInterfaces()
 
         for i in current_interfaces:
-            if i.interface == nat_ingoing:
+            if i.interface == checkNATinterfaces[0]:
                 i.ipNatInside = True
-            if i.interface == nat_outgoing:
+            if i.interface == checkNATinterfaces[1]:
                 i.ipNatOutside = True
             cm.writeInterface(i)
 
-        config_objects[5].interface = nat_outgoing
+        config_objects[5].interface = checkNATinterfaces[1]
         config_objects[5].accessList = '1'
         cm.writeNATConfig(config_objects[5])
 
@@ -470,13 +470,14 @@ def get_inputs(request, device_type, config_mode):
         for index in reversed(to_remove):
             del current_acls.ACLs[index]
 
-        acl_networks = acl_networks.split(';')
-        for i, network in enumerate(acl_networks):
+        nat_acl_networks = nat_acl_networks.split(';')
+        for i, network in enumerate(nat_acl_networks):
             if len(network) == 0:
                 continue
-            acl_networks[i] = '1,permit,' + network
-        acl_networks = ';'.join(acl_networks)
-        current_acls.getACLs(acl_networks) # adding acls to ACLs list
+            nat_acl_networks[i] = '1,permit,' + network
+        nat_acl_networks = ';'.join(nat_acl_networks)
+
+        current_acls.getACLs(nat_acl_networks) # adding acls to ACLs list
         cm.writeACLConfig(current_acls)
 
 ########################################################################

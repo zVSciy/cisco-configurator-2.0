@@ -69,6 +69,8 @@ def checkStaticRoutes(routes):
         return ''
     validation = True
     splitted_routes = routes.split(';')
+    if splitted_routes[-1] == '':
+        splitted_routes.pop()
     for route in splitted_routes:
         route = route.split(',')
         if len(routes) != 3:
@@ -115,6 +117,8 @@ def checkRIPnetworks(networks):
         return ''
     validation = True
     splitted_networks = networks.split(';')
+    if splitted_networks[-1] == '':
+        splitted_networks.pop()
     for network in splitted_networks:
         if not re.match(ip_pattern, network):
             validation = False
@@ -171,6 +175,8 @@ def checkDHCPexcludedAreas(areas):
     validation = True
     areas_str = areas
     splitted_areas = areas.split(';')
+    if splitted_areas[-1] == '':
+        splitted_areas.pop()
     for areas in splitted_areas:
         area = areas.split(',')
         if len(area) != 2:
@@ -192,26 +198,36 @@ def checkDHCPexcludedAreas(areas):
 # NAT
 
 #checks the NAT ingoing interface
-def checkNATingoing(int, device):
-    for i in get_interfaces(device):
+def checkNATingoing(int):
+    for i in get_interfaces('router'):
         if i.port_name == int:
             return int
     return ''
 
 #checks the NAT outgoing interface
-def checkNAToutgoing(int, device):
-    for i in get_interfaces(device):
+def checkNAToutgoing(int):
+    for i in get_interfaces('router'):
         if i.port_name == int:
             return int
     return ''
 
+#checks if both NAT interfaces are correct
+def checkNATinterfaces(int1, int2):
+    if '' not in (checkNATingoing(int1), checkNAToutgoing(int2)):
+        if int1 == int2:
+            return ''
+        return [int1, int2]
+    return ''
+
 #checks the ACL network string
-def checkACLnetworks(networks):
+def checkNATnetworks(networks):
     if type(networks) != str or networks == '':
         return ''
     validation = True
     networks_str = networks
     splitted_networks = networks.split(';')
+    if splitted_networks[-1] == '':
+        splitted_networks.pop()
     for network in splitted_networks:
         network = network.split(',')
         if len(network) != 2:
@@ -268,6 +284,8 @@ def checkOSPFnetworks(networks):
     validation = True
     networks_str = networks
     splitted_networks = networks.split(';')
+    if splitted_networks[-1] == '':
+        splitted_networks.pop()
     for network in splitted_networks:
         network = network.split(',')
         if len(network) != 3:
