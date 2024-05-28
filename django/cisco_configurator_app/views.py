@@ -444,7 +444,6 @@ def get_inputs(request, device_type, config_mode):
     etherchannel_interfaces = request.POST.get('hidden_etherchannel_interfaces_info_for_transfer')
     ethcerchannel_channel_groups = request.POST.get('hidden_etherchannel_info_for_transfer')
 
-
 ########################################################################
 
     #nat
@@ -458,13 +457,13 @@ def get_inputs(request, device_type, config_mode):
         current_interfaces = cm.getAllInterfaces()
 
         for i in current_interfaces:
-            if i.interface == checkNATinterfaces[0]:
+            if i.interface == checkNATinterfaces(nat_ingoing, nat_outgoing)[0]:
                 i.ipNatInside = True
-            if i.interface == checkNATinterfaces[1]:
+            if i.interface == checkNATinterfaces(nat_ingoing, nat_outgoing)[1]:
                 i.ipNatOutside = True
             cm.writeInterface(i)
 
-        config_objects[5].interface = checkNATinterfaces[1]
+        config_objects[5].interface = checkNATinterfaces(nat_ingoing, nat_outgoing)[1]
         config_objects[5].accessList = '1'
         cm.writeNATConfig(config_objects[5])
 
@@ -504,6 +503,10 @@ def get_inputs(request, device_type, config_mode):
         ospf_instance.ospfOriginate = checkOSPForiginateState(ospf_originate_state)
         ospf_instance.ospfNetworks = ospf_instance.getNetworks(checkOSPFnetworks(ospf_networks))
         cm.writeOSPFConfig(ospf_instance)
+
+########################################################################
+
+
 
 ########################################################################
 
