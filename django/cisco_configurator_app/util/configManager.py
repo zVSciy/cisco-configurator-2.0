@@ -369,8 +369,8 @@ class ConfigManager:
         #^router ospf 2
         ospfNetworks = ""
         ospfRouterID = ""
-        ospfAutoSummary = False  
-        ospfDefaultInformationOriginate = False
+        ospfAutoSummary = True  
+        ospfDefaultInformationOriginate = True
 
         for line in ospfText:
             if line.startswith("router-id"):
@@ -378,10 +378,10 @@ class ConfigManager:
                 ospfRouterID = line.split(" ")[1]
             elif line.startswith("default-information originate"):
                 #^ default-information originate
-                ospfDefaultInformationOriginate = True
+                ospfDefaultInformationOriginate = False
             elif line.startswith("no auto-summary"):
                 #^ no auto summary
-                ospfAutoSummary = True #Danke Flo für des verkehrt denken
+                ospfAutoSummary = False #Danke Flo für des verkehrt denken
             elif line.startswith("network"):
                 #^ network 192.168.1.0 0.0.0.255 area 0
                 #^ network 192.168.2.0 0.0.0.255 area 0
