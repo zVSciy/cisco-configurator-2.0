@@ -147,12 +147,13 @@ class Interface:
                 config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
                 config.append(f" description {self.description}\n")
                 config.append(f" {shutdown}")
+                config.append(f" channel-protocol lacp\n")
                 config.append(f" channel-group {channelGroup['channelID']} mode {channelGroup['channelMode']}\n")
                 config.append("!\n")
         else:
             for channelGroup in self.channelGroups:
                 config.append(f"interface {channelGroup['channelInterface']}\n")
-                config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
+                # config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
                 config.append(f" description {self.description}\n")
                 config.append(f" channel-group {channelGroup['channelID']} mode {channelGroup['channelMode']}\n")
                 config.append(f" switchport mode {vlan['mode']}\n")
@@ -171,10 +172,10 @@ class Interface:
         return config 
 
 #~ Testing vlan Config
-vlanINT = Interface(vlanInt='10', ip='192.168.30.100', sm='255.255.255.0', description='TestTest', shutdown=True, vlans='5,trunk,1,10:20:30;15,access,1,10:20:30;')
-config = vlanINT.toConfig()
-for line in config:
-    print(line)
+# vlanINT = Interface(vlanInt='10', ip='192.168.30.100', sm='255.255.255.0', description='TestTest', shutdown=True, vlans='5,trunk,1,10:20:30;15,access,1,10:20:30;', createChannelGroups="1,192.168.40.40,255.255.255.0;2,192.168.30.30,255.255.255.0", assignChannelGroups="Ethernet0/0,1,active;Ethernet0/1,2,active")
+# config = vlanINT.toConfig()
+# for line in config:
+#     print(line)
 
 #endregion
 #region VLAN
