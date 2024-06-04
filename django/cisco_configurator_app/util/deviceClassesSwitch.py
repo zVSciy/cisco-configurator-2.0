@@ -34,7 +34,7 @@ class DeviceInfo:
 # Define a class to store interface information
 class Interface:
     # Initialize the class with various parameters
-    def __init__(self, vlanInt:str = None, ip:str = None, sm:str = None, description:str = "Default", shutdown:bool = None, vlans:str = None, createChannelGroups:str = None, assignChannelGroups:str = None) -> None:
+    def __init__(self, vlanInt:str = None, ip:str = None, sm:str = None, description:str = "Default", shutdown:bool = None, vlans:str = None, assignChannelGroups:str = None) -> None:
         # Check if the interface is a string and store it
         if type(vlanInt) == str:
             self.vlanInt = vlanInt
