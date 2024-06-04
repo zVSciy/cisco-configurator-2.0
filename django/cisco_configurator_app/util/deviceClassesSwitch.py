@@ -3,7 +3,7 @@ import json
 #region Device
 
 # Define a class to store device information
-class DeviceInfo:
+class SwitchDeviceInfo:
     # Initialize the class with hostname and motd (Message of the Day)
     def __init__(self, hostname:str = None, motd:str = "Cisco Troll") -> None:
         # Check if the hostname is a string and store it
@@ -32,7 +32,7 @@ class DeviceInfo:
 #region Interface
 
 # Define a class to store interface information
-class Interface:
+class SwitchInterface:
     # Initialize the class with various parameters
     def __init__(self, vlanInt:str = None, ip:str = None, sm:str = None, description:str = "Default", shutdown:bool = None, vlans:str = None, assignChannelGroups:str = None) -> None:
         # Check if the interface is a string and store it
@@ -152,7 +152,7 @@ class Interface:
     
 #region VLAN
 
-class CreateVLANs:
+class SwitchCreateVLANs:
     def __init__(self, vlans:str = None) -> None:
         if type(vlans) == str:
             self.vlans = vlans
