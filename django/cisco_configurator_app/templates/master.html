@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cisco Configurator 2.0</title>
   <script src="{% static 'input_checks.js' %}"></script>
+  <link href="{% static 'src/styles.css' %}" rel="stylesheet">
 </head>
 
 <body>
@@ -80,7 +81,7 @@
 
   <div class="menu-container justify-between flex py-2 pt-10 items-center">
     <a class="menu-button btn min-h-0 h-[2.5rem]" href="{%  url 'index_route' %}">
-      <h1 id="heading" class="p-2 px-3 font-bold">Cisco Configurator 2.0</h1>
+      <h1 id="heading" class="text-3xl text-green-800">Cisco Configurator 2.0</h1>
     </a>
     <div class="flex gap-2">
       {% if device_type == "router" %}
