@@ -87,24 +87,24 @@ class Interface:
             self.getAssignChannelGroups(assignChannelGroups)
 
         
-    def getCreateChannelGroups(self, createChannelGroups:str) -> list:
-        if createChannelGroups:
-            portChannels = createChannelGroups.split(';')
-            for portChannel in portChannels:
-                if portChannel:
-                    channelID, channelIP, channelSM = portChannel.split(',')
-                    self.portChannels.append({'channelID': channelID, 'channelIP': channelIP, 'channelSM': channelSM})
-        return self.portChannels
+    # def getCreateChannelGroups(self, createChannelGroups:str) -> list:
+    #     if createChannelGroups:
+    #         portChannels = createChannelGroups.split(';')
+    #         for portChannel in portChannels:
+    #             if portChannel:
+    #                 channelID, channelIP, channelSM = portChannel.split(',')
+    #                 self.portChannels.append({'channelID': channelID, 'channelIP': channelIP, 'channelSM': channelSM})
+    #     return self.portChannels
     #^ channelID,channelIP,channelSM;channelID,channelIP,channelSM
 
-    def getAssignChannelGroups(self, assignChannelGroups:str) -> list:
-        if assignChannelGroups:
-            channelGroups = assignChannelGroups.split(';')
-            for channelGroup in channelGroups:
-              if channelGroup:
-                channelInterface, channelID, channelMode = channelGroup.split(',')
-                self.channelGroups.append({'channelInterface': channelInterface, 'channelID': channelID, 'channelMode': channelMode})
-        return self.channelGroups 
+    # def getAssignChannelGroups(self, assignChannelGroups:str) -> list:
+    #     if assignChannelGroups:
+    #         channelGroups = assignChannelGroups.split(';')
+    #         for channelGroup in channelGroups:
+    #           if channelGroup:
+    #             channelInterface, channelID, channelMode = channelGroup.split(',')
+    #             self.channelGroups.append({'channelInterface': channelInterface, 'channelID': channelID, 'channelMode': channelMode})
+    #     return self.channelGroups 
         
     #^ channelInterface,channelID,channelMode;channelInterface,channelID,channelMode
 
