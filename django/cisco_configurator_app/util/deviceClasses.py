@@ -106,7 +106,7 @@ class Interface:
                 self.channelGroups.append({'channelInterface': channelInterface, 'channelID': channelID, 'channelMode': channelMode})
         return self.channelGroups 
         
-    #^ channelID,channelMode,channelInterface;channelID,channelMode,channelInterface
+    #^ channelInterface,channelID,channelMode;channelInterface,channelID,channelMode
 
     # Define the string representation of the class
     def __repr__(self) -> str:
@@ -133,7 +133,7 @@ class Interface:
         else:
             for channelGroup in self.channelGroups:
                 config.append(f"interface {channelGroup['channelInterface']}\n")
-                config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
+                # config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
                 config.append(f" description {self.description}\n")
                 config.append(f" {shutdown}")
                 config.append(f" {natInside}")
@@ -147,6 +147,15 @@ class Interface:
                 config.append("!\n")
         return config 
 #endregion
+
+etherchannel = Interface(interface="", ip="", sm="", ipNatInside=True, ipNatOutside=False, description="Test", shutdown=False, createChannelGroups="1,192.168.40.40,255.255.255.0;2,192.168.30.30,255.255.255.0", assignChannelGroups="Ethernet0/0,1,active;Ethernet0/1,2,active")
+# Rufen Sie die toConfig Methode auf und speichern Sie das Ergebnis
+config = etherchannel.toConfig()
+
+# Drucken Sie das Ergebnis
+for line in config:
+    print(line)
+
 #region StaticRoute
 
 # Define a class to manage static routing configurations
