@@ -166,7 +166,7 @@ class Interface:
         if len(self.portChannels) > 0:
             for portChannel in self.portChannels:
                 config.append(f"interface Port-channel {portChannel['channelID']}\n")
-                config.append(f" ip address {portChannel['channelIP']} {portChannel['channelSM']}\n")
+                # config.append(f" ip address {portChannel['channelIP']} {portChannel['channelSM']}\n")
                 config.append("!\n")
 
         return config 
