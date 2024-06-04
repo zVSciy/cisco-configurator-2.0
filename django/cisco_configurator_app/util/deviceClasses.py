@@ -138,6 +138,7 @@ class Interface:
                 config.append(f" {shutdown}")
                 config.append(f" {natInside}")
                 config.append(f" {natOutside}")
+                config.append(f" channel-protocol lacp\n")
                 config.append(f" channel-group {channelGroup['channelID']} mode {channelGroup['channelMode']}\n")
                 config.append("!\n")
         if len(self.portChannels) > 0:

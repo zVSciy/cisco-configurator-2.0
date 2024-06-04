@@ -171,10 +171,10 @@ class Interface:
         return config 
 
 #~ Testing vlan Config
-# vlanINT = Interface(vlanInt='10', ip='192.168.30.100', sm='255.255.255.0', description='TestTest', shutdown=True, vlans='5,trunk,1,10:20:30;15,access,1,10:20:30;')
-# config = vlanINT.toConfig()
-# for line in config:
-#     print(line)
+vlanINT = Interface(vlanInt='10', ip='192.168.30.100', sm='255.255.255.0', description='TestTest', shutdown=True, vlans='5,trunk,1,10:20:30;15,access,1,10:20:30;')
+config = vlanINT.toConfig()
+for line in config:
+    print(line)
 
 #endregion
 #region VLAN
