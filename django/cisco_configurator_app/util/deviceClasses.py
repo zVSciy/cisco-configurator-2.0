@@ -95,7 +95,7 @@ class Interface:
                     channelID, channelIP, channelSM = portChannel.split(',')
                     self.portChannels.append({'channelID': channelID, 'channelIP': channelIP, 'channelSM': channelSM})
         return self.portChannels
-
+    #^ channelID,channelIP,channelSM;channelID,channelIP,channelSM
 
     def getAssignChannelGroups(self, assignChannelGroups:str) -> list:
         if assignChannelGroups:
@@ -106,6 +106,7 @@ class Interface:
                 self.channelGroups.append({'channelInterface': channelInterface, 'channelID': channelID, 'channelMode': channelMode})
         return self.channelGroups 
         
+    #^ channelID,channelMode,channelInterface;channelID,channelMode,channelInterface
 
     # Define the string representation of the class
     def __repr__(self) -> str:
