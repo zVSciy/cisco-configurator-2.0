@@ -1,5 +1,6 @@
 from .configEditor import configEditor
 from .deviceClasses import Interface, StaticRoute, RipRouting, DHCP, ACLStandard, NAT, DeviceInfo, ACLExtended, OSPF
+from .deviceClassesSwitch import SwitchDeviceInfo, SwitchInterface, SwitchCreateVLANs
 
 #! This file colored comments to highlight the different sections of the code
 #! THis extention was used: ParthR2031.colorful-comments
@@ -474,6 +475,113 @@ class ConfigManager:
 
     #endregion
 
+
+    #region swBasic
+    def getSwitchDeviceInfo(self) -> SwitchDeviceInfo:
+        self.configEditor.readFile()
+        """Returns a DeviceInfo object with the hostname and motd configuration in the config file"""
+
+        hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
+        motdLine = self.configEditor.findContentIndexes("banner motd", "!")
+        if len(motdLine) > 0:
+            motd = self.configEditor.getContentOnIndex(motdLine[0])
+            #^banner motd ^Chello^C
+        else:
+            motd = ""
+
+        if len(hostNameLine) > 0:
+            hostName = self.configEditor.getContentOnIndex(hostNameLine[0]).split(" ")[1]
+            #^hostname R1
+        else :
+            hostName = "DefaultHostname"
+        motd = motd.replace("banner motd ", "")
+        motd = motd.replace("^C", "")
+        return DeviceInfo(hostName, motd)
+    
+    def writeSwitchDeviceInfo(self, deviceInfo: SwitchDeviceInfo) -> None:
+        """Writes the hostname and motd configuration from DeviceInfo to the config file"""
+        hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
+        if(len(hostNameLine) > 0):
+            self.configEditor.removeContentBetweenIndexes(hostNameLine[0], hostNameLine[-1])
+        motdLine = self.configEditor.findContentIndexes("banner motd ", "!")
+        if(len(motdLine) > 0):
+            self.configEditor.removeContentBetweenIndexes(motdLine[0], motdLine[-1])
+        self.configEditor.appendContentToFile(deviceInfo.toConfig())
+        self.configEditor.writeConfig()
+    #endregion
+
+    #region swInterface
+    def getSwitchInterface(self, interfaceName: str) -> SwitchInterface:
+        """
+        Returns an Interface object based on the interface name.
+        It searches for the interface name in the config file and returns the object
+        """
+        InterfaceLines = self.configEditor.findContentIndexes("interface " + interfaceName, "!")
+        if len(InterfaceLines) == 0:
+            return Interface("", "", "", False, False, "", True, "", "")
+        interfaceText = self.configEditor.getContentBetweenIndexes(InterfaceLines[0], InterfaceLines[-1])
+
+        intName, ip, sm, desc, shutdown, vlans, channelGroups = None, None, None, "Default", False, "", ""
+
+        channelGroupName = ""
+        channelGroupMode = ""
+
+        vlanMode = ""
+        vlanAllowed = ""
+        vlanNative = ""
+
+        for intLine in interfaceText:
+            if intLine.startswith("interface "):
+                intName = intLine.split(" ")[1]
+            elif intLine.startswith("switchport"):
+                if intLine.startswith("switchport mode access"):
+                    vlanMode = "access"
+                    #^ switchport mode trunk
+                elif intLine.startswith("switchport mode trunk"):
+                    vlanMode = "trunk"
+                    #^ switchport mode trunk
+
+                elif intLine.startswith("switchport trunk native vlan"):
+                    vlanNative = intLine.split(" ")[4]
+                    #^ switchport trunk native vlan 1
+
+                elif intLine.startswith("switchport trunk allowed vlan"):
+                    vlanAllowed = intLine.split(" ")[4].replace(",", ";")
+                    #^ switchport trunk allowed vlan 1,2,3,4
+
+                elif intLine.startswith("switchport access vlan"):
+                    vlanAllowed = intLine.split(" ")[4]
+                    vlanNative = vlanAllowed
+                    #^ switchport access vlan 1
+                    #the access mode only has vlan, so i set both to the same value, because the 
+                    #allowed vlan is not used in access mode
+            elif intLine.startswith("channel-group"):
+                channelGroupName = intLine.split(" ")[1]
+                channelGroupMode = intLine.split(" ")[3]
+            elif intLine.startswith("description"):
+                desc = intLine.split(" ")[1]
+            elif intLine.startswith("shutdown") or intLine.startswith("no shutdown"):
+                shutdown = False if intLine == "shutdown" else True
+            elif intLine.startswith("ip address"):
+                if len(intLine.split(" ")) > 2:
+                    ip = intLine.split(" ")[2]
+                    sm = intLine.split(" ")[3]
+                elif len(intLine.split(" ")) == 2:
+                    ip = intLine.split(" ")[1]
+                    sm = ""
+
+            vlans = vlanMode + "," + vlanNative + "," + vlanAllowed + ","
+            channelGroups = channelGroupMode + "," + channelGroupName
+
+            return SwitchInterface(intName, ip, sm, desc, shutdown, vlans, channelGroups)
+
+        #! Write Switch interface
+        #! Get all Switch Etehernet Interfaces
+        #! Get all Portchannels
+        #! Get all Vlans
+        #! Get ALL Switch Intefaces
+
+    #endregion
 
 # region ExampleUsage
 
