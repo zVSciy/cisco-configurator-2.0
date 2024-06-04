@@ -1,3 +1,4 @@
+//region general functions
 const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 const smRegex = /^((255|254|252|248|240|224|192|128|0)\.){3}(255|254|252|248|240|224|192|128|0)$/;
 
@@ -23,8 +24,9 @@ function enableNavigation() {
       buttons[i].disabled = false;
   }
 }
+//endregion
 
-
+//region footer
 function ValidateFooter(ipaddress, info, transfer_button, option_button) {
   let message = document.getElementById(info);
   let ip = document.getElementById(ipaddress);
@@ -70,8 +72,10 @@ function ValidateFooter(ipaddress, info, transfer_button, option_button) {
     disableNavigation();
   }
 }
+//endregion
 
-//interfaces
+//region Interfaces
+
 function updateInterfaceDescription(checkbox_value, checkbox_description) {
   let checkbox = document.getElementById(checkbox_value);
   let interfaceDescription = document.getElementById(checkbox_description);
@@ -124,9 +128,9 @@ function updateStateDescription(checkbox_value, checkbox_description) {
     interfaceDescription.innerText = ' (off)';
   }
 }
+//endregion
 
-
-//NAT
+//region NAT
 function addNatIp() {
   let Ip = document.getElementById('nat_ip').value;
   let wildcardMask = document.getElementById('nat_wm').value;
@@ -177,8 +181,9 @@ function checkInterfacesNat() {
     enableNavigation();
   }
 }
+//endregion
 
-//DHCP
+//region DHCP
 function checkDhcpInput(Network_Input, Dg_input, dns_input, result) {
   let Network = document.getElementById(Network_Input).value.split(',');
   let Dg = document.getElementById(Dg_input).value;
@@ -240,8 +245,9 @@ function addDhcpIp() {
   document.getElementById('dhcp_pool_result').innerHTML += routeInfo;
   document.getElementById('dhcp_info_for_transfer').value += From + ',' + To + ';';
 }
+//endregion
 
-// RIP
+//region RIP
 
 function ValidateIPaddressesDynamicRouting(ipaddresses, info) {
   let message = document.getElementById(info);
@@ -286,10 +292,9 @@ function handleDropdownChange() {
     checkbox.disabled = false;
   }
 }
+//endregion
 
-
-
-// Static Routing
+//region Static Routing
 
 function addRoute() {
   let targetIP = document.getElementById('target_ip').value;
@@ -332,11 +337,9 @@ function extractInterfaceNames(inputString) {
    }
    return interfaceNames;
 }
+//endregion
 
-
-
-
-// OSPF
+//region OSPF
 
 function addOspfIp() {
   let Ip = document.getElementById('ospf_ip').value;
@@ -411,9 +414,10 @@ function checkOspfProcess(){
     TButton.disabled = true;
   }
 }
+//endregion
 
-// Basic ACLs
 
+//region Basic ACLs
 let basic_acl_ids = []
 
 function checkBasicAclId(){
@@ -461,8 +465,9 @@ function ValidateBasicAclNetwork(info) {
     TButton.disabled = true;
   }
 }
+//endregion
 
-// Extended ACLs
+//region Extended ACLs
 
 let extended_acl_ids = []
 
@@ -518,11 +523,11 @@ function ValidateExtendedAclNetwork(info) {
     TButton.disabled = true;
   }
 }
+//endregion
 
-//VLAN
+//region VLAN
+
 // vlan_list = [];
-
-
 
 // function addVlan() {
 //   let vlan_name = document.getElementById('vlan_name').value;
@@ -618,14 +623,15 @@ function ValidateExtendedAclNetwork(info) {
 //   }
 // }
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------
-//Etherchannel
+//endregion
 
+
+//region Etherchannel (LACP)
 
 let etherchannel_list = [];
 
 
-
+// add Channel Groups
 function addChannelGroup() {
   let channel_id = document.getElementById('etherchannel_id').value;
   let etherchannel_ip = document.getElementById('etherchannel_ip').value;
@@ -642,7 +648,7 @@ function addChannelGroup() {
   document.getElementById("add_etherchannel_button").disabled = true;
   console.log(etherchannel_list)
 
-  //add VLAN to the dropdowns
+  //add to the dropdowns
 
   let etherchannel_group_options = document.getElementById('etherchannel_select_id');
 
@@ -688,6 +694,8 @@ function checkNewLacpGroup(Int_ip, Int_sm, Int_result, channel_id) {
   }
 }
 
+//add Channel Group to Interface
+
 function addChannelGroupToInterface() {
   let eth_interface = document.getElementById('etherchannel_interface').value;
   let interface_mode = document.getElementById('etherchannel_interface_mode').value;
@@ -720,9 +728,10 @@ function checkInterfaceEtherchannel(){
   }
 }
 
+//endregion
 
+//region forwarding to backend
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------
 // add to Config for backend
 function add_to_config(page) {
 
@@ -845,10 +854,10 @@ function add_to_config(page) {
     document.getElementById('hidden_etherchannel_interfaces_info_for_transfer').value = etherchannel_interfaces_info_for_transfer_to_set;
   }
 }
+//endregion
 
 
-
-//Index Site Checks
+// region Index Site Checks
 
 function ValidateIndexInput(){
   ip = document.getElementById('loadFromIpAddress')
@@ -865,7 +874,9 @@ function ValidateIndexInput(){
   }
 }
 
+//endrgeion
 
+//region forwarding to frontend
 // Functions to get Input from backend to frontend 
 
 function extractIPs(inputString) {
@@ -945,3 +956,5 @@ function collectIPAddressesAndAreas(inputString) {
     
     return resultArray;
 }
+
+//endregion
