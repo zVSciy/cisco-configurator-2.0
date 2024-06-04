@@ -95,7 +95,7 @@ class Interface:
                     channelID, channelIP, channelSM = portChannel.split(',')
                     self.portChannels.append({'channelID': channelID, 'channelIP': channelIP, 'channelSM': channelSM})
         return self.portChannels
-
+    #^ channelID,channelIP,channelSM;channelID,channelIP,channelSM
 
     def getAssignChannelGroups(self, assignChannelGroups:str) -> list:
         if assignChannelGroups:
@@ -106,6 +106,7 @@ class Interface:
                 self.channelGroups.append({'channelInterface': channelInterface, 'channelID': channelID, 'channelMode': channelMode})
         return self.channelGroups 
         
+    #^ channelInterface,channelID,channelMode;channelInterface,channelID,channelMode
 
     # Define the string representation of the class
     def __repr__(self) -> str:
@@ -121,31 +122,40 @@ class Interface:
         natInside = "ip nat inside\n" if self.ipNatInside else ''
         natOutside = "ip nat outside\n" if self.ipNatOutside else ''
         shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
-        if len (self.channelGroups) == 0:
-            config.append(f"interface {self.interface}\n")
-            config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
-            config.append(f" description {self.description}\n")
-            config.append(f" {shutdown}")
-            config.append(f" {natInside}")
-            config.append(f" {natOutside}")
-            config.append("!\n")
-        else:
-            for channelGroup in self.channelGroups:
-                config.append(f"interface {channelGroup['channelInterface']}\n")
-                config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
-                config.append(f" description {self.description}\n")
-                config.append(f" {shutdown}")
-                config.append(f" {natInside}")
-                config.append(f" {natOutside}")
-                config.append(f" channel-group {channelGroup['channelID']} mode {channelGroup['channelMode']}\n")
-                config.append("!\n")
-        if len(self.portChannels) > 0:
-            for portChannel in self.portChannels:
-                config.append(f"interface Port-channel {portChannel['channelID']}\n")
-                config.append(f" ip address {portChannel['channelIP']} {portChannel['channelSM']}\n")
-                config.append("!\n")
-        return config 
+        config.append(f"interface {self.interface}\n")
+        config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
+        config.append(f" description {self.description}\n")
+        config.append(f" {shutdown}")
+        config.append(f" {natInside}")
+        config.append(f" {natOutside}")
+        config.append("!\n")
+        # else:
+        #     for channelGroup in self.channelGroups:
+        #         config.append(f"interface {channelGroup['channelInterface']}\n")
+        #         # config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
+        #         config.append(f" description {self.description}\n")
+        #         config.append(f" {shutdown}")
+        #         config.append(f" {natInside}")
+        #         config.append(f" {natOutside}")
+        #         config.append(f" channel-protocol lacp\n")
+        #         config.append(f" channel-group {channelGroup['channelID']} mode {channelGroup['channelMode']}\n")
+        #         config.append("!\n")
+        # if len(self.portChannels) > 0:
+        #     for portChannel in self.portChannels:
+        #         config.append(f"interface Port-channel {portChannel['channelID']}\n")
+        #         config.append(f" ip address {portChannel['channelIP']} {portChannel['channelSM']}\n")
+        #         config.append("!\n")
+        # return config 
 #endregion
+
+etherchannel = Interface(interface="", ip="", sm="", ipNatInside=True, ipNatOutside=False, description="Test", shutdown=False, createChannelGroups="1,192.168.40.40,255.255.255.0;2,192.168.30.30,255.255.255.0", assignChannelGroups="Ethernet0/0,1,active;Ethernet0/1,2,active")
+# Rufen Sie die toConfig Methode auf und speichern Sie das Ergebnis
+config = etherchannel.toConfig()
+
+# Drucken Sie das Ergebnis
+for line in config:
+    print(line)
+
 #region StaticRoute
 
 # Define a class to manage static routing configurations
