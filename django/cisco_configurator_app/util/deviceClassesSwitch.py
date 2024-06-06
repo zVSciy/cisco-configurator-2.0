@@ -108,7 +108,7 @@ class SwitchInterface:
         #! NOT WORKING YET - NEED TO IMPLEMENT
             #^ only working for itself
         if len (self.vlans) == 0 and len(self.channelGroups) == 0:
-            config.append(f'interface vlan{self.vlanInt}\n')
+            config.append(f'interface {self.vlanInt}\n')
             config.append(f' ip address {self.ip} {self.sm}\n')
             config.append(f' description {self.description}\n')
             config.append(shutdown)
