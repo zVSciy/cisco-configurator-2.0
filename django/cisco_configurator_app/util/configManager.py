@@ -60,8 +60,8 @@ class ConfigManager:
     #! Note the interfaceName should be the name of the interface without the "interface" keyword -> "FastEthernet0/1" instead of "interface FastEthernet0/1"
     def getInterface(self, interfaceName: str) -> Interface:
         """
-        Returns an Interface object based on the interface name.
-        It searches for the interface name in the config file and returns the object
+        Returns an Interface object based on the interface name.\n
+        It searches for the interface name in the config file and returns the object\n
         """
         InterfaceLines = self.configEditor.findContentIndexes("interface " + interfaceName, "!") #Finds the indexes of the interface in the config list
         if len(InterfaceLines) == 0:
@@ -108,8 +108,8 @@ class ConfigManager:
     # returns a list of all Interfaces in the config file
     def getAllInterfaces(self) -> list[Interface]:
         """
-        Returns a list of all Interface objects in the config file
-        It searches for the "interface" keyword and reads the configuration of each interface
+        Returns a list of all Interface objects in the config file\n
+        It searches for the "interface" keyword and reads the configuration of each interface\n
         """
         InterfacesLines = self.configEditor.findMultipleContentIndexes("interface ")
         returnInterfaceObjects = []
@@ -125,8 +125,8 @@ class ConfigManager:
     # If a interface with the same name is detected, it will replace it, if no interface is found, it will add a new interface to the end of the file
     def writeInterface(self, interface: Interface) -> None:
         """
-        Writes the interface object to the config file
-        If a interface with the same name is detected, it will replace it, if no interface is found, it will add a new interface to the end of the file
+        Writes the interface object to the config file\n
+        If a interface with the same name is detected, it will replace it, if no interface is found, it will add a new interface to the end of the file\n
         """
         interfaceLines = self.configEditor.findContentIndexes("interface " + interface.interface, "!")
         if(len(interfaceLines) > 0 and interfaceLines != None):
@@ -140,8 +140,8 @@ class ConfigManager:
     # returns a StaticRoute object with all the static routes in the config file
     def getStaticRoutes(self) -> StaticRoute:
         """
-        returns a StaticRoute object with all the static routes in the config file
-        It searches for the "ip route" keyword and reads the configuration of each static route
+        returns a StaticRoute object with all the static routes in the config file\n
+        It searches for the "ip route" keyword and reads the configuration of each static route\n
         """
         staticRoutesLines = self.configEditor.findContentIndexes("ip route ")
         if len(staticRoutesLines) == 0:
@@ -163,8 +163,8 @@ class ConfigManager:
     # Replaces all current static routes with the ones inside the staticRoutes object
     def writeStaticRoutes(self, staticRoutes: StaticRoute) -> None:
         """
-        Writes the static routes to the config file
-        Replaces all current static routes with the ones inside the staticRoutes object
+        Writes the static routes to the config file\n
+        Replaces all current static routes with the ones inside the staticRoutes object\n
         """
         staticRouteLines = self.configEditor.findContentIndexes("ip route ")
         if len(staticRouteLines) > 0: 
@@ -179,8 +179,8 @@ class ConfigManager:
     # It searches for the "router rip" keyword and reads the configuration
     def getRIPConfig(self) -> RipRouting:
         """"
-        Returns a RipRouting object with the RIP configuration in the config file
-        It searches for the "router rip" keyword and reads the configuration
+        Returns a RipRouting object with the RIP configuration in the config file\n
+        It searches for the "router rip" keyword and reads the configuration\n
         """
         ripLines = self.configEditor.findContentIndexes("router rip", "!")
         if len(ripLines) == 0:
@@ -211,8 +211,8 @@ class ConfigManager:
     # Replaces the current RIP configuration with the one in the ripConfig object
     def writeRIPConfig(self, ripConfig: RipRouting) -> None:
         """
-        Writes the RIP configuration to the config file
-        Replaces the current RIP configuration with the one in the ripConfig object
+        Writes the RIP configuration to the config file\n
+        Replaces the current RIP configuration with the one in the ripConfig object\n
         """
         ripLines = self.configEditor.findContentIndexes("router rip", "!")
         if(len(ripLines) > 0):
@@ -228,8 +228,8 @@ class ConfigManager:
     # Also searches for excluded addresses and adds them to the DHCP object, because they are in a seperate part of the configuration
     def getDhcpConfig(self, inputPoolName: str ) -> DHCP:
         """
-        Returns a DHCP object with the DHCP configuration in the config file
-        Also searches for excluded addresses and adds them to the DHCP object, because they are in a seperate part of the configuration
+        Returns a DHCP object with the DHCP configuration in the config file\n
+        Also searches for excluded addresses and adds them to the DHCP object, because they are in a seperate part of the configuration\n
         """
         dhcpLines = self.configEditor.findContentIndexes(f"ip dhcp pool {inputPoolName}", "!")
         if len(dhcpLines) == 0:
@@ -266,7 +266,7 @@ class ConfigManager:
     # Writes the DHCP configuration to the config file
     def writeDhcpConfig(self, dhcpConfig: DHCP) -> None:
         """
-        Writes the DHCP configuration to the config file
+        Writes the DHCP configuration to the config file\n
         """
         #get the dhcp lines
         dhcpLines = self.configEditor.findContentIndexes(f"ip dhcp pool {dhcpConfig.dhcpPoolName}", "!")
@@ -287,7 +287,7 @@ class ConfigManager:
 
     def getACLConfig(self) -> ACLStandard:
         """
-        Returns an ACLStandard object with the ACL configuration in the config file
+        Returns an ACLStandard object with the ACL configuration in the config file\n
         """
         aclLines = self.configEditor.findContentIndexes("access-list ", "!")
         if len(aclLines) == 0:
@@ -315,7 +315,7 @@ class ConfigManager:
     # Writes the ACL configuration to the config file
     def writeACLConfig(self, aclConfig: ACLStandard) -> None:
         """
-        Writes the ACL configuration to the config file
+        Writes the ACL configuration to the config file\n
         """
         aclLines = self.configEditor.findContentIndexes("access-list ", "!")
         if(len(aclLines) > 0):
@@ -323,13 +323,14 @@ class ConfigManager:
         self.configEditor.appendContentToFile(aclConfig.toConfig())
         self.configEditor.writeConfig()
 
+    #endregion
 
     #region NAT
 
     # Returns a NAT object with the NAT configuration in the config file
     def getNATConfig(self) -> NAT:
         """
-        Returns a NAT object with the NAT configuration in the config file
+        Returns a NAT object with the NAT configuration in the config file\n
         """
         natLines = self.configEditor.findContentIndexes("ip nat inside ", "!")
         if len(natLines) == 0:
@@ -345,7 +346,7 @@ class ConfigManager:
     # Writes the NAT configuration to the config file
     def writeNATConfig(self, natConfig: NAT) -> None:
         """
-        Writes the NAT configuration to the config file
+        Writes the NAT configuration to the config file\n
         """
         natLines = self.configEditor.findContentIndexes("ip nat inside ", "!")
         if(len(natLines) > 0):
@@ -360,7 +361,7 @@ class ConfigManager:
     # returns a OSPF object that has the instanceID/processID from the input from the config file
     def getOSPFConfig(self, instanceName) -> OSPF:
         """
-        Returns a OSPF object that has the instanceID/processID from the input from the config file
+        Returns a OSPF object that has the instanceID/processID from the input from the config file\n
         """
         ospfLines = self.configEditor.findContentIndexes(f"router ospf {instanceName}", "!")
         if len(ospfLines) == 0:
@@ -396,7 +397,7 @@ class ConfigManager:
 
     def getAllOSPFConfig(self) -> list[OSPF]:
         """
-        Returns a list of OSPF objects with the OSPF configuration in the config file
+        Returns a list of OSPF objects with the OSPF configuration in the config file\n
         """
         ospfInstancesLines = self.configEditor.findMultipleContentIndexes("router ospf ")
         returnOspfObjects = []
@@ -409,7 +410,7 @@ class ConfigManager:
     #writes the OSPF config to the config file, replaces the OSPF configuration with the same processID
     def writeOSPFConfig(self, ospfConfig: OSPF) -> None:
         """
-        Writes the OSPF config to the config file, replaces the OSPF configuration with the same processID
+        Writes the OSPF config to the config file, replaces the OSPF configuration with the same processID\n
         """
         ospfLines = self.configEditor.findContentIndexes(f"router ospf {ospfConfig.ospfProcess}", "!")
         #check fi ospfLines is not empty, if it is, remove the content between the indexes
@@ -420,15 +421,13 @@ class ConfigManager:
 
     #endregion
 
-
-
     #region ExtendedACL
 
     def getExtendedACLConfig(self, aclName) -> ACLExtended:
         """
-        Returns a ACLExtended object with the ACL configuration in the config file
-        It searches for the "ip access-list extended" keyword and reads the configuration
-        It only returns the value of the ACL with the selected name
+        Returns a ACLExtended object with the ACL configuration in the config file\n
+        It searches for the "ip access-list extended" keyword and reads the configuration\n
+        It only returns the value of the ACL with the selected name\n
         """
         aclLines = self.configEditor.findContentIndexes(f"ip access-list extended {aclName}", "!")
         if len(aclLines) == 0:
@@ -448,8 +447,8 @@ class ConfigManager:
     
     def getAllACLConfig(self) -> list[ACLExtended]:
         """
-        Returns a list of ACLExtended objects with the ACL configuration in the config file
-        It searches for the "ip access-list extended" keyword, and then loops over the found ACLs and reads the configuration
+        Returns a list of ACLExtended objects with the ACL configuration in the config file\n
+        It searches for the "ip access-list extended" keyword, and then loops over the found ACLs and reads the configuration\n
         """
         aclLines = self.configEditor.findMultipleContentIndexes("ip access-list extended", "!")
         returnACLObjects = []
@@ -462,8 +461,8 @@ class ConfigManager:
     
     def writeExtendedACLConfig(self, aclConfig: ACLExtended) -> None:
         """
-        Writes the aclConfig to the config file
-        If no acl with the same name was found, it creates a new one, if one was found, it replaces the old one
+        Writes the aclConfig to the config file\n
+        If no acl with the same name was found, it creates a new one, if one was found, it replaces the old one\n
         """
         aclLines = self.configEditor.findContentIndexes(f"ip access-list extended {aclConfig.aclRuleName}", "!")
         #^ ip access-list extended test2
@@ -475,11 +474,12 @@ class ConfigManager:
 
     #endregion
 
-
     #region swBasic
     def getSwitchDeviceInfo(self) -> SwitchDeviceInfo:
         self.configEditor.readFile()
-        """Returns a DeviceInfo object with the hostname and motd configuration in the config file"""
+        """
+        Returns a DeviceInfo object with the hostname and motd configuration in the config file\n
+        """
 
         hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
         motdLine = self.configEditor.findContentIndexes("banner motd", "!")
@@ -499,7 +499,9 @@ class ConfigManager:
         return DeviceInfo(hostName, motd)
     
     def writeSwitchDeviceInfo(self, deviceInfo: SwitchDeviceInfo) -> None:
-        """Writes the hostname and motd configuration from DeviceInfo to the config file"""
+        """
+        Writes the hostname and motd configuration from DeviceInfo to the config file\n
+        """
         hostNameLine = self.configEditor.findContentIndexes("hostname ", "!")
         if(len(hostNameLine) > 0):
             self.configEditor.removeContentBetweenIndexes(hostNameLine[0], hostNameLine[-1])
@@ -513,8 +515,8 @@ class ConfigManager:
     #region swInterface
     def getSwitchInterface(self, interfaceName: str) -> SwitchInterface:
         """
-        Returns an Interface object based on the interface name.
-        It searches for the interface name in the config file and returns the object
+        Returns an Interface object based on the interface name.\n
+        It searches for the interface name in the config file and returns the object\n
         """
         InterfaceLines = self.configEditor.findContentIndexes("interface " + interfaceName, "!")
         if len(InterfaceLines) == 0:
@@ -575,11 +577,69 @@ class ConfigManager:
 
             return SwitchInterface(intName, ip, sm, desc, shutdown, vlans, channelGroups)
 
-        #! Write Switch interface
-        #! Get all Switch Etehernet Interfaces
-        #! Get all Portchannels
-        #! Get all Vlans
-        #! Get ALL Switch Intefaces
+    def writeSwitchInterface(self, interface: SwitchInterface) -> None:
+        """
+        Writes the interface object to the config file\n
+        """
+        interfaceLines = self.configEditor.findContentIndexes("interface " + interface.interface, "!")
+        if(len(interfaceLines) > 0 and interfaceLines != None):
+            self.configEditor.removeContentBetweenIndexes(interfaceLines[0], interfaceLines[-1])
+        self.configEditor.appendContentToFile(interface.toConfig())
+        self.configEditor.writeConfig()
+
+    def getAllSwitchInterfaces(self) -> list[SwitchInterface]:
+        """
+        Returns a list of all Interface objects in the config file\n
+        It searches for the "interface" keyword and reads the configuration of each interface\n
+        """
+        InterfacesLines = self.configEditor.findMultipleContentIndexes("interface ")
+        returnInterfaceObjects = []
+        for interfaceIndexes in InterfacesLines:
+            interfaceText = self.configEditor.getContentOnIndex(interfaceIndexes[0])
+            intName = interfaceText.split(" ")[1]
+            returnInterfaceObjects.append(self.getSwitchInterface(intName))
+        return returnInterfaceObjects
+    
+    def getAllPortchannelInterfaces(self) -> list[SwitchInterface]:
+        """
+        Returns a list of all Interface objects in the config file\n
+        It searches for the "interface Port-channel" keyword and reads the configuration of each interface\n
+        """
+        InterfacesLines = self.configEditor.findMultipleContentIndexes("interface Port-channel")
+        returnInterfaceObjects = []
+        for interfaceIndexes in InterfacesLines:
+            interfaceText = self.configEditor.getContentOnIndex(interfaceIndexes[0])
+            intName = interfaceText.split(" ")[1]
+            returnInterfaceObjects.append(self.getSwitchInterface(intName))
+        return returnInterfaceObjects
+    
+    def getAllVlanInterfaces(self) -> list[SwitchInterface]:
+        """
+        Returns a list of all Vlan Interface objects in the config file\n
+        It searches for the "interface Vlan" keyword and reads the configuration of each interface\n
+        """
+        InterfacesLines = self.configEditor.findMultipleContentIndexes("interface Vlan")
+        returnInterfaceObjects = []
+        for interfaceIndexes in InterfacesLines:
+            interfaceText = self.configEditor.getContentOnIndex(interfaceIndexes[0])
+            intName = interfaceText.split(" ")[1]
+            returnInterfaceObjects.append(self.getSwitchInterface(intName))
+        return returnInterfaceObjects
+    
+    def getSwitchEthernetInterfaces(self) -> list[SwitchInterface]:
+        """
+        Returns a list of all Ethernet Interface objects in the config file\n
+        It searches for the "interface Ethernet" keyword and reads the configuration of each interface\n
+        """
+        InterfacesLines = self.configEditor.findMultipleContentIndexes("interface Ethernet")
+        returnInterfaceObjects = []
+        for interfaceIndexes in InterfacesLines:
+            interfaceText = self.configEditor.getContentOnIndex(interfaceIndexes[0])
+            intName = interfaceText.split(" ")[1]
+            returnInterfaceObjects.append(self.getSwitchInterface(intName))
+        return returnInterfaceObjects
+
+
 
     #endregion
 
