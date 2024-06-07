@@ -318,6 +318,7 @@ def checkBasicACLs(acls):
     splitted_acls = acls.split(';')
     if splitted_acls[-1] == '':
         splitted_acls.pop()
+    splitted_acls = list(dict.fromkeys(splitted_acls)) # removing duplicates
     for acl in splitted_acls:
         acl = acl.split(',')
         if len(acl) != 4:

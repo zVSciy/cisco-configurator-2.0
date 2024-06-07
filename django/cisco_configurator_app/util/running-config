@@ -52,17 +52,7 @@ archive
 !
 !
 !
-interface FastEthernet0/0
- no ip address
- shutdown
- duplex auto
- speed auto
 !
-interface FastEthernet0/1
- no ip address
- shutdown
- duplex auto
- speed auto
 !
 ip forward-protocol nd
 !
@@ -95,5 +85,26 @@ line con 0
 line aux 0
 line vty 0 4
 !
+!
+ !
+!
+!
+!
+interface FastEthernet0/0
+ ip address  
+ description Default
+ shutdown
+  ip nat outside
+!
+interface FastEthernet0/1
+ ip address  
+ description Default
+ shutdown
+ ip nat inside
+ !
+ip nat inside source list 99 interface FastEthernet0/0 overload
+!
+access-list 99 permit 1.1.1.1 0.0.0.0
+access-list 99 permit 2.2.2.2 0.0.0.255
 !
 end

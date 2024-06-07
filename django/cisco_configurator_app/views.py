@@ -497,20 +497,22 @@ def get_inputs(request, device_type, config_mode):
 
         for i in current_interfaces:
             if i.interface == checkNATinterfaces(nat_ingoing, nat_outgoing)[0]:
+                i.ipNatOutside = False
                 i.ipNatInside = True
             if i.interface == checkNATinterfaces(nat_ingoing, nat_outgoing)[1]:
+                i.ipNatInside = False
                 i.ipNatOutside = True
             cm.writeInterface(i)
 
         config_objects[5].interface = checkNATinterfaces(nat_ingoing, nat_outgoing)[1]
-        config_objects[5].accessList = '1'
+        config_objects[5].accessList = '99'
         cm.writeNATConfig(config_objects[5])
 
         current_acls = cm.getACLConfig()
 
         to_remove = []
         for i, acl in enumerate(current_acls.ACLs):
-            if acl.get("id") == '1':
+            if acl.get("id") == '99':
                 to_remove.append(i)
         for index in reversed(to_remove):
             del current_acls.ACLs[index]
@@ -519,7 +521,7 @@ def get_inputs(request, device_type, config_mode):
         for i, network in enumerate(nat_acl_networks):
             if len(network) == 0:
                 continue
-            nat_acl_networks[i] = '1,permit,' + network
+            nat_acl_networks[i] = '99,permit,' + network
         nat_acl_networks = ';'.join(nat_acl_networks)
 
         current_acls.getACLs(nat_acl_networks) # adding acls to ACLs list
@@ -623,9 +625,7 @@ def get_inputs(request, device_type, config_mode):
     else:
         return redirect('index_route')
 
-
-
-
+# creating duplicates of items in a list
 def ensure_twice(lst):
     from collections import Counter
     
