@@ -331,6 +331,7 @@ def create_objects(cm):
         cm.getACLConfig(),
         cm.getAllOSPFConfig(),
         cm.getAllACLConfig(),
+        cm.getSwitchDeviceInfo(),
     ]
 
 # region get inputs
@@ -602,6 +603,25 @@ def get_inputs(request, device_type, config_mode):
             cm.writeExtendedACLConfig(ACLExtended(newACLs[id], id))
 
 ########################################################################
+
+#region SWITCH: basic config
+
+    if device_type == 'switch':
+
+        #switch basic config
+        switch_hostname = request.POST.get('hidden_hostname')
+        switch_banner = request.POST.get('hidden_banner')
+
+        #check values
+        if '' not in (checkHostname(switch_hostname), checkBanner(switch_banner)):
+
+            config_objects[9].hostname = checkHostname(switch_hostname)
+            config_objects[9].motd = checkBanner(switch_banner)
+            cm.writeSwitchDeviceInfo(config_objects[9])
+
+########################################################################
+
+#region SWITCH: etherchannel
 
 ########################################################################
 
