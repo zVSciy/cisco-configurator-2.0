@@ -329,6 +329,7 @@ def create_objects(cm):
         cm.getNATConfig(),
         cm.getACLConfig(),
         cm.getAllOSPFConfig(),
+        cm.getAllACLConfig(),
     ]
 
 # region get inputs
@@ -552,11 +553,50 @@ def get_inputs(request, device_type, config_mode):
 
 #region basic acl inputs
 
+    # basic acl
+    basic_acl_config = request.POST.get('hidden_basic_acl_info_for_transfer')
+
+    if checkBasicACLs(basic_acl_config) != '':
+        acl = config_objects[6]
+        acl.ACLs = []
+        acl.getACLs(checkBasicACLs(basic_acl_config))
+        cm.writeACLConfig(acl)
 
 ########################################################################
 
 #region extended acl inputs
 
+    # extended acl
+    extended_acl_config = request.POST.get('hidden_extended_acl_info_for_transfer')
+
+    if checkExtendedACLs(extended_acl_config) != '':
+        extended_acl_config_splitted = ensure_twice(extended_acl_config.split(';')[:-1])
+        extended_acl_config_splitted_with_protocol = []
+
+        # adding tcp and udp parameters
+        change = 1
+        for i in extended_acl_config_splitted:
+            i = i.split(',')
+            if change == 1:
+                i.insert(1, 'tcp')
+            else:
+                i.insert(1, 'udp')
+            change *= -1
+            extended_acl_config_splitted_with_protocol.append(i)
+
+        # structuring acls with ids
+        newACLs = {}
+        for i in extended_acl_config_splitted_with_protocol:
+            if i[0] not in newACLs:
+                rule = i[1:]
+                newACLs[i[0]] = ','.join(rule)
+            else:
+                rule = i[1:]
+                newACLs[i[0]] = newACLs[i[0]] + ';' + ','.join(rule)
+
+        # adding acls to config file
+        for id in newACLs:
+            cm.writeExtendedACLConfig(ACLExtended(newACLs[id], id))
 
 ########################################################################
 
@@ -582,3 +622,20 @@ def get_inputs(request, device_type, config_mode):
         return redirect(reverse(forward_to + '_route', kwargs={'device_type': device_type, 'config_mode': config_mode}))
     else:
         return redirect('index_route')
+
+
+
+
+def ensure_twice(lst):
+    from collections import Counter
+    
+    # Count the frequency of each element in the list
+    counts = Counter(lst)
+    
+    # Create a result list with elements appearing twice
+    result = lst.copy()
+    for elem, count in counts.items():
+        if count == 1:
+            result.append(elem)
+    
+    return result

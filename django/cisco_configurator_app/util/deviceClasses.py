@@ -479,7 +479,7 @@ class ACLExtended:
             ACLs = aclList.split(";")
             for ACL in ACLs:
                 if ACL:
-                    permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, port = ACL.split(",")
+                    protocol, permitDeny, sourceIP, sourceWM, destIP, destWM, port = ACL.split(",")
                     self.aclList.append({'permitDeny': permitDeny, 'protocol': protocol, 'sourceIP': sourceIP, 'sourceWM': sourceWM, 'destIP': destIP, 'destWM': destWM, 'port': port})
         return self.aclList
     

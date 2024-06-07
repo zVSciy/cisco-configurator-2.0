@@ -73,7 +73,7 @@ def checkStaticRoutes(routes):
         splitted_routes.pop()
     for route in splitted_routes:
         route = route.split(',')
-        if len(routes) != 3:
+        if len(route) != 3:
             validation = False
             break
         targetNW = route[0]
@@ -298,4 +298,61 @@ def checkOSPFnetworks(networks):
             validation = False
     if validation:
         return networks_str
+    else: return ''
+
+########################################################################
+
+#region BASIC ACL
+
+def checkBasicACLs(acls):
+    if type(acls) != str or acls == '':
+        return ''
+    validation = True
+    acls_str = acls
+    splitted_acls = acls.split(';')
+    if splitted_acls[-1] == '':
+        splitted_acls.pop()
+    for acl in splitted_acls:
+        acl = acl.split(',')
+        if len(acl) != 4:
+            validation = False
+            break
+        acl_id = acl[0]
+        acl_decision = acl[1]
+        acl_ip = acl[2]
+        acl_sm = acl[3]
+        if not acl_id.isdigit() or not acl_decision in ('permit', 'deny') or not re.match(ip_pattern, acl_ip) or not re.match(sm_pattern, acl_sm):
+            validation = False
+    if validation:
+        return acls_str
+    else: return ''
+
+########################################################################
+
+#region EXTENDED ACL
+
+def checkExtendedACLs(acls):
+    if type(acls) != str or acls == '':
+        return ''
+    validation = True
+    acls_str = acls
+    splitted_acls = acls.split(';')
+    if splitted_acls[-1] == '':
+        splitted_acls.pop()
+    for acl in splitted_acls:
+        acl = acl.split(',')
+        if len(acl) != 7:
+            validation = False
+            break
+        acl_id = acl[0]
+        acl_decision = acl[1]
+        acl_source_ip = acl[2]
+        acl_source_wm = acl[3]
+        acl_dest_ip = acl[4]
+        acl_dest_wm = acl[5]
+        acl_port = acl[6]
+        if not acl_id.isdigit() or not acl_decision in ('permit', 'deny') or not re.match(ip_pattern, acl_source_ip) or not re.match(sm_pattern, acl_source_wm) or not re.match(ip_pattern, acl_dest_ip) or not re.match(sm_pattern, acl_dest_wm) or not int(acl_port) >= 1 or not int(acl_port) <= 65535:
+            validation = False
+    if validation:
+        return acls_str
     else: return ''
