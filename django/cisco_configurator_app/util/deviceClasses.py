@@ -33,7 +33,7 @@ class DeviceInfo:
 # Define a class to store interface information
 class Interface:
     # Initialize the class with various parameters
-    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = "Default", shutdown:bool = None , createChannelGroups:str = None, assignChannelGroups:str = None ) -> None:
+    def __init__(self, interface:str = None, ip:str = None, sm:str = None, ipNatInside:bool = None, ipNatOutside:bool = None, description:str = "Default", shutdown:bool = None) -> None:
         # Check if the interface is a string and store it
         if type(interface) == str:
             self.interface = interface
@@ -78,13 +78,13 @@ class Interface:
         else:
             raise TypeError()
         
-        self.portChannels = []
-        if type(createChannelGroups) == str:
-            self.getCreateChannelGroups(createChannelGroups)
+        # self.portChannels = []
+        # if type(createChannelGroups) == str:
+        #     self.getCreateChannelGroups(createChannelGroups)
         
-        self.channelGroups = []
-        if type(assignChannelGroups) == str:
-            self.getAssignChannelGroups(assignChannelGroups)
+        # self.channelGroups = []
+        # if type(assignChannelGroups) == str:
+        #     self.getAssignChannelGroups(assignChannelGroups)
 
         
     # def getCreateChannelGroups(self, createChannelGroups:str) -> list:
@@ -148,13 +148,13 @@ class Interface:
         # return config 
 #endregion
 
-etherchannel = Interface(interface="", ip="", sm="", ipNatInside=True, ipNatOutside=False, description="Test", shutdown=False, createChannelGroups="1,192.168.40.40,255.255.255.0;2,192.168.30.30,255.255.255.0", assignChannelGroups="Ethernet0/0,1,active;Ethernet0/1,2,active")
-# Rufen Sie die toConfig Methode auf und speichern Sie das Ergebnis
-config = etherchannel.toConfig()
+# etherchannel = Interface(interface="", ip="", sm="", ipNatInside=True, ipNatOutside=False, description="Test", shutdown=False, createChannelGroups="1,192.168.40.40,255.255.255.0;2,192.168.30.30,255.255.255.0", assignChannelGroups="Ethernet0/0,1,active;Ethernet0/1,2,active")
+# # Rufen Sie die toConfig Methode auf und speichern Sie das Ergebnis
+# config = etherchannel.toConfig()
 
 # Drucken Sie das Ergebnis
-for line in config:
-    print(line)
+# for line in config:
+#     print(line)
 
 #region StaticRoute
 
