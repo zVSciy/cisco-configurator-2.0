@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "npx tailwindcss -i cisco_configurator_app/static/src/input.css -o cisco_configurator_app/static/src/styles.css --watch"
+    "dev": "npx tailwindcss -i cisco_configurator_app/static/src/input.css -o cisco_configurator_app/static/src/styles.css --watch",
+    "bun-dev": "bunx tailwindcss -i cisco_configurator_app/static/src/input.css -o cisco_configurator_app/static/src/styles.css --watch"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
