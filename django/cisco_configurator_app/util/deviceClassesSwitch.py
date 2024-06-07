@@ -3,7 +3,7 @@ import json
 #region Device
 
 # Define a class to store device information
-class DeviceInfo:
+class SwitchDeviceInfo:
     # Initialize the class with hostname and motd (Message of the Day)
     def __init__(self, hostname:str = None, motd:str = "Cisco Troll") -> None:
         # Check if the hostname is a string and store it
@@ -32,18 +32,18 @@ class DeviceInfo:
 #region Interface
 
 # Define a class to store interface information
-class Interface:
+class SwitchInterface:
     # Initialize the class with various parameters
-    def __init__(self, vlanInt:str = None, ip:str = None, sm:str = None, description:str = "Default", shutdown:bool = None, vlans:str = None, createChannelGroups:str = None, assignChannelGroups:str = None) -> None:
+    def __init__(self, vlanInt:str = None, ip:str = None, sm:str = None, description:str = "Default", shutdown:bool = None, vlans:str = None, assignChannelGroups:str = None) -> None:
         # Check if the interface is a string and store it
         if type(vlanInt) == str:
             self.vlanInt = vlanInt
         else:
             raise TypeError()
         
+        self.vlans = []
         if type(vlans) == str:
-            self.vlans = []
-            self.vlans = self.getVLANs(vlans)
+            self.getVLANs(vlans)
         else:
             raise TypeError()
 
@@ -72,44 +72,30 @@ class Interface:
             self.shutdown = shutdown
         else:
             raise TypeError()
-        if type(createChannelGroups) == str:
-            self.portChannels = []
-            self.getCreateChannelGroups(createChannelGroups)
         
+        self.channelGroups = []
         if type(assignChannelGroups) == str:
-            self.channelGroups = []
             self.getAssignChannelGroups(assignChannelGroups)
+
        
-    #^ Interface,trunk,native_vlan,allowed_vlan:allowed_vlan;
+    #^ vlanMode,vlanNative,vlanAllowed:vlanAllowed:vlanAllowed
     def getVLANs(self, vlans:str) -> list:
-        if vlans:
-            vlans = vlans.split(';')
-            for vlan in vlans:
-                if vlan:
-                    interfaceID, mode, nativeVLAN, allowedVLANs = vlan.split(',')
-                    # Split allowedVLANs by ':'
-                    allowedVLANs = allowedVLANs.split(':')
-                    self.vlans.append({"interfaceID" : interfaceID, "mode" : mode, "nativeVLAN" : nativeVLAN, "allowedVLANs" : allowedVLANs})
-        return self.vlans
-    
-    def getCreateChannelGroups(self, createChannelGroups:str) -> list:
-        if createChannelGroups:
-            portChannels = createChannelGroups.split(';')
-            for portChannel in portChannels:
-                if portChannel:
-                    channelID, channelIP, channelSM = portChannel.split(',')
-                    self.portChannels.append({'channelID': channelID, 'channelIP': channelIP, 'channelSM': channelSM})
-        return self.portChannels
+        if vlans: 
+            mode, nativeVLAN, allowedVLANs = vlans.split(',')
+            # Split allowedVLANs by ':'
+            self.vlanAllowed = allowedVLANs.split(':')
+            self.vlanNative = nativeVLAN
+            self.vlanMode = mode
+            self.vlans.append(1)
 
 
+    #^ channelMode,channeldID
     def getAssignChannelGroups(self, assignChannelGroups:str) -> list:
         if assignChannelGroups:
-            channelGroups = assignChannelGroups.split(';')
-            for channelGroup in channelGroups:
-              if channelGroup:
-                channelInterface, channelID, channelMode = channelGroup.split(',')
-                self.channelGroups.append({'channelInterface': channelInterface, 'channelID': channelID, 'channelMode': channelMode})
-        return self.channelGroups 
+            mode, channelID = assignChannelGroups.split(',')
+            self.channelMode = mode
+            self.channelID = channelID
+            self.channelGroups.append(1)
 
     # Define the string representation of the class
     def __repr__(self) -> str:
@@ -121,65 +107,52 @@ class Interface:
         config = []
         #! NOT WORKING YET - NEED TO IMPLEMENT
             #^ only working for itself
-
-        if len(self.vlans) < 0 & len(self.channelGroups) < 0:
-            config.append(f"interface {self.interface}\n")
-            config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
+        if len (self.vlans) == 0 and len(self.channelGroups) == 0:
+            config.append(f'interface {self.vlanInt}\n')
+            config.append(f' ip address {self.ip} {self.sm}\n')
+            config.append(f' description {self.description}\n')
+            config.append(shutdown)
+            config.append('!\n')
+            return config
+        
+        elif len (self.vlans) > 0 and len(self.channelGroups) == 0:
+            config.append(f"interface {self.vlanInt}\n")
+            config.append(f" switchport mode {self.vlanMode}\n")
+            config.append(f" switchport {self.vlanMode} native vlan {self.vlanNative}\n")
+            config.append(f" switchport {self.vlanMode} allowed vlan {self.vlanAllowed}\n")
             config.append(f" description {self.description}\n")
-            config.append(f" {shutdown}")
-            config.append("!\n")
+            config.append(shutdown)
+            config.append('!\n')
 
-        else:
-            for vlan in self.vlans:
-                print(vlan)
-                config.append(f"interface {vlan['interfaceID']}\n")
-                config.append(f" switchport mode {vlan['mode']}\n")
-                config.append(f" switchport trunk native vlan {vlan['nativeVLAN']}\n")
-                config.append(f" switchport trunk allowed vlan {vlan['allowedVLANs']}\n")
-                config.append(f" switchport {vlan['mode']} encapsulation dot1q\n")
-                config.append(f" {shutdown}")
-                config.append(f" description {self.description}\n")
-                config.append("!\n")
+        elif len (self.vlans) == 0 and len(self.channelGroups) > 0:
+            config.append(f'interface {self.vlanInt}\n')
+            config.append(f' channel-group {self.channelID} mode {self.channelMode}\n')
+            config.append(f' description {self.description}\n')
+            config.append(shutdown)
 
-        if len(self.vlans) < 0 & len(self.channelGroups) > 0:
-            for channelGroup in self.channelGroups:
-                config.append(f"interface {channelGroup['channelInterface']}\n")
-                config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
-                config.append(f" description {self.description}\n")
-                config.append(f" {shutdown}")
-                config.append(f" channel-group {channelGroup['channelID']} mode {channelGroup['channelMode']}\n")
-                config.append("!\n")
-        else:
-            for channelGroup in self.channelGroups:
-                config.append(f"interface {channelGroup['channelInterface']}\n")
-                config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
-                config.append(f" description {self.description}\n")
-                config.append(f" channel-group {channelGroup['channelID']} mode {channelGroup['channelMode']}\n")
-                config.append(f" switchport mode {vlan['mode']}\n")
-                config.append(f" switchport trunk native vlan {vlan['nativeVLAN']}\n")
-                config.append(f" switchport trunk allowed vlan {vlan['allowedVLANs']}\n")
-                config.append(f" switchport {vlan['mode']} encapsulation dot1q\n")
-                config.append(f" {shutdown}")
-                config.append("!\n")
-
-        if len(self.portChannels) > 0:
-            for portChannel in self.portChannels:
-                config.append(f"interface Port-channel {portChannel['channelID']}\n")
-                config.append(f" ip address {portChannel['channelIP']} {portChannel['channelSM']}\n")
-                config.append("!\n")
-
-        return config 
-
-#~ Testing vlan Config
-# vlanINT = Interface(vlanInt='10', ip='192.168.30.100', sm='255.255.255.0', description='TestTest', shutdown=True, vlans='5,trunk,1,10:20:30;15,access,1,10:20:30;')
-# config = vlanINT.toConfig()
-# for line in config:
-#     print(line)
-
-#endregion
+        elif len (self.vlans) > 0 and len(self.channelGroups) > 0 and self.vlanMode == 'trunk':
+            config.append(f"interface {self.vlanInt}\n")
+            config.append(f" switchport mode {self.vlanMode}\n")
+            config.append(f" switchport {self.vlanMode} native vlan {self.vlanNative}\n")
+            config.append(f" switchport {self.vlanMode} allowed vlan {self.vlanAllowed}\n")
+            config.append(f" channel-group {self.channelID} mode {self.channelMode}\n")
+            config.append(f" description {self.description}\n")
+            config.append(shutdown)
+            config.append('!\n')
+        
+        elif len (self.vlans) > 0 and len(self.channelGroups) > 0 and self.vlanMode == 'access':
+            config.append(f"interface {self.vlanInt}\n")
+            config.append(f" switchport mode {self.vlanMode}\n")
+            config.append(f" switchport {self.vlanMode} vlan {self.vlanAllowed}\n")
+            config.append(f" channel-group {self.channelID} mode {self.channelMode}\n")
+            config.append(f" description {self.description}\n")
+            config.append(shutdown)
+            config.append('!\n')
+        return config
+    
 #region VLAN
 
-class CreateVLANs:
+class SwitchCreateVLANs:
     def __init__(self, vlans:str = None) -> None:
         if type(vlans) == str:
             self.vlans = vlans
