@@ -145,7 +145,7 @@ class Interface:
         #         config.append(f"interface Port-channel {portChannel['channelID']}\n")
         #         config.append(f" ip address {portChannel['channelIP']} {portChannel['channelSM']}\n")
         #         config.append("!\n")
-        # return config 
+        return config 
 #endregion
 
 # etherchannel = Interface(interface="", ip="", sm="", ipNatInside=True, ipNatOutside=False, description="Test", shutdown=False, createChannelGroups="1,192.168.40.40,255.255.255.0;2,192.168.30.30,255.255.255.0", assignChannelGroups="Ethernet0/0,1,active;Ethernet0/1,2,active")
