@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from .util.configManager import ConfigManager
 from .util.deviceClasses import *
+from .util.deviceClassesSwitch import *
 from .util.fileManager import *
 from .util.inputChecks import *
 import os
@@ -599,6 +600,8 @@ def get_inputs(request, device_type, config_mode):
         # adding acls to config file
         for id in newACLs:
             cm.writeExtendedACLConfig(ACLExtended(newACLs[id], id))
+
+########################################################################
 
 ########################################################################
 
