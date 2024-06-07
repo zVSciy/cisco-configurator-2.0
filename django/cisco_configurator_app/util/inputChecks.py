@@ -59,6 +59,12 @@ def checkIntSM(sm):
         return ''
     else: return ''
 
+def checkIntIPconfiguration(ip, sm):
+    if (ip == 'dhcp' and sm == '') or '' not in (checkIntIP(ip), checkIntSM(sm)):
+        return [ip, sm]
+    else:
+        return ''
+
 ########################################################################
 
 #region STATIC ROUTING

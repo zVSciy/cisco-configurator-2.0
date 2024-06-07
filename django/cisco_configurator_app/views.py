@@ -390,14 +390,14 @@ def get_inputs(request, device_type, config_mode):
         interfaces_sm = request.POST.get('hidden_' + i.port_name + '_sm')
 
         #check values
-        if '' not in (checkIntShutdown(interfaces_shutdown), checkIntDescription(interfaces_description), checkIntIP(interfaces_ip), checkIntSM(interfaces_sm)):
+        if '' not in (checkIntShutdown(interfaces_shutdown), checkIntDescription(interfaces_description), checkIntIPconfiguration(interfaces_ip, interfaces_sm)):
 
             for j in config_objects[1]:
                 if j.interface == i.port_name:
                     j.shutdown = checkIntShutdown(interfaces_shutdown)
                     j.description = checkIntDescription(interfaces_description)
-                    j.ip = checkIntIP(interfaces_ip)
-                    j.sm = checkIntSM(interfaces_sm)
+                    j.ip = checkIntIPconfiguration(interfaces_ip, interfaces_sm)[0]
+                    j.sm = checkIntIPconfiguration(interfaces_ip, interfaces_sm)[1]
                     cm.writeInterface(j)
 
 ########################################################################
