@@ -480,7 +480,7 @@ class ACLExtended:
             self.aclRuleName = aclRuleName
         else:
             raise TypeError()
-        
+    # ^ permitDeny,protocol,sourceIP,sourceWM,destIP,destWM,port;permitDeny,protocol,sourceIP,sourceWM,destIP,destWM,port
     # If aclList is not empty, it splits the string into individual ACLs.
     # For each ACL, it splits the string into individual fields and appends them as a dictionary to the aclList list.
     # It returns the aclList list.
