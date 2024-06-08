@@ -2,20 +2,11 @@
 
 {% block content %}
 
-<input type="hidden" id="dhcp_state" value="{{ dhcp_state }}">
 
 
 <div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu5">
     <h2 class="font-extrabold text-2xl pb-5">DHCP Configuration</h2>
 
-    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
-      <h3 class="config_item flex items-center gap-3" id="">
-        <input class="toggle toggle-accent" type="checkbox" name="dhcp_state" id="dhcp_status"
-          onchange="updateStateDescription('dhcp_status', 'dhcp_state_description'); add_to_config('dhcp')">
-        State<span id="dhcp_state_description">
-          (off)</span>
-      </h3>
-    </div>
 
     <div class="bg-base-300 p-4 rounded-2xl mb-4">
       <div class="flex flex-col gap-3">
@@ -108,11 +99,6 @@
   <script>
       document.getElementById('dhcp_info_for_transfer').style.display = 'none';
 
-    if(document.getElementById('dhcp_state').value == 'true'){
-      document.getElementById('dhcp_status').checked = true;
-      updateStateDescription('dhcp_status', 'dhcp_state_description');
-      console.log(document.getElementById('dhcp_status').checked)
-    }
 
     let Networks_Array = collectIPAddresses(document.getElementById('dhcp_info_for_transfer').value);
     

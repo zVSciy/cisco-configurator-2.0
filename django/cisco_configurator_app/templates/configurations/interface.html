@@ -85,6 +85,11 @@
 
 
   for (let i = 0; i < interfaces.length; i++) {
+
+    if (interface_descriptions[i] == 'Default'){
+      interface_descriptions[i] = '';
+    }
+
     document.getElementById(interfaces[i]+'_description').value = interface_descriptions[i];
     document.getElementById(interfaces[i]+'_ip').value = interface_ips[i];
     document.getElementById(interfaces[i]+'_sm').value = interface_sms[i];

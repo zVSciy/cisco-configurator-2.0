@@ -2,7 +2,6 @@
 
 {% block content %}
 
-<input type="hidden" id="nat_state" value="{{ nat_state }}">
 <input type="hidden" id="ingoing_interface"  value="{{ ingoing_interface }}">
 <input type="hidden" id="outgoing_interface"  value="{{ outgoing_interface }}">
 <!-- <input type="hidden" id="networks"  value="{{ networks }}"> -->
@@ -11,14 +10,6 @@
 <div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu4">
     <h2 class="font-extrabold text-2xl pb-5">NAT Configuration</h2>
 
-    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
-
-      <h3 class="config_item flex items-center gap-3" id="">
-        <input class="toggle toggle-accent" type="checkbox" name="nat_state" id="nat_status"
-          onchange="updateStateDescription('nat_status', 'nat_state_description'); checkInterfacesNat(); add_to_config('nat')">Enabled<span
-          id="nat_state_description">(off)</span>
-      </h3>
-    </div>
 
     <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
       <div class="config_item">
@@ -93,10 +84,6 @@
     document.getElementById("nat_ingoing").value = document.getElementById('ingoing_interface').value;
     document.getElementById("nat_outgoing").value = document.getElementById('outgoing_interface').value;
 
-    if(document.getElementById('nat_state').value == 'true'){
-      document.getElementById('nat_status').checked = true;
-      updateStateDescription('nat_status', 'nat_state_description');
-    }
 
     let Networks_Array = collectIPAddresses(document.getElementById('nat_info_for_transfer').value);
 

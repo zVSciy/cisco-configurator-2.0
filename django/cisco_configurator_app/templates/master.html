@@ -25,7 +25,6 @@
     <input type="hidden" id="hidden_{{ interface }}_sm" name="hidden_{{ interface }}_sm">
     {% endfor %}
     <!-- nat -->
-    <input type="hidden" id="hidden_nat_status" name="hidden_nat_status">
     <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing">
     <input type="hidden" id="hidden_nat_outgoing" name="hidden_nat_outgoing">
     <input type="hidden" id="hidden_nat_info_for_transfer" name="hidden_nat_info_for_transfer">
@@ -132,16 +131,6 @@
         Extended ACL
       </button>
 
-      <form method="post" action="{% url 'etherchannel_route' device_type='router' config_mode=config_mode %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="router">Router</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          Etherchannel
-        </button>
-      </form>
-
 
       {% elif device_type == "switch" %}
       <form method="post" action="{% url 'index_route' %}" class="menu-form">
@@ -158,15 +147,10 @@
         Hostname & Banner (Basic Config)
       </button>
 
-      <form method="post" action="{% url 'etherchannel_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="switch">Switch</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          Etherchannel
-        </button>
-      </form>
+
+      <button type="button" class="menu-button" onclick="submitForm('etherchannel')">
+        Etherchannel
+      </button>
 
 <!-- 
       <button type="button" class="menu-button" id="basic-config-button" name="basic-config-button" onclick="submitForm('vlan')">

@@ -167,9 +167,8 @@ function checkInterfacesNat() {
   let outgoing = document.getElementById('nat_outgoing').value
   let Button = document.getElementById("transferButton")
   let resultElement = document.getElementById('nat_interface_info')
-  let status = document.getElementById('nat_status').checked
 
-  if (ingoing == outgoing && status == true) {
+  if (ingoing == outgoing) {
     resultElement.textContent = "Ingoing and Outgoing Interfaces must be a different one.";
     Button.disabled = true;
     Button.style.backgroundColor = "#f44336";
@@ -424,8 +423,11 @@ function checkBasicAclId(){
   let id = document.getElementById('basic_acl_id').value;
   let message = document.getElementById('basic_acl_id_info');
 
-  if (basic_acl_ids.includes(id)){
-    message.textContent = "ID already set!";
+  if (id == ''){
+    message.textContent = "";
+    return false;
+  }else if (id == '99'){
+    message.textContent = "ID 99 not possible";
     return false;
   }else {
     message.textContent = "";
@@ -472,18 +474,16 @@ function ValidateBasicAclNetwork(info) {
 let extended_acl_ids = []
 
 function checkExtendedAclId(){
-  // let id = document.getElementById('extended_acl_id').value;
-  // let message = document.getElementById('extended_acl_id_info');
+  let id = document.getElementById('extended_acl_id').value;
+  let message = document.getElementById('extended_acl_id_info');
 
-  // if (extended_acl_ids.includes(id)){
-  //   message.textContent = "ID already set!";
-  //   return false;
-  // }else {
-  //   message.textContent = "";
-  //   return true;
-  // }
-
-  return true;
+  if (id == ''){
+    message.textContent = "";
+    return false;
+  }else {
+    message.textContent = "";
+    return true;
+  }
 
 }
 
@@ -759,13 +759,10 @@ function add_to_config(page) {
       }
   }
   if (page == "nat"){
-      let nat_status_to_set = document.getElementById('nat_status').checked 
       let nat_ingoing_to_set = document.getElementById('nat_ingoing').value 
       let nat_outgoing_to_set = document.getElementById('nat_outgoing').value 
       let nat_info_for_transfer_to_set = document.getElementById('nat_info_for_transfer').value 
 
-
-      document.getElementById('hidden_nat_status').value = nat_status_to_set; //true = on | false = off
       document.getElementById('hidden_nat_ingoing').value = nat_ingoing_to_set;
       document.getElementById('hidden_nat_outgoing').value = nat_outgoing_to_set;
       document.getElementById('hidden_nat_info_for_transfer').value = nat_info_for_transfer_to_set;
@@ -773,7 +770,6 @@ function add_to_config(page) {
   }
 
   if (page == "dhcp"){
-    let dhcp_status_to_set = document.getElementById('dhcp_status').checked 
     let dhcp_poolName_to_set = document.getElementById('dhcp_poolName').value 
     let dhcp_Network_to_set = document.getElementById('dhcp_Network').value 
     let dhcp_dG_to_set = document.getElementById('dhcp_dG').value 
@@ -781,7 +777,6 @@ function add_to_config(page) {
     let dhcp_info_for_transfer_to_set = document.getElementById('dhcp_info_for_transfer').value
 
 
-    document.getElementById('hidden_dhcp_status').value = dhcp_status_to_set; //true = on | false = off
     document.getElementById('hidden_dhcp_poolName').value = dhcp_poolName_to_set;
     document.getElementById('hidden_dhcp_Network').value = dhcp_Network_to_set;
     document.getElementById('hidden_dhcp_dG').value = dhcp_dG_to_set;
@@ -791,13 +786,11 @@ function add_to_config(page) {
   }
 
   if (page == "rip"){
-    let rip_state_to_set = document.getElementById('rip_state').checked
     let networks_input_routing_to_set = document.getElementById('networks_input_routing').value
     let dropdown_rip_version_to_set = document.getElementById('dropdown_rip_version').value
     let sum_state_to_set = document.getElementById('sum_state').checked
     let originate_state_to_set = document.getElementById('originate_state').checked
 
-    document.getElementById('hidden_rip_state').value = rip_state_to_set; //true = on | false = off
     document.getElementById('hidden_networks_input_routing').value = networks_input_routing_to_set;
     document.getElementById('hidden_dropdown_rip_version').value = dropdown_rip_version_to_set;
     document.getElementById('hidden_sum_state').value = sum_state_to_set;

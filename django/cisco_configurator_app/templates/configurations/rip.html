@@ -2,21 +2,12 @@
 
 {% block content %}
 
-<input type="hidden" id="rip_state_for_input" value="{{ rip_state }}">
 <input type="hidden" id="rip_version_for_input" value="{{ rip_version }}">
 <input type="hidden" id="rip_sum_state_for_input" value="{{ rip_sum_state }}">
 <input type="hidden" id="rip_originate_state_for_input" value="{{ rip_originate_state }}">
 
 <div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
-    <h2 class="font-extrabold text-2xl pb-5">Routing Configuration</h2>
-    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
-      <h3 class="config_item flex items-center gap-3" id="">
-        <input class="toggle toggle-accent" type="checkbox" name="rip_state" id="rip_state"
-          onchange="updateStateDescription('rip_state', 'rip_state_description'); add_to_config('rip')">
-        Dynamic Routing - RIP<span id="rip_state_description">
-          (off)</span>
-      </h3>
-      <h1></h1>
+  <h2 class="font-extrabold text-2xl pb-5">RIP Configuration</h2>
 
       <div class="config_item" id="ip-form">
         <div class="relative flex items-center gap-3">
@@ -65,10 +56,6 @@
 
   <script>
 
-    if(document.getElementById('rip_state_for_input').value == 'true'){
-      document.getElementById('rip_state').checked = true;
-      updateStateDescription('rip_state', 'rip_state_description');
-    }
 
     if(document.getElementById('rip_sum_state_for_input').value == 'True'){
       document.getElementById('sum_state').checked = true;

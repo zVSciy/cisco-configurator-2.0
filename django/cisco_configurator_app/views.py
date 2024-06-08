@@ -150,7 +150,6 @@ def rip(request, device_type, config_mode):
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "rip_state": 'true', #always 'true' (ignore)
         "rip_version": input_data.ripVersion, # must be 1 or 2
         "rip_sum_state": input_data.ripSumState, #True or False
         "rip_originate_state": input_data.ripOriginate, #True or False
@@ -200,7 +199,6 @@ def nat(request, device_type, config_mode):
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "nat_state": 'true', #always true (ignore)
         "ingoing_interface": '', 
         "outgoing_interface": '', 
         "networks":'' 
@@ -231,7 +229,6 @@ def dhcp(request, device_type, config_mode):
         "device_type": device_type,
         "interfaces":  get_interfaces(device_type),
         "config_mode": config_mode,
-        "dhcp_state": 'true', # always true (ignore)
         "dhcp_poolName": input_data.dhcpPoolName,# replace with real
         "dhcp_Network": input_data.dhcpNetworkIP +','+ input_data.dhcpNetworkSM,# replace with real
         "dhcp_defaultGateway": input_data.dhcpGateway,# replace with real
