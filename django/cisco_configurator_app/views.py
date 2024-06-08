@@ -620,6 +620,13 @@ def get_inputs(request, device_type, config_mode):
 
 #region SWITCH: etherchannel
 
+    if device_type == 'switch':
+
+        #switch etherchannel
+        etherchannel_interfaces = request.POST.get('hidden_etherchannel_interfaces_info_for_transfer')
+        etherchannel_data = request.POST.get('hidden_etherchannel_info_for_transfer')
+
+
 ########################################################################
 
     ip = request.POST.get('hidden_ip')
