@@ -119,15 +119,19 @@ class Interface:
     # Convert the interface information to a configuration list
     def toConfig(self) -> list:
         config = []
-        natInside = "ip nat inside\n" if self.ipNatInside else ''
-        natOutside = "ip nat outside\n" if self.ipNatOutside else ''
+        # natInside = "ip nat inside\n" if self.ipNatInside else ''
+        # natOutside = "ip nat outside\n" if self.ipNatOutside else ''
         shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
         config.append(f"interface {self.interface}\n")
         config.append(f" ip address {self.ip} {self.sm}\n" if self.ip.lower() != "dhcp" else ' ip address dhcp\n')
         config.append(f" description {self.description}\n")
         config.append(f" {shutdown}")
-        config.append(f" {natInside}")
-        config.append(f" {natOutside}")
+        if self.ipNatInside:
+            config.append(" ip nat inside\n")
+        if self.ipNatOutside:
+            config.append(" ip nat outside\n")
+        # config.append(f" {natInside}")
+        # config.append(f" {natOutside}")
         config.append("!\n")
         # else:
         #     for channelGroup in self.channelGroups:
@@ -148,6 +152,8 @@ class Interface:
         return config 
 #endregion
 
+
+# ? Example usage of the Interface class (etherchannel)
 # etherchannel = Interface(interface="", ip="", sm="", ipNatInside=True, ipNatOutside=False, description="Test", shutdown=False, createChannelGroups="1,192.168.40.40,255.255.255.0;2,192.168.30.30,255.255.255.0", assignChannelGroups="Ethernet0/0,1,active;Ethernet0/1,2,active")
 # # Rufen Sie die toConfig Methode auf und speichern Sie das Ergebnis
 # config = etherchannel.toConfig()
@@ -155,6 +161,23 @@ class Interface:
 # Drucken Sie das Ergebnis
 # for line in config:
 #     print(line)
+
+
+# ? Example usage of the Interface class (normal interface)
+# # First, instantiate the Interface class with test parameters
+# testInterface = Interface(interface="GigabitEthernet0/1", ip="192.168.1.1", sm="255.255.255.0", description="Test Interface", shutdown=False, ipNatInside=True, ipNatOutside=False)
+
+# # Then, call the toConfig method to generate the configuration commands
+# configCommands = testInterface.toConfig()
+
+# # Finally, print the configuration commands
+# for command in configCommands:
+#     print(command)
+
+
+
+
+
 
 #region StaticRoute
 
