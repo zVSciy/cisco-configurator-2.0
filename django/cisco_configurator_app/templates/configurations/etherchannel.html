@@ -95,15 +95,42 @@
 
 
         //Input forwarding to frontend
+        let etherchannels_string = document.getElementById('etherchannel_info_for_transfer').value;
+        let etherchannels = etherchannels_string.split(';');
 
-        let etherchannel_interfaces_string = collectIPAddresses(document.getElementById('etherchannel_interfaces_info_for_transfer').value);
-        etherchannel_interfaces = etherchannel_interfaces_string.split(';');
+        for (let i = 0; i < etherchannels.length; i=i+1){
+            let splitttedInterface = etherchannels[i].split(',')
+            let etherchannelInfo = "<b>ID: </b>" + splitttedInterface[0] +  "<b> IP: </b>" + splitttedInterface[1] + "<b> SM: </b>" + splitttedInterface[2] +'<br><br>';
+
+            if (splitttedInterface[1] != undefined){
+            document.getElementById('etherchannel_info').innerHTML += etherchannelInfo;
+
+            
+            //add to the dropdowns
+
+            let etherchannel_group_options = document.getElementById('etherchannel_select_id');
+
+            // Erstelle ein neues Optionselement für die Interface Zuweisung
+            let option = document.createElement('option');
+            option.value = splitttedInterface[0];
+            option.textContent = splitttedInterface[0];
+            etherchannel_group_options.appendChild(option);
+
+            }
+        }
+
+        //etherchannel interfaces
+        let etherchannel_interfaces_string = document.getElementById('etherchannel_interfaces_info_for_transfer').value;
+        let etherchannel_interfaces = etherchannel_interfaces_string.split(';');
 
         for (let i = 0; i < etherchannel_interfaces.length; i=i+1){
             let splitttedInterface = etherchannel_interfaces[i].split(',')
-            let etherchannelInfo = "<b>ID: </b>" + splitttedInterface[0] +  "<b> IP: </b>" + splitttedInterface[1] + "<b> SM: </b>" + splitttedInterface[2] +'<br><br>';
+            let etherchannelInfo = "<b>Interface: </b>" + splitttedInterface[0] +  "<b> Mode: </b>" + splitttedInterface[2] + "<b> Channel-Group: </b>" + splitttedInterface[1] +'<br><br>';
 
-            document.getElementById('nat_info').innerHTML += etherchannelInfo;
+            if (isNaN(splitttedInterface[1])  == false){
+            document.getElementById('etherchannel_interfaces_info').innerHTML += etherchannelInfo;
+
+            }
         }
 
     </script>
