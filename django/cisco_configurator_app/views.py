@@ -295,7 +295,7 @@ def acl_extended(request, device_type, config_mode):
     for acl in input_data: 
         for rule in acl.aclList:
             if rule["permitDeny"] == 'tcp':
-                config_option['ACLs'] += f"{acl.aclRuleName},{rule['permitDeny']},{rule['sourceIP']},{rule['sourceWM']},{rule['destIP']},{rule['destWM']},{rule['port']};"
+                config_option['ACLs'] += f"{acl.aclRuleName},{rule['protocol']},{rule['sourceIP']},{rule['sourceWM']},{rule['destIP']},{rule['destWM']},{rule['port']};"
 
     return render(request, 'configurations/acl_extendet.html', config_option)
 
