@@ -3,103 +3,97 @@
 {% block content %}
 
 
-<div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
-    <h2 class="font-extrabold text-2xl pb-5">Extended ACL Configuration</h2>
-    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
-      <h1></h1>
+<div class="menu-content rounded-lg" id="menu3">
+    <h2 class="font-bold text-neutral-500 text-2xl pb-5">Extended ACL Configuration</h2>
+    <div class="rounded-2xl mb-4 flex flex-col gap-3">
 
-
-
-      <div class="bg-base-300 p-4 rounded-2xl flex flex-col gap-3">
-        <h1></h1>
+      <div class="bg-neutral-950 rounded-2xl flex flex-col gap-5">
 
         <div class="config_item" id="ip-form">
-          <div class="relative flex items-center gap-3">
+          <div class="relative flex items-center">
             <label
-              class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+              class="absolute -top-6 left-0 px-2 text-neutral-500"
               for="description">ACL-ID:</label>
-            <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="number" name="extended_acl_id"
-              id="extended_acl_id" placeholder="e.g. 1" oninput="checkExtendedAclId(); ValidateExtendedAclNetwork('extended_acl_input_info'); ValidateExtendedAclNetwork('extended_acl_input_info')">
+            <input type="number" name="extended_acl_id"
+            class="w-full p-2 mb-1" id="extended_acl_id" placeholder="e.g. 1" oninput="checkExtendedAclId(); ValidateExtendedAclNetwork('extended_acl_input_info'); ValidateExtendedAclNetwork('extended_acl_input_info')">
             <span id="extended_acl_id_info"></span>
           </div>
         </div>
         <div class="config_item" id="ip-form">
           <div class="relative flex items-center gap-3">
             <label
-              class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+              class="absolute -top-6 left-0 px-2 text-neutral-500"
               for="description">Option:</label>
-            <select name="extended_acl_pOrD" id="extended_acl_pOrD">
+            <select name="extended_acl_pOrD" id="extended_acl_pOrD" class="w-full p-2 mb-1">
                 <option name="permit" value="permit">Permit</option>
                 <option name="deny" value="deny">Deny</option>
             </select>
           </div>
         </div>
 
-        <p></p>
+        <hr class="border-neutral-800 mb-4">
 
         <div class="config_item" id="ip-form">
             <div class="relative flex items-center gap-3">
               <label
-                class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+                class="absolute -top-6 left-0 px-2 text-neutral-500"
                 for="description">Source Ip Address:</label>
-              <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="extended_acl_src_ip"
-                id="extended_acl_src_ip" placeholder="e.g. 10.0.0.1" oninput="ValidateExtendedAclNetwork('extended_acl_input_info')">
+              <input type="text" name="extended_acl_src_ip"
+              class="w-full p-2 mb-1" id="extended_acl_src_ip" placeholder="e.g. 10.0.0.1" oninput="ValidateExtendedAclNetwork('extended_acl_input_info')">
             </div>
           </div>
 
           <div class="config_item" id="ip-form">
             <div class="relative flex items-center gap-3">
               <label
-                class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+                class="absolute -top-6 left-0 px-2 text-neutral-500"
                 for="description"> Source Wildcard Mask:</label>
               <input type="text" name="extended_acl_src_wm"
-                id="extended_acl_src_wm" placeholder="e.g. 0.0.0.255" oninput="ValidateExtendedAclNetwork('extended_acl_input_info')">
+                class="w-full p-2 mb-1" id="extended_acl_src_wm" placeholder="e.g. 0.0.0.255" oninput="ValidateExtendedAclNetwork('extended_acl_input_info')">
             </div>
           </div>
 
-          <p></p>
+          <hr class="border-neutral-800 mb-4">
 
           <div class="config_item" id="ip-form">
             <div class="relative flex items-center gap-3">
               <label
-                class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+                class="absolute -top-6 left-0 px-2 text-neutral-500"
                 for="description">Destination Ip Address:</label>
-              <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="extended_acl_dest_ip"
-                id="extended_acl_dest_ip" placeholder="e.g.192.1658.1.2" oninput="ValidateExtendedAclNetwork('extended_acl_input_info')">
+              <input type="text" name="extended_acl_dest_ip"
+                class="w-full p-2 mb-1" id="extended_acl_dest_ip" placeholder="e.g.192.1658.1.2" oninput="ValidateExtendedAclNetwork('extended_acl_input_info')">
             </div>
           </div>
 
           <div class="config_item" id="ip-form">
             <div class="relative flex items-center gap-3">
               <label
-                class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+                class="absolute -top-6 left-0 px-2 text-neutral-500"
                 for="description">Destination Wildcard Mask:</label>
               <input type="text" name="extended_acl_dest_wm"
-                id="extended_acl_dest_wm" placeholder="e.g. 0.0.255.255" oninput="ValidateExtendedAclNetwork('extended_acl_input_info')">
+                class="w-full p-2 mb-1" id="extended_acl_dest_wm" placeholder="e.g. 0.0.255.255" oninput="ValidateExtendedAclNetwork('extended_acl_input_info')">
             </div>
           </div>
 
-          <p></p>
+          <hr class="border-neutral-800 mb-4">
 
           <div class="config_item" id="ip-form">
             <div class="relative flex items-center gap-3">
               <label
-                class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+                class="absolute -top-6 left-0 px-2 text-neutral-500"
                 for="description">Port:</label>
               <input type="text" name="extended_acl_port"
-                id="extended_acl_port" placeholder="e.g. 80 (1-65535)" oninput="ValidateExtendedAclNetwork('extended_acl_input_info')">
+                class="w-full p-2 mb-1" id="extended_acl_port" placeholder="e.g. 80 (1-65535)" oninput="ValidateExtendedAclNetwork('extended_acl_input_info')">
             </div>
           </div>
 
           <div id="extended_acl_input_info"></div>
 
-          <p></p>
-
         <button type="button" disabled="true" class="config_item btn max-w-xs" id="add_extended_acl_button"
           onclick="addExtendedAclIp(); add_to_config('acl_extended'); checkExtendedAclId()">add
           ACL</button>
         <div id="added_acls" class="config_item">
-          added ACLs:</div>
+          Added ACLs:</div>
         <div class="config_item" id="extended_acl_info"></div>
         <input name="extended_acl_info" id="extended_acl_info_for_transfer" value="{{ ACLs }}"></input>
 

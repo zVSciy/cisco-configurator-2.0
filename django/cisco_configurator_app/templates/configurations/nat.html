@@ -8,10 +8,10 @@
 <!-- <input type="hidden" id="networks"  value="{{ networks }}"> -->
 
 
-<div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu4">
+<div class="menu-content" id="menu4">
     <h2 class="font-extrabold text-2xl pb-5">NAT Configuration</h2>
 
-    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
+    <div class="bg-[#121212] p-4 rounded-2xl mb-4 flex flex-col gap-3">
 
       <h3 class="config_item flex items-center gap-3" id="">
         <input class="toggle toggle-accent" type="checkbox" name="nat_state" id="nat_status"
@@ -20,14 +20,16 @@
       </h3>
     </div>
 
-    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
+    <hr class="border-neutral-800 mb-8">
+
+    <div class="rounded-2xl mb-4 flex flex-col gap-4">
       <div class="config_item">
         <div class="relative flex items-center gap-3">
           <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            class="absolute -top-6 left-0 px-2 text-neutral-500"
             for="ipAdresse">Ingoing Interface:</label>
           <select name="nat_ingoing" id="nat_ingoing"
-            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs "
+            class="w-full p-2 mb-1"
             onchange="checkInterfacesNat(); add_to_config('nat')">
             {% for interface in interfaces %}
             <option name=" {{ interface }}nat_ingoing" value="{{ interface }}">{{ interface }}</option>
@@ -39,10 +41,10 @@
       <div class="config_item" id="">
         <div class="relative flex items-center gap-3">
           <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            class="absolute -top-6 left-0 px-2 text-neutral-500"
             for="nat_outgoing">Outgoing Interface:</label>
           <select name="nat_outgoing" id="nat_outgoing"
-            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs"
+            class="w-full p-2 mb-1"
             onchange="checkInterfacesNat(); add_to_config('nat')">
             {% for interface in interfaces %}
             <option name="{{ interface }}nat_outgoing" value="{{ interface }}">{{ interface }}</option>
@@ -53,16 +55,18 @@
       </div>
     </div>
 
-    <div class="bg-base-300 p-4 rounded-2xl flex flex-col gap-3">
+    <hr class="border-neutral-800 mb-4">
+
+    <div class="rounded-2xl flex flex-col gap-4">
       <h3 class="config_item"><b>Access-List Networks</b></h3>
       <h1></h1>
 
       <div class="config_item" id="ip-form">
         <div class="relative flex items-center gap-3">
           <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            class="absolute -top-6 left-0 px-2 text-neutral-500"
             for="description">IP Address:</label>
-          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="nat_ip"
+          <input class="w-full p-2 mb-1" type="text" name="nat_ip"
             id="nat_ip" placeholder="e.g. 10.1.0.0" oninput="ValidateIPaddressNat('nat_ip','nat_ip_info')">
           <span id="nat_ip_info"></span>
         </div>
@@ -70,9 +74,9 @@
       <div class="config_item" id="ip-form">
         <div class="relative flex items-center gap-3">
           <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            class="absolute -top-6 left-0 px-2 text-neutral-500"
             for="description">Wildcard Mask:</label>
-          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="nat_wm"
+          <input class="w-full p-2 mb-1" type="text" name="nat_wm"
             id="nat_wm" placeholder="e.g. 0.255.255.255" oninput="ValidateIPaddressNat('nat_wm','nat_wm_info')">
           <span id="nat_wm_info"></span>
         </div>

@@ -1,302 +1,482 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cisco Configurator 2.0</title>
+    <script src="{% static 'input_checks.js' %}"></script>
+    <link href="{% static 'src/styles.css' %}" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cisco Configurator 2.0</title>
-  <script src="{% static 'input_checks.js' %}"></script>
-  <link href="{% static 'src/styles.css' %}" rel="stylesheet">
-  <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
-</head>
+  <body
+    style="min-height: 100vh; min-height: 100svh"
+    class="grid-box-design bg-[#0a0a0a] flex flex-col"
+  >
+    <!-- hidden input form to forward the user input into the backend if another site gets opened -->
+    <form
+      method="post"
+      id="inputs_form"
+      action="{% url 'get_inputs_route' device_type=device_type config_mode=config_mode %}"
+      class="menu-form"
+    >
+      {% csrf_token %}
 
-<body style="min-height: 100vh; min-height: 100svh;" class="grid-box-design bg-[#0a0a0a]">
-  <!-- hidden input form to forward the user input into the backend if another site gets opened -->
-  <form method="post" id="inputs_form"
-    action="{% url 'get_inputs_route' device_type=device_type config_mode=config_mode %}" class="menu-form"> {%
-    csrf_token %}
+      <input
+        type="hidden"
+        id="hidden_forward_to"
+        name="hidden_forward_to"
+        value=""
+      />
+      <!-- basic config -->
+      <input type="hidden" id="hidden_hostname" name="hidden_hostname" />
+      <input type="hidden" id="hidden_banner" name="hidden_banner" />
+      <!-- interfaces -->
+      {% for interface in interfaces %}
+      <input
+        type="hidden"
+        id="hidden_{{ interface }}_shutdown"
+        name="hidden_{{ interface }}_shutdown"
+      />
+      <input
+        type="hidden"
+        id="hidden_{{ interface }}_description"
+        name="hidden_{{ interface }}_description"
+      />
+      <input
+        type="hidden"
+        id="hidden_{{ interface }}_ip"
+        name="hidden_{{ interface }}_ip"
+      />
+      <input
+        type="hidden"
+        id="hidden_{{ interface }}_sm"
+        name="hidden_{{ interface }}_sm"
+      />
+      {% endfor %}
+      <!-- nat -->
+      <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing" />
+      <input
+        type="hidden"
+        id="hidden_nat_outgoing"
+        name="hidden_nat_outgoing"
+      />
+      <input
+        type="hidden"
+        id="hidden_nat_info_for_transfer"
+        name="hidden_nat_info_for_transfer"
+      />
 
-    <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="">
-    <!-- basic config -->
-    <input type="hidden" id="hidden_hostname" name="hidden_hostname">
-    <input type="hidden" id="hidden_banner" name="hidden_banner">
-    <!-- interfaces -->
-    {% for interface in interfaces %}
-    <input type="hidden" id="hidden_{{ interface }}_shutdown" name="hidden_{{ interface }}_shutdown">
-    <input type="hidden" id="hidden_{{ interface }}_description" name="hidden_{{ interface }}_description">
-    <input type="hidden" id="hidden_{{ interface }}_ip" name="hidden_{{ interface }}_ip">
-    <input type="hidden" id="hidden_{{ interface }}_sm" name="hidden_{{ interface }}_sm">
-    {% endfor %}
-    <!-- nat -->
-    <input type="hidden" id="hidden_nat_status" name="hidden_nat_status">
-    <input type="hidden" id="hidden_nat_ingoing" name="hidden_nat_ingoing">
-    <input type="hidden" id="hidden_nat_outgoing" name="hidden_nat_outgoing">
-    <input type="hidden" id="hidden_nat_info_for_transfer" name="hidden_nat_info_for_transfer">
+      <!-- dhcp -->
+      <input type="hidden" id="hidden_dhcp_status" name="hidden_dhcp_status" />
+      <input
+        type="hidden"
+        id="hidden_dhcp_poolName"
+        name="hidden_dhcp_poolName"
+      />
+      <input
+        type="hidden"
+        id="hidden_dhcp_Network"
+        name="hidden_dhcp_Network"
+      />
+      <input type="hidden" id="hidden_dhcp_dG" name="hidden_dhcp_dG" />
+      <input
+        type="hidden"
+        id="hidden_dhcp_dnsServer"
+        name="hidden_dhcp_dnsServer"
+      />
+      <input
+        type="hidden"
+        id="hidden_dhcp_info_for_transfer"
+        name="hidden_dhcp_info_for_transfer"
+      />
 
-    <!-- dhcp -->
-    <input type="hidden" id="hidden_dhcp_status" name="hidden_dhcp_status">
-    <input type="hidden" id="hidden_dhcp_poolName" name="hidden_dhcp_poolName">
-    <input type="hidden" id="hidden_dhcp_Network" name="hidden_dhcp_Network">
-    <input type="hidden" id="hidden_dhcp_dG" name="hidden_dhcp_dG">
-    <input type="hidden" id="hidden_dhcp_dnsServer" name="hidden_dhcp_dnsServer">
-    <input type="hidden" id="hidden_dhcp_info_for_transfer" name="hidden_dhcp_info_for_transfer">
+      <!-- rip -->
+      <input type="hidden" id="hidden_rip_state" name="hidden_rip_state" />
+      <input
+        type="hidden"
+        id="hidden_networks_input_routing"
+        name="hidden_networks_input_routing"
+      />
+      <input
+        type="hidden"
+        id="hidden_dropdown_rip_version"
+        name="hidden_dropdown_rip_version"
+      />
+      <input type="hidden" id="hidden_sum_state" name="hidden_sum_state" />
+      <input
+        type="hidden"
+        id="hidden_originate_state"
+        name="hidden_originate_state"
+      />
 
-    <!-- rip -->
-    <input type="hidden" id="hidden_rip_state" name="hidden_rip_state">
-    <input type="hidden" id="hidden_networks_input_routing" name="hidden_networks_input_routing">
-    <input type="hidden" id="hidden_dropdown_rip_version" name="hidden_dropdown_rip_version">
-    <input type="hidden" id="hidden_sum_state" name="hidden_sum_state">
-    <input type="hidden" id="hidden_originate_state" name="hidden_originate_state">
+      <input type="hidden" id="hidden_dl_or_tf" name="hidden_dl_or_tf" />
 
-    <input type="hidden" id="hidden_dl_or_tf" name="hidden_dl_or_tf">
+      <!-- static routing -->
+      <input
+        type="hidden"
+        id="hidden_staticRouting_info_for_transfer"
+        name="hidden_staticRouting_info_for_transfer"
+      />
 
-    <!-- static routing -->
-    <input type="hidden" id="hidden_staticRouting_info_for_transfer" name="hidden_staticRouting_info_for_transfer">
+      <input type="hidden" id="hidden_ip" name="hidden_ip" />
+      <input type="hidden" id="hidden_user" name="hidden_user" />
+      <input type="hidden" id="hidden_pw" name="hidden_pw" />
 
-    <input type="hidden" id="hidden_ip" name="hidden_ip">
-    <input type="hidden" id="hidden_user" name="hidden_user">
-    <input type="hidden" id="hidden_pw" name="hidden_pw">
+      <!-- ospf -->
+      <input
+        type="hidden"
+        id="hidden_ospf_process"
+        name="hidden_ospf_process"
+      />
+      <input
+        type="hidden"
+        id="hidden_ospf_router_id"
+        name="hidden_ospf_router_id"
+      />
+      <input
+        type="hidden"
+        id="hidden_ospf_info_for_transfer"
+        name="hidden_ospf_info_for_transfer"
+      />
+      <input
+        type="hidden"
+        id="hidden_ospf_sum_state"
+        name="hidden_ospf_sum_state"
+      />
+      <input
+        type="hidden"
+        id="hidden_ospf_originate_state"
+        name="hidden_ospf_originate_state"
+      />
 
-    <!-- ospf -->
-    <input type="hidden" id="hidden_ospf_process" name="hidden_ospf_process">
-    <input type="hidden" id="hidden_ospf_router_id" name="hidden_ospf_router_id">
-    <input type="hidden" id="hidden_ospf_info_for_transfer" name="hidden_ospf_info_for_transfer">
-    <input type="hidden" id="hidden_ospf_sum_state" name="hidden_ospf_sum_state">
-    <input type="hidden" id="hidden_ospf_originate_state" name="hidden_ospf_originate_state">
+      <!-- basic ACLs -->
+      <input
+        type="hidden"
+        id="hidden_basic_acl_info_for_transfer"
+        name="hidden_basic_acl_info_for_transfer"
+      />
 
+      <!-- extended ACLs -->
+      <input
+        type="hidden"
+        id="hidden_extended_acl_info_for_transfer"
+        name="hidden_extended_acl_info_for_transfer"
+      />
 
-    <!-- basic ACLs -->
-    <input type="hidden" id="hidden_basic_acl_info_for_transfer" name="hidden_basic_acl_info_for_transfer">
-
-    <!-- extended ACLs -->
-    <input type="hidden" id="hidden_extended_acl_info_for_transfer" name="hidden_extended_acl_info_for_transfer">
-
-    <!-- VLAN -->
-    <!-- <input type="hidden" id="hidden_vlan_interfaces_info_for_transfer" name="hidden_vlan_interfaces_info_for_transfer">
+      <!-- VLAN -->
+      <!-- <input type="hidden" id="hidden_vlan_interfaces_info_for_transfer" name="hidden_vlan_interfaces_info_for_transfer">
     <input type="hidden" id="hidden_vlan_info_for_transfer" name="hidden_vlan_info_for_transfer"> -->
 
-    <!-- Etherchannel -->
-    <input type="hidden" id="hidden_etherchannel_interfaces_info_for_transfer"
-      name="hidden_etherchannel_interfaces_info_for_transfer">
-    <input type="hidden" id="hidden_etherchannel_info_for_transfer" name="hidden_etherchannel_info_for_transfer">
+      <!-- Etherchannel -->
+      <input
+        type="hidden"
+        id="hidden_etherchannel_interfaces_info_for_transfer"
+        name="hidden_etherchannel_interfaces_info_for_transfer"
+      />
+      <input
+        type="hidden"
+        id="hidden_etherchannel_info_for_transfer"
+        name="hidden_etherchannel_info_for_transfer"
+      />
+    </form>
 
-  </form>
+    <div
+      class="menu-container justify-between flex py-2 items-center fixed shadow-popup top-0 p-[1rem] w-full px-4 h-20 bg-neutral-950 border-b border-b-neutral-800"
+    >
+      <div class="flex gap-2">
+        <a
+          href="{%  url 'index_route' %}"
+          class="hover:border-neutral-600 text-neutral-600 border border-neutral-800 flex gap-4 rounded-lg p-2 pr-4 items-center"
+        >
+          <img class="h-8" src="{% static 'favicon.png' %}" alt="logo" />
+          <h1 class="text-lg">Cisco Configurator 2.0</h1>
+        </a>
+        {% if device_type == "switch" %}
+        <form method="post" action="{% url 'index_route' %}" class="menu-form">
+          {% csrf_token %}
+          <select name="deviceType" id="deviceType" style="display: none">
+            <option value="switch">Switch</option>
+          </select>
+          <button
+            type="submit"
+            class="border-neutral-900 hover:border-neutral-600 text-neutral-500 border bg-neutral-900 flex gap-4 rounded-lg p-2 pr-4 items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              fill="currentcolor"
+              viewBox="0 0 256 256"
+            >
+              <path
+                d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm40,112H107.31l18.35,18.34a8,8,0,0,1-11.32,11.32l-32-32a8,8,0,0,1,0-11.32l32-32a8,8,0,0,1,11.32,11.32L107.31,120H168a8,8,0,0,1,0,16Z"
+              ></path>
+            </svg>
+            Return to start
+          </button>
+        </form>
+        {% endif %} {% if device_type == "router" %}
 
-  <div
-    class="menu-container justify-between flex py-2 pt-10 items-center   absolute top-0 p-[1rem] w-full px-32 h-20 bg-neutral-950 border-b border-b-neutral-800">
-    <a href="{%  url 'index_route' %}"
-      class="hover:border-neutral-600 text-neutral-600 border border-neutral-800 flex gap-4 rounded-lg p-2 pr-4 items-center">
-      <img class="h-8" src="{% static 'favicon.png' %}" alt="logo" />
-      <h1 class="text-lg">
-        Cisco Configurator 2.0
-      </h1>
-    </a>
-    <div class="flex gap-2">
-      {% if device_type == "router" %}
-
-      <form method="post" action="{% url 'index_route' %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="router">Router</option>
-        </select>
-        <button type="submit" class="btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path></svg>
-          Return to start
+        <form method="post" action="{% url 'index_route' %}" class="menu-form">
+          {% csrf_token %}
+          <select name="deviceType" id="deviceType" style="display: none">
+            <option value="router">Router</option>
+          </select>
+          <button
+            type="submit"
+            class="border-neutral-900 hover:border-neutral-600 text-neutral-500 border bg-neutral-900 flex gap-4 rounded-lg p-2 pr-4 items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              fill="currentcolor"
+              viewBox="0 0 256 256"
+            >
+              <path
+                d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm40,112H107.31l18.35,18.34a8,8,0,0,1-11.32,11.32l-32-32a8,8,0,0,1,0-11.32l32-32a8,8,0,0,1,11.32,11.32L107.31,120H168a8,8,0,0,1,0,16Z"
+              ></path>
+            </svg>
+            Return to start
+          </button>
+        </form>
+        {% endif %}
+      </div>
+      <div class="flex gap-2 text-neutral-500">
+        {% if device_type == "router" %}
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 border-r border-r-neutral-700 pr-2"
+          id="basic-config-button"
+          name="basic-config-button"
+          onclick="submitForm('basic_config')"
+        >
+          Hostname & Banner (Basic Config)
         </button>
-      </form>
 
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 border-r border-r-neutral-700 pr-2"
+          onclick="submitForm('interface')"
+        >
+          Interfaces
+        </button>
 
-      <button type="button" class="menu-button" id="basic-config-button" name="basic-config-button"
-        onclick="submitForm('basic_config')">
-        Hostname & Banner (Basic Config)
-      </button>
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 border-r border-r-neutral-700 pr-2"
+          onclick="submitForm('nat')"
+        >
+          NAT
+        </button>
 
-      <button type="button" class="menu-button" onclick="submitForm('interface')">
-        Interfaces
-      </button>
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 border-r border-r-neutral-700 pr-2"
+          onclick="submitForm('dhcp')"
+        >
+          DHCP
+        </button>
 
-      <button type="button" class="menu-button" onclick="submitForm('nat')">
-        NAT
-      </button>
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 border-r border-r-neutral-700 pr-2"
+          onclick="submitForm('rip')"
+        >
+          RIP
+        </button>
 
-      <button type="button" class="menu-button" onclick="submitForm('dhcp')">
-        DHCP
-      </button>
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 border-r border-r-neutral-700 pr-2"
+          onclick="submitForm('static_routing')"
+        >
+          Static Routing
+        </button>
 
-      <button type="button" class="menu-button" onclick="submitForm('rip')">
-        RIP
-      </button>
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 border-r border-r-neutral-700 pr-2"
+          onclick="submitForm('ospf')"
+        >
+          OSPF
+        </button>
 
-      <button type="button" class="menu-button" onclick="submitForm('static_routing')">
-        Static Routing
-      </button>
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 border-r border-r-neutral-700 pr-2"
+          onclick="submitForm('acl_basic')"
+        >
+          Basic ACL
+        </button>
 
-      <button type="button" class="menu-button" onclick="submitForm('ospf')">
-        OSPF
-      </button>
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 pr-2"
+          onclick="submitForm('acl_extended')"
+        >
+          Extended ACL
+        </button>
 
-      <button type="button" class="menu-button" onclick="submitForm('acl_basic')">
-        Basic ACL
-      </button>
+        {% elif device_type == "switch" %}
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 border-r border-r-neutral-700 pr-2"
+          onclick="submitForm('basic_config')"
+        >
+          Hostname & Banner (Basic Config)
+        </button>
 
-      <button type="button" class="menu-button" onclick="submitForm('acl_extended')">
-        Extended ACL
-      </button>
-
-      <form method="post" action="{% url 'etherchannel_route' device_type='router' config_mode=config_mode %}"
-        class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="router">Router</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+        <button
+          type="button"
+          class="menu-button hover:text-neutral-300 pr-2"
+          onclick="submitForm('etherchannel')"
+        >
           Etherchannel
         </button>
-      </form>
 
-
-      {% elif device_type == "switch" %}
-      <form method="post" action="{% url 'index_route' %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="switch">Switch</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          Return to start
-        </button>
-      </form>
-
-      <button type="button" class="menu-button" onclick="submitForm('basic_config')">
-        Hostname & Banner (Basic Config)
-      </button>
-
-      <form method="post" action="{% url 'etherchannel_route' device_type='switch'  config_mode=config_mode %}"
-        class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="switch">Switch</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          Etherchannel
-        </button>
-      </form>
-
-      <!-- 
-      <button type="button" class="menu-button" id="basic-config-button" name="basic-config-button" onclick="submitForm('vlan')">
+        <!-- 
+      <button type="button" class="menu-button hover:text-neutral-300" id="basic-config-button" name="basic-config-button" onclick="submitForm('vlan')">
         VLAN
       </button> -->
 
-      <button type="button" class="menu-button" onclick="submitForm('acl_basic')">
-        Basic ACL
-      </button>
-
-      <button type="button" class="menu-button" onclick="submitForm('acl_extended')">
-        Extended ACL
-      </button>
-
-      <form method="post" action="{% url 'vtp_dtp_route' device_type='switch'  config_mode=config_mode %}"
-        class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="switch">Switch</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          VTP & DTP
-        </button>
-      </form>
-
-      <form method="post" action="{% url 'stp_route' device_type='switch'  config_mode=config_mode %}"
-        class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="switch">Switch</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          STP
-        </button>
-      </form>
-
-      {% endif %}
-
+        {% endif %}
+      </div>
     </div>
-  </div>
 
-  <!-- <form class="bg-base-300 p-4 rounded-2xl" id="transfer_form" method="post"
+    <!-- <form class="bg-base-300 p-4 rounded-2xl" id="transfer_form" method="post"
   action="url'router_submit_config_route'" enctype="multipart/form-data">
   <input type="hidden" id="router_name" name="router_name" value="{router}"> -->
-  <!-- content placeholder -->
+    <!-- content placeholder -->
 
-  {% block content %}
-  if you see this, something is wrong!
-  {% endblock content %}
+    <!-- prettier-ignore -->
+    <div class="pt-20 flex-grow flex">
+      <div class="p-8 flex w-full">
+        <div class="bg-neutral-950 shadow-popup p-4 rounded-xl border border-neutral-800 flex flex-col w-full">
+          {% block content %} if you see this, something is wrong! {% endblock content%} {% comment %}
 
-  {% comment %} <div class="uebertragung-content  bg-base-200 rounded-lg p-8">
-    <h2 id="heading-uebertragen" class="font-extrabold text-2xl pb-5">Transfer or Download Configuration</h2>
-    <!-- <form id="download" method="post" action="{% url
-                    'router_transfer_config_route' %}" enctype="multipart/form-data"> -->
-    <div id="download" class="bg-base-300 p-4 rounded-2xl">
-      <div class="relative flex items-center gap-3">
-        <label
-          class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-          id="ip-input-description" for="ipAdresse">IP address:</label>
-        <input placeholder="e.g. 0.0.0.0" class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs"
-          type="text" maxlength="15" size="15" id="ipAdresse" name="ip"
-          oninput="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')">
-        <select itemid="dl_or_tf" name="dl_or_tf"
-          class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" id="dl_or_tf"
-          onchange="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')">
+          <div class="uebertragung-content bg-base-200 rounded-lg p-8">
+            <h2 id="heading-uebertragen" class="font-bold text-neutral-500 text-2xl pb-5">
+              Transfer or Download Configuration
+            </h2>
+            <!-- <form id="download" method="post" action="{% url 'router_transfer_config_route' %}" enctype="multipart/form-data"> -->
+            <div id="download" class="bg-base-300 p-4 rounded-2xl">
+              <div class="relative flex items-center gap-3">
+                <label
+                  class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+                  id="ip-input-description"
+                  for="ipAdresse"
+                  >IP address:</label
+                >
+                <input
+                  placeholder="e.g. 0.0.0.0"
+                  class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs"
+                  type="text"
+                  maxlength="15"
+                  size="15"
+                  id="ipAdresse"
+                  name="ip"
+                  oninput="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')"
+                />
+                <select
+                  itemid="dl_or_tf"
+                  name="dl_or_tf"
+                  class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs"
+                  id="dl_or_tf"
+                  onchange="ValidateFooter('ipAdresse','transfer_info', 'transferButton', 'dl_or_tf')"
+                >
+                  <option name="download" value="download">Download</option>
+                  <option name="transfer" value="transfer">Transfer</option>
+                </select>
+              </div>
+              <div id="transfer_info"></div>
+            </div>
+          </div>
+    
+          <br />
+          <div class="menu-button hover:text-neutral-300 border-base-300" id="download">
+            <button
+              class="font-bold btn btn-accent !rounded-xl w-full min-h-0 text-2xl"
+              type="button"
+              id="transferButton"
+              onclick="submitForm('index')"
+            >
+              Submit
+            </button>
+          </div>
+          {% endcomment %}
+          
+          <hr class="border-neutral-800 mb-4 mt-auto">
+          <h2 id="heading-uebertragen" class="font-bold text-neutral-500 text-2xl pb-5">
+            Transfer or Download Configuration
+          </h2>
+          <div class="flex gap-2">
+            <input
+              class="w-full p-2 mb-1"
+              id="ipAddress"
+              type="text"
+              name="ipAddress"
+              placeholder="10.0.0.1"
+              oninput="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')"
+            />
+            <input class="w-full p-2 mb-1" id="username" type="text" name="username" placeholder="admin" />
+            <input
+              class="w-full p-2 mb-1"
+              id="password"
+              type="password"
+              name="password"
+              placeholder="*****"
+            />
+            <select
+              class="w-full p-2 mb-1"
+              id="dl_or_tf"
+              name="dl_or_tf"
+              onchange="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')"
+            >
+              <option name="download" value="download">Download</option>
+              <option name="transfer" value="transfer">Transfer</option>
+            </select>
+            <button
+              class="border-neutral-900 min-w-64 max-h-10 hover:border-neutral-600 text-neutral-500 border bg-neutral-900 flex gap-2 rounded-lg p-2 pr-4 items-center"
+              id="transferButton"
+              type="button"
+              onclick="submitForm('index', document.getElementById('dl_or_tf').value, document.getElementById('ipAddress').value, document.getElementById('username').value, document.getElementById('password').value)"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentcolor" viewBox="0 0 256 256"><path d="M231.4,44.34s0,.1,0,.15l-58.2,191.94a15.88,15.88,0,0,1-14,11.51q-.69.06-1.38.06a15.86,15.86,0,0,1-14.42-9.15L107,164.15a4,4,0,0,1,.77-4.58l57.92-57.92a8,8,0,0,0-11.31-11.31L96.43,148.26a4,4,0,0,1-4.58.77L17.08,112.64a16,16,0,0,1,2.49-29.8l191.94-58.2.15,0A16,16,0,0,1,231.4,44.34Z"></path></svg>
+              Submit
+            </button>
+            <div id="transfer_info"></div>
+          </div>
+        </div>
       </div>
-
-      <option name="download" value="download">Download</option>
-      <option name="transfer" value="transfer">Transfer</option>
-      </select>
-      <div id="transfer_info"></div>
     </div>
-  </div>
-  <br>
-  <div class="menu-button border-base-300" id="download">
-    <button class="font-bold btn btn-accent !rounded-xl w-full min-h-0  text-2xl" type="button" id="transferButton"
-      onclick="submitForm('index')">Submit</button>
-  </div> {% endcomment %}
-  <h2 id="heading-uebertragen" class="font-extrabold text-2xl pb-5">Transfer or Download Configuration</h2>
-  <div style='margin-top: 20px;'>
-    <input id="ipAddress" type="text" name="ipAddress" placeholder="10.0.0.1"
-      oninput="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')">
-    <input id="username" type="text" name="username" placeholder="admin">
-    <input id="password" type="password" name="password" placeholder="*****">
-    <select id="dl_or_tf" name="dl_or_tf"
-      onchange="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')">
-      <option name="download" value="download">Download</option>
-      <option name="transfer" value="transfer">Transfer</option>
-    </select>
-    <button id="transferButton" type="button"
-      onclick="submitForm('index', document.getElementById('dl_or_tf').value, document.getElementById('ipAddress').value, document.getElementById('username').value, document.getElementById('password').value)">Submit</button>
-    <div id="transfer_info"></div>
-  </div>
+    <style>
+      .grid-box-design {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.06)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+      }
 
-  <style>
-    .grid-box-design {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.06)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+      .shadow-popup {
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+          rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+          rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+      }
+
+      input::placeholder, select {
+        color: rgb(115 115 115);
+      }
+    </style>
+  </body>
+
+  <script>
+    function submitForm(to, dl_or_tf, ip, username, password) {
+      document.getElementById("hidden_forward_to").value = to;
+      document.getElementById("hidden_dl_or_tf").value = dl_or_tf;
+      document.getElementById("hidden_ip").value = ip;
+      document.getElementById("hidden_user").value = username;
+      document.getElementById("hidden_pw").value = password;
+      document.getElementById("inputs_form").submit();
     }
-
-    .shadow-popup {
-      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
-        rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
-        rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-    }
-  </style>
-</body>
-
-<script>
-  function submitForm(to, dl_or_tf, ip, username, password) {
-    document.getElementById("hidden_forward_to").value = to;
-    document.getElementById("hidden_dl_or_tf").value = dl_or_tf;
-    document.getElementById("hidden_ip").value = ip;
-    document.getElementById("hidden_user").value = username;
-    document.getElementById("hidden_pw").value = password;
-    document.getElementById("inputs_form").submit();
-  }
-</script>
-
+  </script>
 </html>

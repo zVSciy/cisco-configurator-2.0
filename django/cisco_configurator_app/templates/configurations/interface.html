@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="menu-content bg-base-200 rounded-lg mb-4 p-8" id="menu2">
+<div class="menu-content mb-4" id="menu2">
     <h2 class="font-extrabold text-2xl pb-5">Interface Configuration</h2>
     <input type="hidden" id="interfaces_for_get_inputs" value="{{ interfaces }}">
     <input type="hidden" id="interfaces_descriptions" value="{{ interface_descriptions }}">
@@ -12,7 +12,7 @@
     
     <div class="grid grid-cols-3 gap-4">
       {% for interface in interfaces %}
-      <div class="bg-base-300 p-4 rounded-2xl hover:outline hover:outline-1 hover:outline-slate-600">
+      <div class="bg-[#121212] p-4 rounded-2xl hover:outline hover:outline-1 hover:outline-neutral-800">
         <h3 class="config_item flex font-bold items-center gap-3" id="">
           <input type="checkbox" class="toggle toggle-accent" name="{{ interface }}_shutdown"
             id="{{ interface }}_shutdown"
@@ -23,33 +23,33 @@
           </span>
         </h3>
 
-        <hr class="my-4 bg-base-100 border-base-100">
+        <hr class="my-4 mb-8 border-neutral-800">
 
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-4">
           <div class="relative" id="ip-form">
             <label for="description" id="description"
-              class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">
+              class="absolute -top-6 left-0 px-2 text-neutral-500">
               Description:
             </label>
-            <input placeholder="e.g. connection to SW1" class="input !pl-3 !outline-offset-0 input-bordered !w-full"
+            <input placeholder="e.g. connection to SW1" class="w-full p-2 mb-1 bg-neutral-950"
               type="text" id="{{ interface }}_description" name="{{ interface }}_description" oninput="add_to_config('interface')">
           </div>
 
           <div class="relative" id="ip-form">
             <label for="input"
-              class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">
+              class="absolute -top-6 left-0 px-2 text-neutral-500">
               IP address:
             </label>
-            <input placeholder="ip address or dhcp" class="input !pl-3 !outline-offset-0 input-bordered !w-full"
+            <input placeholder="ip address or dhcp" class="w-full p-2 mb-1 bg-neutral-950"
               type="text" id="{{ interface }}_ip" name="{{ interface }}_ip"
               oninput="checkIpAddress('{{ interface }}_ip', '{{ interface }}_sm', 'result_{{ interface }}'); add_to_config('interface')">
           </div>
 
           <div class="relative" id="ip-form">
             <label
-              class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+              class="absolute -top-6 left-0 px-2 text-neutral-500"
               for="subnetMask">Subnet mask:</label>
-            <input class="input !pl-3 !outline-offset-0 input-bordered !w-full" type="text" name="{{ interface }}_sm"
+            <input class="w-full p-2 mb-1 bg-neutral-950" type="text" name="{{ interface }}_sm"
               id="{{ interface }}_sm" placeholder="leave empty if ip is dhcp"
               oninput="checkIpAddress('{{ interface }}_ip', '{{ interface }}_sm', 'result_{{ interface }}'); add_to_config('interface')">
             <div id="result_{{ interface }}"></div>

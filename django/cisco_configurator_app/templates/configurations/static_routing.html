@@ -4,62 +4,60 @@
 <input type="hidden" id="static_routes" value="{{ static_routes }}">
 
 
-    <div class="bg-base-300 p-4 rounded-2xl flex flex-col gap-3">
-      <h3 class="config_item" id="static_routing_heading">
-        <b>Static Routing</b>
-      </h3>
-      <h1></h1>
+<div class="rounded-2xl flex flex-col gap-4">
+  <h1 class="config_item font-bold text-neutral-500 text-2xl pb-5" id="static_routing_heading">
+    Static Routing
+  </h1>
 
-      <div class="config_item" id="ip-form">
-        <div class="relative flex items-center gap-3">
-          <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-            for="target_ip">Target network IP:</label>
-          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="target_ip"
-            id="target_ip" placeholder="e.g. 192.168.1.0"
-            oninput="ValidateIPaddressStaticRouting('target_ip','target_ip_info')">
-          <span id="target_ip_info"></span>
-        </div>
-      </div>
-      <div class="config_item" id="ip-form">
-        <div class="relative flex items-center gap-3">
-          <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-            for="static_routing_subnet_mask">Subnet mask (target network):</label>
-          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="subnet_mask"
-            id="static_routing_subnet_mask" placeholder="e.g. 255.255.255.0"
-            oninput="ValidateIPaddressStaticRouting('static_routing_subnet_mask','static_routing_subnet_mask_info')">
-          <span id="static_routing_subnet_mask_info"></span>
-        </div>
-      </div>
-      <div class="config_item" id="ip-form">
-        <div class="relative flex items-center gap-3">
-          <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-            for="next_hop_ip">Next hop IP:</label>
-          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="next_hop_ip"
-            id="next_hop_ip" placeholder="e.g. 192.168.1.1"
-            oninput="ValidateIPaddressStaticRouting('next_hop_ip','next_hop_ip_info')">
-          <span id="next_hop_ip_info"></span>
-        </div>
-      </div>
-      <button type="button" disabled="true" class="config_item btn max-w-xs" id="add_StaticRoute_button"
-        onclick="addRoute(); add_to_config('static_routing')">
-        Add Route</button>
-      <div id="added_routes" class="config_item">
-        added Routes:</div>
-      <div class="config_item" id="staticRouting_info"></div>
-      <input name="staticRouting_info_for_transfer" id="staticRouting_info_for_transfer" style="display: none;"></input>
+  <div class="config_item" id="ip-form">
+    <div class="relative flex items-center gap-3">
+      <label
+        class="absolute -top-6 left-0 px-2 text-neutral-500"
+        for="target_ip">Target network IP:</label>
+      <input class="w-full p-2 mb-1" type="text" name="target_ip"
+        id="target_ip" placeholder="e.g. 192.168.1.0"
+        oninput="ValidateIPaddressStaticRouting('target_ip','target_ip_info')">
+      <span id="target_ip_info"></span>
     </div>
   </div>
+  <div class="config_item" id="ip-form">
+    <div class="relative flex items-center gap-3">
+      <label
+        class="absolute -top-6 left-0 px-2 text-neutral-500"
+        for="static_routing_subnet_mask">Subnet mask (target network):</label>
+      <input class="w-full p-2 mb-1" type="text" name="subnet_mask"
+        id="static_routing_subnet_mask" placeholder="e.g. 255.255.255.0"
+        oninput="ValidateIPaddressStaticRouting('static_routing_subnet_mask','static_routing_subnet_mask_info')">
+      <span id="static_routing_subnet_mask_info"></span>
+    </div>
+  </div>
+  <div class="config_item" id="ip-form">
+    <div class="relative flex items-center gap-3">
+      <label
+        class="absolute -top-6 left-0 px-2 text-neutral-500"
+        for="next_hop_ip">Next hop IP:</label>
+      <input class="w-full p-2 mb-1" type="text" name="next_hop_ip"
+        id="next_hop_ip" placeholder="e.g. 192.168.1.1"
+        oninput="ValidateIPaddressStaticRouting('next_hop_ip','next_hop_ip_info')">
+      <span id="next_hop_ip_info"></span>
+    </div>
+  </div>
+  <button type="button" disabled="true" class="config_item btn max-w-xs" id="add_StaticRoute_button"
+    onclick="addRoute(); add_to_config('static_routing')">
+    Add Route</button>
+  <div id="added_routes" class="config_item">
+    added Routes:</div>
+  <div class="config_item" id="staticRouting_info"></div>
+  <input name="staticRouting_info_for_transfer" id="staticRouting_info_for_transfer" style="display: none;"></input>
+</div>
 
-  <script>
-    let Networks_Array = collectIPAddresses(document.getElementById('static_routes').value);
+<script>
+  let Networks_Array = collectIPAddresses(document.getElementById('static_routes').value);
 
-    for (let i = 0; i < Networks_Array.length; i=i+3){
-      let routeInfo = "Target IP: " + Networks_Array[i] + "<br>Subnet Mask: " +  Networks_Array[i+1] + "<br>Next hop IP: " +  Networks_Array[i+2] + "<br><br>";
-      document.getElementById('staticRouting_info').innerHTML += routeInfo;
-    }
-  </script>
+  for (let i = 0; i < Networks_Array.length; i=i+3){
+    let routeInfo = "Target IP: " + Networks_Array[i] + "<br>Subnet Mask: " +  Networks_Array[i+1] + "<br>Next hop IP: " +  Networks_Array[i+2] + "<br><br>";
+    document.getElementById('staticRouting_info').innerHTML += routeInfo;
+  }
+</script>
 
 {% endblock content %}

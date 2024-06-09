@@ -1,98 +1,176 @@
-{% extends 'master.html' %}
+{% extends 'master.html' %} {% block content %}
 
-{% block content %}
+<div class="menu-content" id="menu1">
+  <h2 class="font-bold text-neutral-500 text-2xl pb-5">
+    Etherchannel (LACP) Configuration
+  </h2>
 
+  <hr class="border-neutral-800 mb-4" />
 
-
-<div class="menu-content bg-base-200 rounded-lg mb-4 p-8" id="menu1">
-    <h2 class="font-extrabold text-2xl pb-5">Etherchannel (LACP) Configuration</h2>
-    <h3 class="font-extrabold text-2xl pb-5">Create new Channel Group:</h3>
-    <div class="relative flex items-center gap-3">
-        <label id="Hostname"
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">Group-ID:</label>
-        <input placeholder="e.g. 1" class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text"
-            size="15" id="etherchannel_id" name="etherchannel_id" oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')">
-        <span id="etherchannel_id_info"></span>
+  <h3 class="font-bold text-neutral-500 text-2xl pb-5">
+    Create new Channel Group:
+  </h3>
+  <div class="flex flex-col gap-4">
+    <div class="relative flex items-center">
+      <label id="Hostname" class="absolute -top-6 left-0 px-2 text-neutral-500"
+        >Group-ID:</label
+      >
+      <input
+        placeholder="e.g. 1"
+        class="w-full p-2 mb-1"
+        type="text"
+        size="15"
+        id="etherchannel_id"
+        name="etherchannel_id"
+        oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')"
+      />
+      <span id="etherchannel_id_info"></span>
     </div>
-    <br>
-    <div class="relative" id="ip-form">
-        <label for="input"
-          class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">
-          IP address:
-        </label>
-        <input placeholder="ip address" class="input !pl-3 !outline-offset-0 input-bordered !w-full"
-          type="text" id="etherchannel_ip" name="etherchannel_ip"
-          oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')">
-      </div>
 
-      <div class="relative" id="ip-form">
-        <label
-          class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-          for="subnetMask">Subnet mask:</label>
-        <input class="input !pl-3 !outline-offset-0 input-bordered !w-full" type="text" name="etherchannel_sm"
-          id="etherchannel_sm" placeholder="e.g. 255.255.255.0"
-          oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')">
-        <div id="result_etherchannel"></div>
-      </div>
+    <div class="relative" id="ip-form">
+      <label for="input" class="absolute -top-6 left-0 px-2 text-neutral-500">
+        IP address:
+      </label>
+      <input
+        placeholder="ip address"
+        class="w-full p-2 mb-1"
+        type="text"
+        id="etherchannel_ip"
+        name="etherchannel_ip"
+        oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')"
+      />
+    </div>
+
+    <div class="relative" id="ip-form">
+      <label
+        class="absolute -top-6 left-0 px-2 text-neutral-500"
+        for="subnetMask"
+        >Subnet mask:</label
+      >
+      <input
+        class="w-full p-2 mb-1"
+        type="text"
+        name="etherchannel_sm"
+        id="etherchannel_sm"
+        placeholder="e.g. 255.255.255.0"
+        oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')"
+      />
+      <div id="result_etherchannel"></div>
     </div>
   </div>
-    <p></p>
+</div>
 
-    <button type="button" class="config_item btn max-w-xs" id="add_etherchannel_button"
-        onclick="addChannelGroup(); add_to_config('etherchannel');">create Channel Group</button>
-    <p></p>
-    <div id="created_vlans" class="config_item">
-        created Channel Groups:</div>
-    <div class="config_item" id="etherchannel_info"></div>
-    <input name="etherchannel_info_for_transfer" id="etherchannel_info_for_transfer" value="{{ etherchannel_channel_groups }}"></input>
+<br />
 
-    <h3 class="font-extrabold text-2xl pb-5">Assign Channel Groups to Interfaces (add some Channel Groups bevore this step)</h3>
+<button
+  type="button"
+  class="config_item btn max-w-xs"
+  id="add_etherchannel_button"
+  onclick="addChannelGroup(); add_to_config('etherchannel');"
+>
+  create Channel Group
+</button>
 
-    <label class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-        id="Banner">Choose Interface:</label>
-    <select name="etherchannel_interface" id="etherchannel_interface"
-        class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" onchange="checkInterfaceEtherchannel()">
-        <option value=""></option>
-        {% for interface in interfaces %}
-        <option id="etherchannel_{{ interface }}" name="etherchannel_{{ interface }}" value="{{ interface }}">{{ interface }}</option>
-        {% endfor %}
-    </select>
+<hr class="border-neutral-800 my-4" />
 
-    <label class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-        id="Banner">Mode:</label>
-    <select name="etherchannel_interface_mode" id="etherchannel_interface_mode"
-        class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs">
-        <option value="active">Mode Active</option>
-        <option value="passive">Mode passive</option>
-    </select>
+<div id="created_vlans" class="config_item">Created Channel Groups:</div>
 
-    <div id="etherchannel_interface_config">
-        <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-            id="Banner">Choose Channel Group:</label>
-        <select name="etherchannel_select_id" id="etherchannel_select_id" onchange="checkInterfaceEtherchannel()"
-            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs ">
-            <option value=""></option>
+<hr class="border-neutral-800 my-4" />
+
+<div class="config_item" id="etherchannel_info"></div>
+<input
+  name="etherchannel_info_for_transfer"
+  id="etherchannel_info_for_transfer"
+  value="{{ etherchannel_channel_groups }}"
+/>
+
+<h3 class="font-bold text-neutral-500 text-2xl pb-5">
+  Assign Channel Groups to Interfaces (add some Channel Groups bevore this step)
+</h3>
+
+<div class="flex flex-col gap-4">
+    <div class="relative" id="ip-form">
+        <label class="absolute -top-6 left-0 px-2 text-neutral-500" id="Banner"
+          >Choose Interface:</label
+        >
+        <select
+          name="etherchannel_interface"
+          id="etherchannel_interface"
+          class="w-full p-2 mb-1"
+          onchange="checkInterfaceEtherchannel()"
+        >
+          <option value=""></option>
+          {% for interface in interfaces %}
+          <option
+            id="etherchannel_{{ interface }}"
+            name="etherchannel_{{ interface }}"
+            value="{{ interface }}"
+          >
+            {{ interface }}
+          </option>
+          {% endfor %}
         </select>
-    </div>
+      </div>
+      
+      <div class="relative" id="ip-form">
+        <label class="absolute -top-6 left-0 px-2 text-neutral-500" id="Banner"
+          >Mode:</label
+        >
+        <select
+          name="etherchannel_interface_mode"
+          id="etherchannel_interface_mode"
+          class="w-full p-2 mb-1"
+        >
+          <option value="active">Mode Active</option>
+          <option value="passive">Mode passive</option>
+        </select>
+      </div>
+      
+      <div id="etherchannel_interface_config" class="relative">
+        <label class="absolute -top-6 left-0 px-2 text-neutral-500" id="Banner"
+          >Choose Channel Group:</label
+        >
+        <select
+          name="etherchannel_select_id"
+          id="etherchannel_select_id"
+          onchange="checkInterfaceEtherchannel()"
+          class="w-full p-2 mb-1"
+        >
+          <option value=""></option>
+        </select>
+      </div>
+</div>
 
-    <button type="button" class="config_item btn max-w-xs" id="add_etherchannel_interface_button"
-        onclick="addChannelGroupToInterface(); add_to_config('etherchannel');">add Channel Group to Interface</button>
+<br />
 
-    <div id="created_vlans" class="config_item">
-        added Interfaces:</div>
-    <div class="config_item" id="etherchannel_interfaces_info"></div>
-    <input name="etherchannel_interfaces_info_for_transfer" id="etherchannel_interfaces_info_for_transfer"
-        value="{{ etherchannel_channel_groups }}"></input>
+<button
+  type="button"
+  class="config_item btn max-w-xs"
+  id="add_etherchannel_interface_button"
+  onclick="addChannelGroupToInterface(); add_to_config('etherchannel');"
+>
+  Add Channel Group to Interface
+</button>
 
+<hr class="border-neutral-800 my-4" />
 
-    <script>
-        document.getElementById("add_etherchannel_button").disabled = true;
-        document.getElementById("etherchannel_info_for_transfer").style.display = 'none';
-        document.getElementById("etherchannel_interfaces_info_for_transfer").style.display = 'none';
-        document.getElementById("add_etherchannel_interface_button").disabled = true;
-        checkInterfaceEtherchannel()
-    </script>
+<div id="created_vlans" class="config_item">Added Interfaces:</div>
+<div class="config_item" id="etherchannel_interfaces_info"></div>
+<input
+  name="etherchannel_interfaces_info_for_transfer"
+  id="etherchannel_interfaces_info_for_transfer"
+  value="{{ etherchannel_channel_groups }}"
+/>
 
+<script>
+  document.getElementById("add_etherchannel_button").disabled = true;
+  document.getElementById("etherchannel_info_for_transfer").style.display =
+    "none";
+  document.getElementById(
+    "etherchannel_interfaces_info_for_transfer"
+  ).style.display = "none";
+  document.getElementById("add_etherchannel_interface_button").disabled = true;
+  checkInterfaceEtherchannel();
+</script>
 
 {% endblock content %}

@@ -7,23 +7,22 @@
 <input type="hidden" id="rip_sum_state_for_input" value="{{ rip_sum_state }}">
 <input type="hidden" id="rip_originate_state_for_input" value="{{ rip_originate_state }}">
 
-<div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
+<div class="menu-content rounded-lg flex flex-col h-full" id="menu3">
     <h2 class="font-extrabold text-2xl pb-5">Routing Configuration</h2>
-    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
+    <div class="rounded-2xl mb-4 flex flex-col gap-4">
       <h3 class="config_item flex items-center gap-3" id="">
         <input class="toggle toggle-accent" type="checkbox" name="rip_state" id="rip_state"
           onchange="updateStateDescription('rip_state', 'rip_state_description'); add_to_config('rip')">
         Dynamic Routing - RIP<span id="rip_state_description">
           (off)</span>
       </h3>
-      <h1></h1>
 
       <div class="config_item" id="ip-form">
         <div class="relative flex items-center gap-3">
           <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
+            class="absolute -top-6 left-0 px-2 text-neutral-500"
             for="description">Network/s:</label>
-          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text"
+          <input class="w-full p-2 mb-1" type="text"
             name="networks_input_routing" id="networks_input_routing"
             placeholder="seperate multiple networks with ( , )"
             oninput="ValidateIPaddressesDynamicRouting('networks_input_routing','networks_input_routing_info'); add_to_config('rip')" value="{{ rip_networks }}">
@@ -35,9 +34,9 @@
       <div class="config_item" id="ip-form">
         <div class="relative flex items-center gap-3">
           <label for="dropdown"
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300">Version:</label>
+            class="absolute -top-6 left-0 px-2 text-neutral-500">Version:</label>
           <select name="dropdown_rip_version"
-            class="input !pl-3 !outline-offset-0 select select-bordered w-full max-w-xs" id="dropdown_rip_version"
+            class="w-full p-2 mb-1" id="dropdown_rip_version"
             onchange="handleDropdownChange(); add_to_config('rip')">
             <option name="version1" value="2">Version 2</option>
             <option name="version2" value="1">Version 1</option>
@@ -46,7 +45,9 @@
       </div>
     </div>
 
-    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-2">
+    <hr class="border-neutral-800 mb-4">
+
+    <div class="bg-[#121212] p-4 rounded-2xl mb-4 flex flex-col gap-2">
       <div class="config_item flex items-center gap-3" id="ip-form">
         <input class="toggle toggle-accent" type="checkbox" name="sum_state" id="sum_state"
           onchange="updateStateDescription('sum_state', 'sum_state_description'); add_to_config('rip')">
