@@ -523,7 +523,10 @@ class ConfigManager:
             return Interface("", "", "", False, False, "", True, "", "")
         interfaceText = self.configEditor.getContentBetweenIndexes(InterfaceLines[0], InterfaceLines[-1])
 
-        intName, ip, sm, desc, shutdown, vlans, channelGroups = None, None, None, "Default", False, "", ""
+        intName, ip, sm, desc, shutdown, vlans, channelGroups = None, None, None, "Default", False, False, False
+        #vlans and channelgroups are set to false, it is used as a a flag to check if any of the values have been configured, then the flags are set to the velues of the configuration
+
+
 
         channelGroupName = ""
         channelGroupMode = ""
@@ -537,9 +540,11 @@ class ConfigManager:
                 intName = intLine.split(" ")[1]
             elif intLine.startswith("switchport"):
                 if intLine.startswith("switchport mode access"):
+                    vlans = True
                     vlanMode = "access"
                     #^ switchport mode trunk
                 elif intLine.startswith("switchport mode trunk"):
+                    vlans = True
                     vlanMode = "trunk"
                     #^ switchport mode trunk
 
@@ -558,6 +563,7 @@ class ConfigManager:
                     #the access mode only has vlan, so i set both to the same value, because the 
                     #allowed vlan is not used in access mode
             elif intLine.startswith("channel-group"):
+                channelGroups = True
                 channelGroupName = intLine.split(" ")[1]
                 channelGroupMode = intLine.split(" ")[3]
             elif intLine.startswith("description"):
@@ -572,8 +578,20 @@ class ConfigManager:
                     ip = intLine.split(" ")[1]
                     sm = ""
 
-            vlans = vlanMode + "," + vlanNative + "," + vlanAllowed + ","
-            channelGroups = channelGroupMode + "," + channelGroupName
+            if vlans: #checks if the flag has been set
+                vlans = vlanMode + "," + vlanNative + "," + vlanAllowed + ","
+            else:
+                vlans = ""
+
+            if channelGroups: #checks if the flag has been set
+                channelGroups = channelGroupMode + "," + channelGroupName
+            else:
+                channelGroups = ""
+
+            if ip == None:
+                ip = ""
+            if sm == None:
+                sm = ""
 
             return SwitchInterface(intName, ip, sm, desc, shutdown, vlans, channelGroups)
 
