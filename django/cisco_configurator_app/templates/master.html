@@ -8,11 +8,14 @@
   <title>Cisco Configurator 2.0</title>
   <script src="{% static 'input_checks.js' %}"></script>
   <link href="{% static 'src/styles.css' %}" rel="stylesheet">
+  <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
 </head>
 
-<body>
+<body style="min-height: 100vh; min-height: 100svh;" class="grid-box-design bg-[#0a0a0a]">
   <!-- hidden input form to forward the user input into the backend if another site gets opened -->
-  <form method="post" id="inputs_form" action="{% url 'get_inputs_route' device_type=device_type config_mode=config_mode %}" class="menu-form">    {% csrf_token %}
+  <form method="post" id="inputs_form"
+    action="{% url 'get_inputs_route' device_type=device_type config_mode=config_mode %}" class="menu-form"> {%
+    csrf_token %}
 
     <input type="hidden" id="hidden_forward_to" name="hidden_forward_to" value="">
     <!-- basic config -->
@@ -74,14 +77,20 @@
     <input type="hidden" id="hidden_vlan_info_for_transfer" name="hidden_vlan_info_for_transfer"> -->
 
     <!-- Etherchannel -->
-    <input type="hidden" id="hidden_etherchannel_interfaces_info_for_transfer" name="hidden_etherchannel_interfaces_info_for_transfer">
+    <input type="hidden" id="hidden_etherchannel_interfaces_info_for_transfer"
+      name="hidden_etherchannel_interfaces_info_for_transfer">
     <input type="hidden" id="hidden_etherchannel_info_for_transfer" name="hidden_etherchannel_info_for_transfer">
 
   </form>
 
-  <div class="menu-container justify-between flex py-2 pt-10 items-center">
-    <a class="menu-button btn min-h-0 h-[2.5rem]" href="{%  url 'index_route' %}">
-      <h1 id="heading" class="text-3xl text-green-800">Cisco Configurator 2.0</h1>
+  <div
+    class="menu-container justify-between flex py-2 pt-10 items-center   absolute top-0 p-[1rem] w-full px-32 h-20 bg-neutral-950 border-b border-b-neutral-800">
+    <a href="{%  url 'index_route' %}"
+      class="hover:border-neutral-600 text-neutral-600 border border-neutral-800 flex gap-4 rounded-lg p-2 pr-4 items-center">
+      <img class="h-8" src="{% static 'favicon.png' %}" alt="logo" />
+      <h1 class="text-lg">
+        Cisco Configurator 2.0
+      </h1>
     </a>
     <div class="flex gap-2">
       {% if device_type == "router" %}
@@ -92,12 +101,14 @@
           <option value="router">Router</option>
         </select>
         <button type="submit" class="btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path></svg>
           Return to start
         </button>
       </form>
 
 
-      <button type="button" class="menu-button" id="basic-config-button" name="basic-config-button" onclick="submitForm('basic_config')">
+      <button type="button" class="menu-button" id="basic-config-button" name="basic-config-button"
+        onclick="submitForm('basic_config')">
         Hostname & Banner (Basic Config)
       </button>
 
@@ -112,7 +123,7 @@
       <button type="button" class="menu-button" onclick="submitForm('dhcp')">
         DHCP
       </button>
-      
+
       <button type="button" class="menu-button" onclick="submitForm('rip')">
         RIP
       </button>
@@ -133,7 +144,8 @@
         Extended ACL
       </button>
 
-      <form method="post" action="{% url 'etherchannel_route' device_type='router' config_mode=config_mode %}" class="menu-form">
+      <form method="post" action="{% url 'etherchannel_route' device_type='router' config_mode=config_mode %}"
+        class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="router">Router</option>
@@ -159,7 +171,8 @@
         Hostname & Banner (Basic Config)
       </button>
 
-      <form method="post" action="{% url 'etherchannel_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
+      <form method="post" action="{% url 'etherchannel_route' device_type='switch'  config_mode=config_mode %}"
+        class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
@@ -169,7 +182,7 @@
         </button>
       </form>
 
-<!-- 
+      <!-- 
       <button type="button" class="menu-button" id="basic-config-button" name="basic-config-button" onclick="submitForm('vlan')">
         VLAN
       </button> -->
@@ -182,7 +195,8 @@
         Extended ACL
       </button>
 
-      <form method="post" action="{% url 'vtp_dtp_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
+      <form method="post" action="{% url 'vtp_dtp_route' device_type='switch'  config_mode=config_mode %}"
+        class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
@@ -192,7 +206,8 @@
         </button>
       </form>
 
-      <form method="post" action="{% url 'stp_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
+      <form method="post" action="{% url 'stp_route' device_type='switch'  config_mode=config_mode %}"
+        class="menu-form">
         {% csrf_token %}
         <select name="deviceType" id="deviceType" style="display: none;">
           <option value="switch">Switch</option>
@@ -216,7 +231,7 @@
   if you see this, something is wrong!
   {% endblock content %}
 
-{% comment %} <div class="uebertragung-content  bg-base-200 rounded-lg p-8">
+  {% comment %} <div class="uebertragung-content  bg-base-200 rounded-lg p-8">
     <h2 id="heading-uebertragen" class="font-extrabold text-2xl pb-5">Transfer or Download Configuration</h2>
     <!-- <form id="download" method="post" action="{% url
                     'router_transfer_config_route' %}" enctype="multipart/form-data"> -->
@@ -241,22 +256,36 @@
   </div>
   <br>
   <div class="menu-button border-base-300" id="download">
-    <button class="font-bold btn btn-accent !rounded-xl w-full min-h-0  text-2xl" type="button"
-      id="transferButton" onclick="submitForm('index')">Submit</button>
+    <button class="font-bold btn btn-accent !rounded-xl w-full min-h-0  text-2xl" type="button" id="transferButton"
+      onclick="submitForm('index')">Submit</button>
   </div> {% endcomment %}
   <h2 id="heading-uebertragen" class="font-extrabold text-2xl pb-5">Transfer or Download Configuration</h2>
-    <div style='margin-top: 20px;'>
-        <input id="ipAddress"type="text" name="ipAddress" placeholder="10.0.0.1" oninput="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')">
-        <input id="username" type="text" name="username" placeholder="admin">
-        <input id="password" type="password" name="password" placeholder="*****">
-        <select id="dl_or_tf" name="dl_or_tf" onchange="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')">
-          <option name="download" value="download">Download</option>
-          <option name="transfer" value="transfer">Transfer</option>
-        </select>
-        <button id="transferButton" type="button" onclick="submitForm('index', document.getElementById('dl_or_tf').value, document.getElementById('ipAddress').value, document.getElementById('username').value, document.getElementById('password').value)">Submit</button>
-        <div id="transfer_info"></div>
-    </div>
+  <div style='margin-top: 20px;'>
+    <input id="ipAddress" type="text" name="ipAddress" placeholder="10.0.0.1"
+      oninput="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')">
+    <input id="username" type="text" name="username" placeholder="admin">
+    <input id="password" type="password" name="password" placeholder="*****">
+    <select id="dl_or_tf" name="dl_or_tf"
+      onchange="ValidateFooter('ipAddress','transfer_info', 'transferButton', 'dl_or_tf')">
+      <option name="download" value="download">Download</option>
+      <option name="transfer" value="transfer">Transfer</option>
+    </select>
+    <button id="transferButton" type="button"
+      onclick="submitForm('index', document.getElementById('dl_or_tf').value, document.getElementById('ipAddress').value, document.getElementById('username').value, document.getElementById('password').value)">Submit</button>
+    <div id="transfer_info"></div>
+  </div>
 
+  <style>
+    .grid-box-design {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.06)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+    }
+
+    .shadow-popup {
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+        rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+        rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+  </style>
 </body>
 
 <script>
