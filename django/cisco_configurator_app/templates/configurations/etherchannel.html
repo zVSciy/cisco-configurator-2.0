@@ -122,9 +122,10 @@
         //etherchannel interfaces
         let etherchannel_interfaces_string = document.getElementById('etherchannel_interfaces_info_for_transfer').value;
         let etherchannel_interfaces = etherchannel_interfaces_string.split(';');
+        let filtered_etherchannel_interfaces = etherchannel_interfaces.filter(item => item.includes("Ethernet"));
 
-        for (let i = 0; i < etherchannel_interfaces.length; i=i+1){
-            let splitttedInterface = etherchannel_interfaces[i].split(',')
+        for (let i = 0; i < filtered_etherchannel_interfaces.length; i=i+1){
+            let splitttedInterface = filtered_etherchannel_interfaces[i].split(',')
             let etherchannelInfo = "<b>Interface: </b>" + splitttedInterface[0] +  "<b> Mode: </b>" + splitttedInterface[2] + "<b> Channel-Group: </b>" + splitttedInterface[1] +'<br><br>';
 
             if (isNaN(splitttedInterface[1])  == false){
