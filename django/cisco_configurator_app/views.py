@@ -87,6 +87,10 @@ def etherchannel(request, device_type, config_mode):
         "etherchannel_channel_groups": '', #! get etherchannel channel groups  from the config
         "etherchannel_interfaces": ''#! get the interfaces with their channel group configuration added  from the config
     }
+
+    channel_groups = cm.getAllSwitchInterfaces()
+
+
     return render(request, 'configurations/etherchannel.html', config_option)
 
 #region vlan view
@@ -472,13 +476,6 @@ def get_inputs(request, device_type, config_mode):
         # vlan_vlans = request.POST.get('hidden_vlan_info_for_transfer')
         # vlan_interfaces = request.POST.get('hidden_vlan_interfaces_info_for_transfer')
 
-########################################################################
-
-#region etherchannel inputs
-
-    #etherchannel
-    etherchannel_interfaces = request.POST.get('hidden_etherchannel_interfaces_info_for_transfer')
-    ethcerchannel_channel_groups = request.POST.get('hidden_etherchannel_info_for_transfer')
 
 ########################################################################
 
@@ -619,6 +616,8 @@ def get_inputs(request, device_type, config_mode):
 ########################################################################
 
 #region SWITCH: etherchannel
+        etherchannel_channel_groups = request.POST.get('hidden_etherchannel_info_for_transfer')
+        etherchannel_interfaces = request.POST.get('hidden_etherchannel_interfaces_info_for_transfer')
 
 ########################################################################
 
