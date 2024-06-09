@@ -93,7 +93,7 @@ class SwitchInterface:
         
     # Convert the interface information to a configuration list
     def toConfig(self) -> list:
-        shutdown = "shutdown\n" if self.shutdown else "no shutdown\n"
+        shutdown = " shutdown\n" if self.shutdown else " no shutdown\n"
         config = []
         #! NOT WORKING YET - NEED TO IMPLEMENT
             #^ only working for itself
@@ -119,6 +119,8 @@ class SwitchInterface:
             config.append(f' channel-group {self.channelID} mode {self.channelMode}\n')
             config.append(f' description {self.description}\n')
             config.append(shutdown)
+            config.append('!\n')
+
 
         elif len (self.vlans) > 0 and len(self.channelGroups) > 0 and self.vlanMode == 'trunk':
             config.append(f"interface {self.vlanInt}\n")
