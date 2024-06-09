@@ -157,34 +157,6 @@
         VLAN
       </button> -->
 
-      <button type="button" class="menu-button" onclick="submitForm('acl_basic')">
-        Basic ACL
-      </button>
-
-      <button type="button" class="menu-button" onclick="submitForm('acl_extended')">
-        Extended ACL
-      </button>
-
-      <form method="post" action="{% url 'vtp_dtp_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="switch">Switch</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          VTP & DTP
-        </button>
-      </form>
-
-      <form method="post" action="{% url 'stp_route' device_type='switch'  config_mode=config_mode %}" class="menu-form">
-        {% csrf_token %}
-        <select name="deviceType" id="deviceType" style="display: none;">
-          <option value="switch">Switch</option>
-        </select>
-        <button type="submit" class="menu-button btn min-h-0 h-[2.5rem] bg-base-300 border-base-300">
-          STP
-        </button>
-      </form>
-
       {% endif %}
 
     </div>

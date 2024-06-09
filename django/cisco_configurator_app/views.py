@@ -88,7 +88,9 @@ def etherchannel(request, device_type, config_mode):
         "etherchannel_interfaces": ''#! get the interfaces with their channel group configuration added  from the config
     }
 
-    channel_groups = cm.getAllSwitchInterfaces()
+    interfaces = cm.getAllSwitchInterfaces()
+    for interface in interfaces:
+        print(interface.channelGroups)
 
 
     return render(request, 'configurations/etherchannel.html', config_option)
@@ -616,14 +618,27 @@ def get_inputs(request, device_type, config_mode):
 ########################################################################
 
 #region SWITCH: etherchannel
-        etherchannel_channel_groups = request.POST.get('hidden_etherchannel_info_for_transfer')
-        etherchannel_interfaces = request.POST.get('hidden_etherchannel_interfaces_info_for_transfer')
+        # etherchannel_channel_groups = request.POST.get('hidden_etherchannel_info_for_transfer')
+        # etherchannel_interfaces = request.POST.get('hidden_etherchannel_interfaces_info_for_transfer')
 
     if device_type == 'switch':
 
         #switch etherchannel
+
+
+
         etherchannel_interfaces = request.POST.get('hidden_etherchannel_interfaces_info_for_transfer')
         etherchannel_data = request.POST.get('hidden_etherchannel_info_for_transfer')
+
+        etherchannel_interfaces_splitted = ensure_twice(etherchannel_interfaces.split(';')[:-1])
+
+        for i in etherchannel_interfaces_splitted: #format the input string and make an switch interface
+            i = i.split(',')
+            formattedChannelGroup = f"{i[1]},{i[0]}" #channelMode,channelId
+
+            interface = SwitchInterface(vlanInt=i[2],assignChannelGroups = formattedChannelGroup)
+
+            cm.writeSwitchInterface(interface)
 
 
 ########################################################################
