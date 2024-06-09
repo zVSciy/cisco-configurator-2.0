@@ -92,6 +92,20 @@
         document.getElementById("etherchannel_interfaces_info_for_transfer").style.display = 'none';
         document.getElementById("add_etherchannel_interface_button").disabled = true;
         checkInterfaceEtherchannel()
+
+
+        //Input forwarding to frontend
+
+        let etherchannel_interfaces_string = collectIPAddresses(document.getElementById('etherchannel_interfaces_info_for_transfer').value);
+        etherchannel_interfaces = etherchannel_interfaces_string.split(';');
+
+        for (let i = 0; i < etherchannel_interfaces.length; i=i+1){
+            let splitttedInterface = etherchannel_interfaces[i].split(',')
+            let etherchannelInfo = "<b>ID: </b>" + splitttedInterface[0] +  "<b> IP: </b>" + splitttedInterface[1] + "<b> SM: </b>" + splitttedInterface[2] +'<br><br>';
+
+            document.getElementById('nat_info').innerHTML += etherchannelInfo;
+        }
+
     </script>
 
 

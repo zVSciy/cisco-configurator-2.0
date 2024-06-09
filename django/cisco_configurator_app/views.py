@@ -91,7 +91,7 @@ def etherchannel(request, device_type, config_mode):
     interfaces = cm.getAllSwitchInterfaces() # get the etherchannel interface data
     for interface in interfaces:
         if interface.channelGroups != []:
-            config_option["etherchannel_interfaces"] += interface.vlanInt+','+interface.channelGroups+ ';'
+            config_option["etherchannel_interfaces"] += interface.vlanInt+','+str(interface.channelGroups[0])+ ';'
         
         if "Etherchannel" in interface.vlanInt:
             channelId = interface.vlanInt.replace("Etherchannel", "")
