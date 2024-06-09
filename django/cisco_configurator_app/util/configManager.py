@@ -581,12 +581,12 @@ class ConfigManager:
             if vlans: #checks if the flag has been set
                 vlans = vlanMode + "," + vlanNative + "," + vlanAllowed + ","
             else:
-                vlans = ""
+                vlans = None
 
             if channelGroups: #checks if the flag has been set
                 channelGroups = channelGroupMode + "," + channelGroupName
             else:
-                channelGroups = ""
+                channelGroups = None
 
             if ip == None:
                 ip = ""
@@ -599,7 +599,7 @@ class ConfigManager:
         """
         Writes the interface object to the config file\n
         """
-        interfaceLines = self.configEditor.findContentIndexes("interface " + interface.interface, "!")
+        interfaceLines = self.configEditor.findContentIndexes("interface " + interface.vlanInt, "!")
         if(len(interfaceLines) > 0 and interfaceLines != None):
             self.configEditor.removeContentBetweenIndexes(interfaceLines[0], interfaceLines[-1])
         self.configEditor.appendContentToFile(interface.toConfig())

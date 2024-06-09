@@ -34,13 +34,35 @@ class SwitchDeviceInfo:
 # Define a class to store interface information
 class SwitchInterface:
     # Initialize the class with various parameters
-    def __init__(self, vlanInt:str = None, assignChannelGroups:str = None) -> None:
-        # Check if the interface is a string and store it
+    def __init__(self, vlanInt:str = None, ip:str = None, sm:str = None, description:str = "Default", shutdown:bool = False, vlans:str = None, assignChannelGroups:str = None) -> None:        # Check if the interface is a string and store it
         if type(vlanInt) == str:
             self.vlanInt = vlanInt
         else:
             raise TypeError()
         
+
+        self.vlans = []
+        if type(vlans) == str:
+            self.getVLANs(vlans)
+
+        # Check if the ip is a string and store it, also validate if IP is set to DHCP and subnet mask is provided
+        if type(ip) == str:
+            self.ip = ip
+            if ip.lower() == "dhcp" and sm != '':
+                raise ValueError("Subnet mask should not be provided when IP is set to DHCP")
+
+        # Check if the subnet mask is a string or None and store it
+        if type(sm) == str or sm is None:
+            self.sm = sm
+
+        # Check if the description is a string and store it
+        if type(description) == str:
+            self.description = description
+
+        # Check if the shutdown status is a boolean and store it, convert it to a string representation
+        if type(shutdown) == bool:
+            self.shutdown = shutdown
+
         self.channelGroups = []
         if type(assignChannelGroups) == str:
             self.getAssignChannelGroups(assignChannelGroups)
