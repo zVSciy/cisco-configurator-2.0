@@ -427,7 +427,10 @@ function checkBasicAclId(){
     message.textContent = "";
     return false;
   }else if (id == '99'){
-    message.textContent = "ID 99 not possible";
+    message.textContent = "ID 99 is reserved for NAT";
+    return false;
+  }else if (Number(id) < 1 || Number(id)>99){
+    message.textContent = "Only 1-98 allowed";
     return false;
   }else {
     message.textContent = "";
@@ -479,6 +482,12 @@ function checkExtendedAclId(){
 
   if (id == ''){
     message.textContent = "";
+    return false;
+  }else if (id == '99'){
+    message.textContent = "ID 99 is reserved for NAT";
+    return false;
+  }else if (Number(id) < 100 || Number(id)>199){
+    message.textContent = "Only 100-199 allowed";
     return false;
   }else {
     message.textContent = "";
