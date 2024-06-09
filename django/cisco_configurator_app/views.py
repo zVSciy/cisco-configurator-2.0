@@ -91,10 +91,11 @@ def etherchannel(request, device_type, config_mode):
     interfaces = cm.getAllSwitchInterfaces() # get the etherchannel interface data
     for interface in interfaces:
         if interface.channelGroups != []:
-            config_option["etherchannel_interfaces"].append(interface.vlanInt+','+interface.channelGroups)
+            config_option["etherchannel_interfaces"] += interface.vlanInt+','+interface.channelGroups+ ';'
         
         if "Etherchannel" in interface.vlanInt:
-            config_option["etherchannel_channel_groups"].append(interface.vlanInt[:-1]+','+interface.channelGroups)
+            channelId = interface.vlanInt.replace("Etherchannel", "")
+            config_option["etherchannel_channel_groups"] += channelId+','+interface.ip + ','+ interface.sm + ';'
 
 
     return render(request, 'configurations/etherchannel.html', config_option)
