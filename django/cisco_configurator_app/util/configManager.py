@@ -578,22 +578,22 @@ class ConfigManager:
                     ip = intLine.split(" ")[1]
                     sm = ""
 
-            if vlans: #checks if the flag has been set
-                vlans = vlanMode + "," + vlanNative + "," + vlanAllowed + ","
-            else:
-                vlans = None
+        if vlans: #checks if the flag has been set
+            vlans = vlanMode + "," + vlanNative + "," + vlanAllowed + ","
+        else:
+            vlans = None
 
-            if channelGroups: #checks if the flag has been set
-                channelGroups = channelGroupMode + "," + channelGroupName
-            else:
-                channelGroups = None
+        if channelGroups: #checks if the flag has been set
+            channelGroups = channelGroupMode + "," + channelGroupName
+        else:
+            channelGroups = None
 
-            if ip == None:
-                ip = ""
-            if sm == None:
-                sm = ""
+        if ip == None:
+            ip = ""
+        if sm == None:
+            sm = ""
 
-            return SwitchInterface(intName, ip, sm, desc, shutdown, vlans, channelGroups)
+        return SwitchInterface(intName, ip, sm, desc, shutdown, vlans, channelGroups)
 
     def writeSwitchInterface(self, interface: SwitchInterface) -> None:
         """
@@ -620,10 +620,10 @@ class ConfigManager:
     
     def getAllPortchannelInterfaces(self) -> list[SwitchInterface]:
         """
-        Returns a list of all Interface objects in the config file\n
-        It searches for the "interface Port-channel" keyword and reads the configuration of each interface\n
+        Returns a list of all Etherchannel Interface objects in the config file\n
+        It searches for the "interface Etherchannel" keyword and reads the configuration of each interface\n
         """
-        InterfacesLines = self.configEditor.findMultipleContentIndexes("interface Port-channel")
+        InterfacesLines = self.configEditor.findMultipleContentIndexes("interface Etherchannel")
         returnInterfaceObjects = []
         for interfaceIndexes in InterfacesLines:
             interfaceText = self.configEditor.getContentOnIndex(interfaceIndexes[0])
