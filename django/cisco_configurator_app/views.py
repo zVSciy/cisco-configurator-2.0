@@ -88,9 +88,13 @@ def etherchannel(request, device_type, config_mode):
         "etherchannel_interfaces": ''#! get the interfaces with their channel group configuration added  from the config
     }
 
-    interfaces = cm.getAllSwitchInterfaces()
+    interfaces = cm.getAllSwitchInterfaces() # get the etherchannel interface data
     for interface in interfaces:
-        print(interface.channelGroups)
+        if interface.channelGroups != []:
+            config_option["etherchannel_interfaces"].append(interface.vlanInt+','+interface.channelGroups)
+        
+        if "Etherchannel" in interface.vlanInt:
+            config_option["etherchannel_channel_groups"].append(interface.vlanInt[:-1]+','+interface.channelGroups)
 
 
     return render(request, 'configurations/etherchannel.html', config_option)
@@ -631,13 +635,24 @@ def get_inputs(request, device_type, config_mode):
         etherchannel_data = request.POST.get('hidden_etherchannel_info_for_transfer')
 
         if etherchannel_interfaces != None:
-            etherchannel_interfaces_splitted = ensure_twice(etherchannel_interfaces.split(';')[:-1])
+            etherchannel_interfaces_splitted = etherchannel_interfaces.split(';')[:-1]
 
             for i in etherchannel_interfaces_splitted: #format the input string and make an switch interface
                 i = i.split(',')
                 formattedChannelGroup = f"{i[1]},{i[0]}" #channelMode,channelId
 
                 interface = SwitchInterface(vlanInt=i[2],assignChannelGroups = formattedChannelGroup)
+
+                cm.writeSwitchInterface(interface)
+
+        if etherchannel_data != None:
+            etherchannel_data_splitted = etherchannel_data.split(';')[:-1]
+
+            for i in etherchannel_data_splitted: #format the input string and make an switch interface
+                i = i.split(',')
+
+
+                interface = SwitchInterface(vlanInt='Etherchannel'+i[0],ip=i[1],sm=i[2])
 
                 cm.writeSwitchInterface(interface)
 
