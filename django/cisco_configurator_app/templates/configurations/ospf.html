@@ -149,10 +149,6 @@
       document.getElementById("ospf_info_for_transfer").style.display = "none";
       document.getElementById("ospf_originate").style.display = "none";
 
-      if (document.getElementById("ospf_autosum").value == "True") {
-        document.getElementById("ospf_sum_state").checked = true;
-        updateStateDescription("ospf_sum_state", "ospf_sum_state_description");
-      }
 
       if (document.getElementById("ospf_originate").value == "True") {
         document.getElementById("ospf_originate_state").checked = true;
