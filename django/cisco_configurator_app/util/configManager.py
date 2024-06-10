@@ -30,7 +30,7 @@ class ConfigManager:
         motdLine = self.configEditor.findContentIndexes("banner motd", "!")
         if len(motdLine) > 0:
             motd = self.configEditor.getContentOnIndex(motdLine[0])
-            #^banner motd ^Chello^C
+            #^banner motd \x03hello\x03
         else:
             motd = ""
 
@@ -41,6 +41,7 @@ class ConfigManager:
             hostName = "DefaultHostname"
         motd = motd.replace("banner motd ", "")
         motd = motd.replace("^C", "")
+        motd = motd.replace("\x03", "")
         return DeviceInfo(hostName, motd)
     
     def writeDeviceInfo(self, deviceInfo: DeviceInfo) -> None:
@@ -302,6 +303,7 @@ class ConfigManager:
         # ^ access-list 1 permit any
         # ^ access-list 2 permit 192.168.1.1 123.123.123.123
         for line in aclText:
+            line = ' '.join(line.split())
             if not line.startswith("access-list"):
                 continue
             if len(ACLs) > 0:
@@ -444,7 +446,7 @@ class ConfigManager:
                 #^ permit tcp 1.1.1.0 0.0.0.255 2.2.2.0 0.0.0.0 eq 10
                 if len(returnAclRulesStr) > 0:
                     returnAclRulesStr += ";"
-
+                line = ' '.join(line.split())
                 permitDeny, protocol, sourceIP, sourceWM, destIP, destWM, eq, port = line.split(" ")
                 returnAclRulesStr += permitDeny + "," + protocol + "," + sourceIP + "," + sourceWM + "," + destIP + "," + destWM + "," + port
         return ACLExtended(returnAclRulesStr, aclName)
@@ -489,7 +491,7 @@ class ConfigManager:
         motdLine = self.configEditor.findContentIndexes("banner motd", "!")
         if len(motdLine) > 0:
             motd = self.configEditor.getContentOnIndex(motdLine[0])
-            #^banner motd ^Chello^C
+            #^banner motd \x03hello\x03
         else:
             motd = ""
 
@@ -500,6 +502,7 @@ class ConfigManager:
             hostName = "DefaultHostname"
         motd = motd.replace("banner motd ", "")
         motd = motd.replace("^C", "")
+        motd = motd.replace("\x03", "")
         return DeviceInfo(hostName, motd)
     
     def writeSwitchDeviceInfo(self, deviceInfo: SwitchDeviceInfo) -> None:
