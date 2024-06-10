@@ -623,7 +623,7 @@ class ConfigManager:
         Returns a list of all Etherchannel Interface objects in the config file\n
         It searches for the "interface Etherchannel" keyword and reads the configuration of each interface\n
         """
-        InterfacesLines = self.configEditor.findMultipleContentIndexes("interface Etherchannel")
+        InterfacesLines = self.configEditor.findMultipleContentIndexes("interface Port-channel")
         returnInterfaceObjects = []
         for interfaceIndexes in InterfacesLines:
             interfaceText = self.configEditor.getContentOnIndex(interfaceIndexes[0])
