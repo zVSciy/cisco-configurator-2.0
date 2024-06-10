@@ -815,14 +815,12 @@ function add_to_config(page) {
     let ospf_process_to_set = document.getElementById('ospf_process').value 
     let ospf_router_id_to_set = document.getElementById('ospf_router_id').value 
     let ospf_info_for_transfer_to_set = document.getElementById('ospf_info_for_transfer').value 
-    let ospf_sum_state_to_set = document.getElementById('ospf_sum_state').checked
     let ospf_originate_state_to_set = document.getElementById('ospf_originate_state').checked
 
 
     document.getElementById('hidden_ospf_process').value = ospf_process_to_set; //true = on | false = off
     document.getElementById('hidden_ospf_router_id').value = ospf_router_id_to_set;
     document.getElementById('hidden_ospf_info_for_transfer').value = ospf_info_for_transfer_to_set;
-    document.getElementById('hidden_ospf_sum_state').value = ospf_sum_state_to_set;
     document.getElementById('hidden_ospf_originate_state').value = ospf_originate_state_to_set;
   }
 
