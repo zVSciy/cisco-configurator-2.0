@@ -50,10 +50,14 @@ class SwitchInterface:
             self.ip = ip
             if ip.lower() == "dhcp" and sm != '':
                 raise ValueError("Subnet mask should not be provided when IP is set to DHCP")
+        else:
+            self.ip = None
 
         # Check if the subnet mask is a string or None and store it
         if type(sm) == str or sm is None:
             self.sm = sm
+        else:
+            self.sm = None
 
         # Check if the description is a string and store it
         if type(description) == str:
@@ -99,7 +103,8 @@ class SwitchInterface:
             #^ only working for itself
         if len (self.vlans) == 0 and len(self.channelGroups) == 0:
             config.append(f'interface {self.vlanInt}\n')
-            config.append(f' ip address {self.ip} {self.sm}\n')
+            if self.ip is not None and self.sm is not None:
+                config.append(f' ip address {self.ip} {self.sm}\n')
             config.append(f' description {self.description}\n')
             config.append(shutdown)
             config.append('!\n')
