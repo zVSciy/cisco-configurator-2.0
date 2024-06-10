@@ -2,7 +2,6 @@
 version: "3"
 
 volumes:
-
   my-django-data:
 
 services:
@@ -16,7 +15,6 @@ services:
 
     working_dir: "/code"
     
-    # the port mapping
     ports:
     - "9000:8000"
 
