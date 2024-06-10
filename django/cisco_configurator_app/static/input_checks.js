@@ -483,12 +483,6 @@ function checkExtendedAclId(){
   if (id == ''){
     message.textContent = "";
     return false;
-  }else if (id == '99'){
-    message.textContent = "ID 99 is reserved for NAT";
-    return false;
-  }else if (Number(id) < 100 || Number(id)>199){
-    message.textContent = "Only 100-199 allowed";
-    return false;
   }else {
     message.textContent = "";
     return true;
@@ -507,7 +501,7 @@ function addExtendedAclIp() {
 
   extended_acl_ids.push(id);
 
-  let networksInfo = "<b>ID: </b>" + id +  "<b> Option: </b>" + pOrD + " <b> Source IP-Address: </b>" + srcIp + "<b>Source Wildcard Mask: </b>" + srcWildcardMask + "<b> Destination IP-Adress: </b>" + destIp + "<b> Destination Wildcard Mask: </b>" + destWildcardMask + "<b> Port: </b>"+ port +'<br><br>';
+  let networksInfo = "<b>Name: </b>" + id +  "<b> Option: </b>" + pOrD + " <b> Source IP-Address: </b>" + srcIp + "<b>Source Wildcard Mask: </b>" + srcWildcardMask + "<b> Destination IP-Adress: </b>" + destIp + "<b> Destination Wildcard Mask: </b>" + destWildcardMask + "<b> Port: </b>"+ port +'<br><br>';
 
   document.getElementById('extended_acl_info').innerHTML += networksInfo;
   document.getElementById('extended_acl_info_for_transfer').value += id + ',' + pOrD + ',' + srcIp + ',' + srcWildcardMask + ',' + destIp + ',' + destWildcardMask + ',' + port + ';';

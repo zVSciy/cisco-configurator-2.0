@@ -13,8 +13,8 @@
           <div class="relative flex items-center">
             <label
               class="absolute -top-6 left-0 px-2 text-neutral-500"
-              for="description">ACL-ID:</label>
-            <input type="number" name="extended_acl_id"
+              for="description">ACL-Name:</label>
+            <input type="text" name="extended_acl_id"
             class="w-full p-2 mb-1" id="extended_acl_id" placeholder="e.g. 1" oninput="checkExtendedAclId(); ValidateExtendedAclNetwork('extended_acl_input_info'); ValidateExtendedAclNetwork('extended_acl_input_info')">
             <span id="extended_acl_id_info"></span>
           </div>
@@ -105,7 +105,7 @@
         let Networks_Array = collectIPAddressesAndAreas(document.getElementById('extended_acl_info_for_transfer').value);
 
         for (let i = 0; i < Networks_Array.length-1; i=i+7){
-          let networksInfo = "<b>ID: </b>" + Networks_Array[i] +  "<b> Option: </b>" + Networks_Array[i+1] + " <b> Source IP-Address: </b>" + Networks_Array[i+2] + "<b> Source Wildcard Mask: </b>" + Networks_Array[i+3] + "<b> Destination IP-Adress: </b>" + Networks_Array[i+4] + "<b> Destination Wildcard Mask: </b>" + Networks_Array[i+5] + "<b> Port: </b>"+ Networks_Array[i+6] +'<br><br>';
+          let networksInfo = "<b>Name: </b>" + Networks_Array[i] +  "<b> Option: </b>" + Networks_Array[i+1] + " <b> Source IP-Address: </b>" + Networks_Array[i+2] + "<b> Source Wildcard Mask: </b>" + Networks_Array[i+3] + "<b> Destination IP-Adress: </b>" + Networks_Array[i+4] + "<b> Destination Wildcard Mask: </b>" + Networks_Array[i+5] + "<b> Port: </b>"+ Networks_Array[i+6] +'<br><br>';
           document.getElementById('extended_acl_info').innerHTML += networksInfo;
           extended_acl_ids.push(Networks_Array[i])
         }
