@@ -7,9 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cisco Configurator 2.0</title>
   <script src="{% static 'input_checks.js' %}"></script>
+  <link href="{% static 'src/styles.css' %}" rel="stylesheet">
 </head>
 
-<h1>Home </h1>
+<h1 class="text-3xl text-blue-800">Home </h1>
 <form id="configForm" method="post" action="{% url 'get_inputs_route' device_type='router' config_mode='new' %}">   {% csrf_token %}
     <input type="hidden" value="basic_config" name="hidden_forward_to">
     <h2>Select Router or Switch:</h2>
