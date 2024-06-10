@@ -90,7 +90,11 @@ class ConfigManager:
                 natOutside = True if nat == "outside" else False
             elif intLine.startswith("description"):
                 #^ description value
-                desc = intLine.split(" ")[1]
+                desc = intLine.split(" ")[1:]
+                if len(desc) > 1:
+                    desc = " ".join(desc)
+                if type(desc) != str:
+                    desc = str(desc)
             elif intLine.startswith("shutdown") or intLine.startswith("no shutdown"):
                 #^ no shutdown
                 #^ shutdown
@@ -567,7 +571,7 @@ class ConfigManager:
                 channelGroupName = intLine.split(" ")[1]
                 channelGroupMode = intLine.split(" ")[3]
             elif intLine.startswith("description"):
-                desc = intLine.split(" ")[1]
+                desc = intLine.split(" ")[:1].join(" ")
             elif intLine.startswith("shutdown") or intLine.startswith("no shutdown"):
                 shutdown = False if intLine == "shutdown" else True
             elif intLine.startswith("ip address"):
