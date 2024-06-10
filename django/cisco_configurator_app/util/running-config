@@ -6,6 +6,7 @@ service timestamps log datetime msec
 no service password-encryption
 service compress-config
 !
+hostname Switch
 !
 boot-start-marker
 boot-end-marker
@@ -78,11 +79,5 @@ line con 0
 line aux 0
 line vty 0 4
 !
-!
-!
-!
-hostname gg
-!
-banner motd ^Cblabla^C
 !
 end

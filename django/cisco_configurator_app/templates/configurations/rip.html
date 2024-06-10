@@ -6,33 +6,35 @@
 <input type="hidden" id="rip_sum_state_for_input" value="{{ rip_sum_state }}">
 <input type="hidden" id="rip_originate_state_for_input" value="{{ rip_originate_state }}">
 
-<div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
-  <h2 class="font-extrabold text-2xl pb-5">RIP Configuration</h2>
+<div class="menu-content rounded-lg mb-4" id="menu3">
+  <h2 class="font-bold text-neutral-500 text-2xl pb-5">RIP Configuration</h2>
 
-      <div class="config_item" id="ip-form">
-        <div class="relative flex items-center gap-3">
-          <label
-            class="absolute -top-6 left-0 px-2 text-neutral-500"
-            for="description">Network/s:</label>
-          <input class="w-full p-2 mb-1" type="text"
-            name="networks_input_routing" id="networks_input_routing"
-            placeholder="seperate multiple networks with ( , )"
-            oninput="ValidateIPaddressesDynamicRouting('networks_input_routing','networks_input_routing_info'); add_to_config('rip')" value="{{ rip_networks }}">
+      <div class="flex flex-col gap-4">
+        <div class="config_item" id="ip-form">
+          <div class="relative flex items-center gap-3">
+            <label
+              class="absolute -top-6 left-0 px-2 text-neutral-500"
+              for="description">Network/s:</label>
+            <input class="w-full p-2 mb-1" type="text"
+              name="networks_input_routing" id="networks_input_routing"
+              placeholder="seperate multiple networks with ( , )"
+              oninput="ValidateIPaddressesDynamicRouting('networks_input_routing','networks_input_routing_info'); add_to_config('rip')" value="{{ rip_networks }}">
+          </div>
+          <span id="networks_input_routing_info"></span>
         </div>
-        <span id="networks_input_routing_info"></span>
-      </div>
-
-
-      <div class="config_item" id="ip-form">
-        <div class="relative flex items-center gap-3">
-          <label for="dropdown"
-            class="absolute -top-6 left-0 px-2 text-neutral-500">Version:</label>
-          <select name="dropdown_rip_version"
-            class="w-full p-2 mb-1" id="dropdown_rip_version"
-            onchange="handleDropdownChange(); add_to_config('rip')">
-            <option name="version1" value="2">Version 2</option>
-            <option name="version2" value="1">Version 1</option>
-          </select>
+  
+  
+        <div class="config_item" id="ip-form">
+          <div class="relative flex items-center gap-3">
+            <label for="dropdown"
+              class="absolute -top-6 left-0 px-2 text-neutral-500">Version:</label>
+            <select name="dropdown_rip_version"
+              class="w-full p-2 mb-1" id="dropdown_rip_version"
+              onchange="handleDropdownChange(); add_to_config('rip')">
+              <option name="version1" value="2">Version 2</option>
+              <option name="version2" value="1">Version 1</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
