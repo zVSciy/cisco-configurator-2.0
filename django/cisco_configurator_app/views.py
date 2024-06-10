@@ -93,7 +93,7 @@ def etherchannel(request, device_type, config_mode):
         if interface.channelGroups != []:
             config_option["etherchannel_interfaces"] += interface.vlanInt+','+str(interface.channelID[0])+ ','+ interface.channelMode + ';'
         
-        if "Etherchannel" in interface.vlanInt:
+        if "Port-channel" in interface.vlanInt:
             channelId = interface.vlanInt.replace("Etherchannel", "")
             config_option["etherchannel_channel_groups"] += channelId+','+interface.ip + ','+ interface.sm + ';'
 
