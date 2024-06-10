@@ -538,7 +538,7 @@ def get_inputs(request, device_type, config_mode):
     #ospf
     ospf_process = request.POST.get('hidden_ospf_process')
     ospf_router_id = request.POST.get('hidden_ospf_router_id')
-    ospf_sum_state = request.POST.get('hidden_ospf_sum_state')
+    ospf_sum_state = 'true'
     ospf_originate_state = request.POST.get('hidden_ospf_originate_state')
     ospf_networks = request.POST.get('hidden_ospf_info_for_transfer')
 

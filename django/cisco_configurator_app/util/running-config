@@ -5,7 +5,7 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 no service password-encryption
 !
-hostname Router
+hostname Testrouter
 !
 boot-start-marker
 boot-end-marker
@@ -16,8 +16,16 @@ memory-size iomem 5
 ip cef
 !
 !
+no ip dhcp use vrf connected
+ip dhcp excluded-address 10.0.0.1 10.0.0.10
+!
+ip dhcp pool pool
+   network 10.0.0.0 255.0.0.0
+   default-router 10.0.0.1 
+   dns-server 8.8.8.8 
 !
 !
+ip domain name test.local
 !
 multilink bundle-name authenticated
 !
@@ -41,6 +49,7 @@ multilink bundle-name authenticated
 !
 !
 !
+username admin privilege 15 password 0 admin
 archive
  log config
   hidekeys
@@ -48,28 +57,59 @@ archive
 !
 !
 !
+ip ssh version 2
+ip scp server enable
 !
 !
 !
 !
 interface FastEthernet0/0
- no ip address
- shutdown
+ description blabla f0/0
+ ip address dhcp
+ ip nat outside
+ ip virtual-reassembly
  duplex auto
  speed auto
 !
 interface FastEthernet0/1
- no ip address
+ description blabla f0/1
+ ip address 10.0.0.1 255.0.0.0
+ ip nat inside
+ ip virtual-reassembly
  shutdown
  duplex auto
  speed auto
 !
+router ospf 1
+ router-id 1.1.1.1
+ log-adjacency-changes
+ network 10.0.0.0 0.255.255.255 area 0
+ default-information originate
+!
+router rip
+ version 2
+ network 10.0.0.0
+ default-information originate
+ no auto-summary
+!
 ip forward-protocol nd
+ip route 1.1.1.0 255.255.255.0 10.0.0.254
+ip route 2.2.2.0 255.255.255.0 10.0.0.254
+ip route 3.3.3.0 255.255.255.0 10.0.0.254
 !
 !
 ip http server
 no ip http secure-server
+ip nat inside source list 99 interface FastEthernet0/0 overload
 !
+ip access-list extended Block-Traffic
+ deny   tcp 7.7.7.0 0.0.0.255 10.0.0.0 0.255.255.255 eq 433
+ deny   udp 7.7.7.0 0.0.0.255 10.0.0.0 0.255.255.255 eq 433
+ deny   tcp 7.7.7.0 0.0.0.255 10.0.0.0 0.255.255.255 eq 8080
+ deny   udp 7.7.7.0 0.0.0.255 10.0.0.0 0.255.255.255 eq 8080
+!
+access-list 1 deny   9.9.9.0 0.0.0.255
+access-list 99 permit 10.0.0.0 0.255.255.255
 !
 !
 !
@@ -90,10 +130,16 @@ control-plane
 gatekeeper
  shutdown
 !
+banner motd Authorized access only!
 !
 line con 0
 line aux 0
 line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
 !
 !
 end
