@@ -571,7 +571,11 @@ class ConfigManager:
                 channelGroupName = intLine.split(" ")[1]
                 channelGroupMode = intLine.split(" ")[3]
             elif intLine.startswith("description"):
-                desc = intLine.split(" ")[:1].join(" ")
+                desc = intLine.split(" ")[1:]
+                if len(desc) > 1:
+                    desc = " ".join(desc)
+                if type(desc) != str:
+                    desc = str(desc)
             elif intLine.startswith("shutdown") or intLine.startswith("no shutdown"):
                 shutdown = False if intLine == "shutdown" else True
             elif intLine.startswith("ip address"):

@@ -122,7 +122,7 @@ def checkRIPnetworks(networks):
     if type(networks) != str or networks == '':
         return ''
     validation = True
-    splitted_networks = networks.split(';')
+    splitted_networks = networks.split(',')
     if splitted_networks[-1] == '':
         splitted_networks.pop()
     for network in splitted_networks:
