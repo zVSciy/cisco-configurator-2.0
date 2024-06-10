@@ -328,7 +328,7 @@ def checkBasicACLs(acls):
         acl_decision = acl[1]
         acl_ip = acl[2]
         acl_sm = acl[3]
-        if not acl_id.isdigit() or not acl_id >= 1 or not acl_id <= 99 or not acl_decision in ('permit', 'deny') or not re.match(ip_pattern, acl_ip) or not re.match(sm_pattern, acl_sm):
+        if not acl_id.isdigit() or not int(acl_id) >= 1 or not int(acl_id) <= 99 or not acl_decision in ('permit', 'deny') or not re.match(ip_pattern, acl_ip) or not re.match(sm_pattern, acl_sm):
             validation = False
     if validation:
         return acls_str
