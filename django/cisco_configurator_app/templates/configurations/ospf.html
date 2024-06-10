@@ -1,124 +1,195 @@
-{% extends 'master.html' %}
+{% extends 'master.html' %} {% block content %}
 
-{% block content %}
+<input id="ospf_autosum" value="{{ ospf_autosum }}" />
+<input id="ospf_originate" value="{{ ospf_originate }}" />
 
-<input id="ospf_autosum" value="{{ ospf_autosum }}">
-<input id="ospf_originate" value="{{ ospf_originate }}">
+<div class="menu-content rounded-lg flex flex-col justify-between h-full" id="menu3">
+  <h2 class="font-bold text-neutral-500 text-2xl pb-5">OSPF Configuration</h2>
+  <div class="flex flex-col gap-4">
+    <div class="config_item" id="ip-form">
+      <div class="relative flex items-center gap-3">
+        <label
+          class="absolute -top-6 left-0 px-2 text-neutral-500"
+          for="description"
+          >Process:</label
+        >
+        <input
+          class="w-full p-2 mb-1"
+          type="number"
+          name="ospf_process"
+          id="ospf_process"
+          placeholder="process-id"
+          oninput="add_to_config('ospf');checkOspfProcess()"
+          min="1"
+          max="65535"
+          value="{{ process }}"
+        />
+        <span id="process_id_info"></span>
+      </div>
+    </div>
 
-<div class="menu-content bg-base-200 rounded-lg p-8 mb-4" id="menu3">
-    <h2 class="font-extrabold text-2xl pb-5">OSPF Configuration</h2>
-    <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-3">
+    <div class="config_item" id="ip-form">
+      <div class="relative flex items-center gap-3">
+        <label
+          class="absolute -top-6 left-0 px-2 text-neutral-500"
+          for="description"
+          >Router-ID:</label
+        >
+        <input
+          class="w-full p-2 mb-1"
+          type="text"
+          name="ospf_router_id"
+          id="ospf_router_id"
+          placeholder="router-id"
+          oninput="add_to_config('ospf'); checkOspfRouterID()"
+          value="{{ router_id }}"
+        />
+        <span id="router_id_info"></span>
+      </div>
+    </div>
+
+    <hr class="border-neutral-800 mb-4" />
+
+    <div class="bg-[#121212] p-4 rounded-2xl mb-4 flex flex-col gap-2">
+      <div class="config_item flex items-center gap-3" id="ip-form">
+        <input
+          class="toggle toggle-accent"
+          type="checkbox"
+          name="ospf_sum_state"
+          id="ospf_sum_state"
+          onchange="updateStateDescription('ospf_sum_state', 'ospf_sum_state_description'); add_to_config('ospf')"
+        />
+        Auto summarization
+        <span id="ospf_sum_state_description"> (off)</span>
+      </div>
+      <div class="config_item flex items-center gap-3" id="ip-form">
+        <input
+          class="toggle toggle-accent"
+          type="checkbox"
+          name="originate_state"
+          id="ospf_originate_state"
+          onchange="updateStateDescription('ospf_originate_state', 'ospf_originate_state_description'); add_to_config('ospf')"
+        />
+        Broadcast default route
+        <span id="ospf_originate_state_description"> (off)</span>
+      </div>
+    </div>
+
+    <hr class="border-neutral-800 mb-4" />
+
+    <div class="rounded-2xl flex flex-col gap-3">
+      <h3 class="config_item"><b>Networks:</b></h3>
       <h1></h1>
 
       <div class="config_item" id="ip-form">
         <div class="relative flex items-center gap-3">
           <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-            for="description">Process:</label>
-          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="number"
-            name="ospf_process" id="ospf_process"
-            placeholder="process-id"
-            oninput="add_to_config('ospf');checkOspfProcess()" min="1" max="65535" value="{{ process }}">
-            <span id="process_id_info"></span>
+            class="absolute -top-6 left-0 px-2 text-neutral-500"
+            for="description"
+            >Address:</label
+          >
+          <input
+            class="w-full p-2 mb-1"
+            type="text"
+            name="ospf_ip"
+            id="ospf_ip"
+            placeholder="e.g. 10.1.0.0"
+            oninput="ValidateOspfNetworks('ospf_input_info')"
+          />
+          <span id="ospf_ip_info"></span>
         </div>
       </div>
-
       <div class="config_item" id="ip-form">
         <div class="relative flex items-center gap-3">
           <label
-            class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-            for="description">Router-ID:</label>
-          <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" 
-            name="ospf_router_id" id="ospf_router_id"
-            placeholder="router-id"
-            oninput="add_to_config('ospf'); checkOspfRouterID()" value="{{ router_id }}">
-            <span id="router_id_info"></span>
+            class="absolute -top-6 left-0 px-2 text-neutral-500"
+            for="description"
+            >Wildcard Mask:</label
+          >
+          <input
+            class="w-full p-2 mb-1"
+            type="text"
+            name="ospf_wm"
+            id="ospf_wm"
+            placeholder="e.g. 0.255.255.255"
+            oninput="ValidateOspfNetworks('ospf_input_info')"
+          />
+          <span id="ospf_wm_info"></span>
         </div>
       </div>
-      <div class="bg-base-300 p-4 rounded-2xl mb-4 flex flex-col gap-2">
-        <div class="config_item flex items-center gap-3" id="ip-form">
-          <input class="toggle toggle-accent" type="checkbox" name="ospf_sum_state" id="ospf_sum_state"
-            onchange="updateStateDescription('ospf_sum_state', 'ospf_sum_state_description'); add_to_config('ospf')">
-          Auto summarization
-          <span id="ospf_sum_state_description">
-            (off)</span>
+      <div class="config_item" id="ip-form">
+        <div class="relative flex items-center gap-3">
+          <label
+            class="absolute -top-6 left-0 px-2 text-neutral-500"
+            for="description"
+            >Area:</label
+          >
+          <input
+            class="w-full p-2 mb-1"
+            type="number"
+            name="ospf_area"
+            id="ospf_area"
+            placeholder="empty equals 0"
+            oninput="ValidateOspfNetworks('ospf_input_info')"
+          />
+          <span id="ospf_area_info"></span>
         </div>
-        <div class="config_item flex items-center gap-3" id="ip-form">
-          <input class="toggle toggle-accent" type="checkbox" name="originate_state" id="ospf_originate_state"
-            onchange="updateStateDescription('ospf_originate_state', 'ospf_originate_state_description'); add_to_config('ospf')">
-          Broadcast default route
-          <span id="ospf_originate_state_description">
-            (off)</span>
-        </div>
+        <div id="ospf_input_info"></div>
       </div>
-
-
-
-      <div class="bg-base-300 p-4 rounded-2xl flex flex-col gap-3">
-        <h3 class="config_item"><b>Networks:</b></h3>
-        <h1></h1>
-
-        <div class="config_item" id="ip-form">
-          <div class="relative flex items-center gap-3">
-            <label
-              class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-              for="description">Address:</label>
-            <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="ospf_ip"
-              id="ospf_ip" placeholder="e.g. 10.1.0.0" oninput="ValidateOspfNetworks('ospf_input_info')">
-            <span id="ospf_ip_info"></span>
-          </div>
-        </div>
-        <div class="config_item" id="ip-form">
-          <div class="relative flex items-center gap-3">
-            <label
-              class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-              for="description">Wildcard Mask:</label>
-            <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="text" name="ospf_wm"
-              id="ospf_wm" placeholder="e.g. 0.255.255.255" oninput="ValidateOspfNetworks('ospf_input_info')">
-            <span id="ospf_wm_info"></span>
-          </div>
-        </div>
-        <div class="config_item" id="ip-form">
-            <div class="relative flex items-center gap-3">
-              <label
-                class="absolute -top-3 left-3 px-2 bg-gradient-to-t from-base-100 from-50% via-base-300 via-50% to-base-300"
-                for="description">Area:</label>
-              <input class="input !pl-3 !outline-offset-0 input-bordered w-full max-w-xs" type="number" name="ospf_area"
-                id="ospf_area" placeholder="empty equals 0" oninput="ValidateOspfNetworks('ospf_input_info')">
-              <span id="ospf_area_info"></span>
-            </div>
-            <div id="ospf_input_info"></div>
-          </div>
-        <button type="button" disabled="true" class="config_item btn max-w-xs" id="add_ospf_ip_button"
-          onclick="addOspfIp(); add_to_config('ospf')">add
-          Network</button>
-        <div id="added_ospf_networks" class="config_item">
-          added permitted Networks:</div>
-        <div class="config_item" id="ospf_info"></div>
-        <input name="ospf_info" id="ospf_info_for_transfer" value="{{ ospf_networks }}"></input>
-
+      <button
+        type="button"
+        disabled="true"
+        class="config_item btn max-w-xs"
+        id="add_ospf_ip_button"
+        onclick="addOspfIp(); add_to_config('ospf')"
+      >
+        add Network
+      </button>
+      <div id="added_ospf_networks" class="config_item">
+        added permitted Networks:
       </div>
+      <div class="config_item" id="ospf_info"></div>
+      <input
+        name="ospf_info"
+        id="ospf_info_for_transfer"
+        value="{{ ospf_networks }}"
+      />
+    </div>
 
-      <script>
-        document.getElementById('ospf_info_for_transfer').style.display = 'none';
-        document.getElementById('ospf_autosum').style.display = 'none';
-        document.getElementById('ospf_originate').style.display = 'none';
+    <script>
+      document.getElementById("ospf_info_for_transfer").style.display = "none";
+      document.getElementById("ospf_autosum").style.display = "none";
+      document.getElementById("ospf_originate").style.display = "none";
 
-        if (document.getElementById('ospf_autosum').value == 'True'){
-          document.getElementById('ospf_sum_state').checked = true;
-          updateStateDescription('ospf_sum_state', 'ospf_sum_state_description');
-        }
+      if (document.getElementById("ospf_autosum").value == "True") {
+        document.getElementById("ospf_sum_state").checked = true;
+        updateStateDescription("ospf_sum_state", "ospf_sum_state_description");
+      }
 
-        if (document.getElementById('ospf_originate').value == 'True'){
-          document.getElementById('ospf_originate_state').checked = true;
-          updateStateDescription('ospf_originate_state', 'ospf_originate_state_description');
-        }
+      if (document.getElementById("ospf_originate").value == "True") {
+        document.getElementById("ospf_originate_state").checked = true;
+        updateStateDescription(
+          "ospf_originate_state",
+          "ospf_originate_state_description"
+        );
+      }
 
-        let Networks_Array = collectIPAddressesAndAreas(document.getElementById('ospf_info_for_transfer').value);
+      let Networks_Array = collectIPAddressesAndAreas(
+        document.getElementById("ospf_info_for_transfer").value
+      );
 
-        for (let i = 0; i < Networks_Array.length-1; i=i+3){
-          let networksInfo = "IP Address: " + Networks_Array[i] + "<br>Wildcard Mask: " + Networks_Array[i+1] + '<br>Area:'+ Networks_Array[i+2] +'<br><br>';
-          document.getElementById('ospf_info').innerHTML += networksInfo;
-        }
-      </script>
-{% endblock content %}
+      for (let i = 0; i < Networks_Array.length - 1; i = i + 3) {
+        let networksInfo =
+          "IP Address: " +
+          Networks_Array[i] +
+          "<br>Wildcard Mask: " +
+          Networks_Array[i + 1] +
+          "<br>Area:" +
+          Networks_Array[i + 2] +
+          "<br><br>";
+        document.getElementById("ospf_info").innerHTML += networksInfo;
+      }
+    </script>
+    {% endblock content %}
+  </div>
+</div>

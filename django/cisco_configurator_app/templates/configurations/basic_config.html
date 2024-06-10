@@ -1,22 +1,57 @@
-{% extends 'master.html' %}
-
-{% block content %}
+{% extends 'master.html' %} {% block content %}
 <div class="" id="menu1">
-    <h2 class="font-extrabold">Hostname & Banner Configuration</h2>
-      <div class="">
-        <label id="Hostname"
-          class="">Hostname:</label>
-        <input placeholder="e.g. router-0137" class="input"
-          type="text" size="15" id="hostname" name="hostname" oninput="add_to_config('basic_config')" value="{{ hostname }}">
-      </div>
-      <br>
-      <div class="">
+  <h1 class="font-bold text-neutral-500 text-2xl pb-5">
+    Hostname & Banner Configuration
+  </h1>
+  <br />
+  <div class="flex flex-col gap-4">
+    <div>
+      <div class="relative flex items-center">
         <label
-          class=""
-          id="Banner">Banner message:</label>
-        <input placeholder="e.g. permitted access only"
-          class="" type="textarea" size="50" height="10"
-          id="banner" name="banner" oninput="add_to_config('basic_config')"  value="{{ banner }}">
+          id="Hostname"
+          class="absolute -top-6 left-0 px-2 text-neutral-500"
+          for="description"
+          >Hostname:</label
+        >
+        <input
+          placeholder="e.g. router-0137"
+          class="w-full p-2 mb-1"
+          id="extended_acl_id"
+          type="text"
+          size="15"
+          id="hostname"
+          name="hostname"
+          oninput="add_to_config('basic_config')"
+          value="{{ hostname }}"
+        />
+        <span id="extended_acl_id_info"></span>
       </div>
+    </div>
+
+    <div>
+      <div class="relative flex items-center">
+        <label
+          id="Banner"
+          class="absolute -top-6 left-0 px-2 text-neutral-500"
+          for="description"
+          >Banner message:</label
+        >
+
+        <textarea
+          placeholder="e.g. permitted access only"
+          class="w-full p-2 mb-1 min-h-11"
+          type="text"
+          size="50"
+          height="10"
+          id="banner"
+          name="banner"
+          oninput="add_to_config('basic_config')"
+          value="{{ banner }}"
+        ></textarea>
+        <span id="extended_acl_id_info"></span>
+      </div>
+    </div>
   </div>
+  <br>
+</div>
 {% endblock content %}

@@ -1,62 +1,157 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cisco Configurator 2.0</title>
+    <script src="{% static 'input_checks.js' %}"></script>
+    <link href="{% static 'src/styles.css' %}" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}" />
+  </head>
+  <body style="min-height: 100vh; min-height: 100svh; display: grid">
+    <div
+      class="grid h-full grid-box-design items-center justify-center bg-[#0a0a0a]"
+    >
+      <div
+        class="flex justify-between gap-2 absolute top-0 px-32 w-full h-20 items-center bg-neutral-950 border-b border-b-neutral-800"
+      >
+        <a
+          href="{%  url 'index_route' %}"
+          class="hover:border-neutral-600 text-neutral-600 border border-neutral-800 flex gap-4 rounded-lg p-2 pr-4 items-center"
+        >
+          <img class="h-8" src="{% static 'favicon.png' %}" alt="logo" />
+          <h1 class="text-lg">Cisco Configurator 2.0</h1>
+        </a>
+        <div class="flex">
+          <a
+            class="rounded-lg border flex gap-2 border-neutral-800 hover:border-neutral-600 px-2 py-1.5 items-center text-neutral-500"
+            href="https://github.com/zVSciy/cisco-configurator-2.0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="max-w-5 max-h-5"
+              width="32"
+              height="32"
+              fill="currentcolor"
+              viewBox="0 0 256 256"
+            >
+              <path
+                d="M216,104v8a56.06,56.06,0,0,1-48.44,55.47A39.8,39.8,0,0,1,176,192v40a8,8,0,0,1-8,8H104a8,8,0,0,1-8-8V216H72a40,40,0,0,1-40-40A24,24,0,0,0,8,152a8,8,0,0,1,0-16,40,40,0,0,1,40,40,24,24,0,0,0,24,24H96v-8a39.8,39.8,0,0,1,8.44-24.53A56.06,56.06,0,0,1,56,112v-8a58.14,58.14,0,0,1,7.69-28.32A59.78,59.78,0,0,1,69.07,28,8,8,0,0,1,76,24a59.75,59.75,0,0,1,48,24h24a59.75,59.75,0,0,1,48-24,8,8,0,0,1,6.93,4,59.74,59.74,0,0,1,5.37,47.68A58,58,0,0,1,216,104Z"
+              ></path>
+            </svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+      <div
+        class="w-[50rem] bg-neutral-950 p-8 rounded-lg border border-neutral-800 shadow-popup"
+      >
+        <div class="flex gap-2">
+          <img class="h-8" src="{% static 'favicon.png' %}" alt="logo" />
+          <h1 class="text-3xl text-blue-400">Cisco GUI Configurator</h1>
+        </div>
+        <hr class="border-neutral-800 my-4" />
+        <form
+          id="configForm"
+          method="post"
+          action="{% url 'get_inputs_route' device_type='router' config_mode='new' %}"
+        >
+          {% csrf_token %}
+          <input type="hidden" value="basic_config" name="hidden_forward_to" />
+          <h2>Select Router or Switch:</h2>
+          <select class="w-full p-2 mb-1" name="deviceType" id="deviceType">
+            <option value="router">Router</option>
+            <option value="switch">Switch</option>
+          </select>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cisco Configurator 2.0</title>
-  <script src="{% static 'input_checks.js' %}"></script>
-  <link href="{% static 'src/styles.css' %}" rel="stylesheet">
-</head>
+          <h2>Select New Config or Load from Switch/Router:</h2>
+          <select
+            class="w-full p-2"
+            name="configType"
+            id="configType"
+            oninput="ifLoadConfig()"
+          >
+            <option value="new">New Config</option>
+            <option value="load">Load Config</option>
+          </select>
 
-<h1 class="text-3xl text-blue-800">Home </h1>
-<form id="configForm" method="post" action="{% url 'get_inputs_route' device_type='router' config_mode='new' %}">   {% csrf_token %}
-    <input type="hidden" value="basic_config" name="hidden_forward_to">
-    <h2>Select Router or Switch:</h2>
-    <select name="deviceType" id="deviceType">
-        <option value="router">Router</option>
-        <option value="switch">Switch</option>
-    </select>
-    
-    <h2>Select New Config or Load from Switch/Router:</h2>
-    <select name="configType" id="configType" oninput="ifLoadConfig()">
-        <option value="new">New Config</option>
-        <option value="load">Load Config</option>
-    </select>
+          <div id="LoadConfigInput">
+            <h3>Load Config From:</h3>
+            <div class="flex gap-2">
+              <input
+              class="w-full p-2"
+              id="loadFromIpAddress"
+              type="text"
+              name="loadFromIpAddress"
+              placeholder="10.0.0.1"
+              oninput="ValidateIndexInput()"
+            />
+            <input
+              class="w-full p-2"
+              id="loadFromUsername"
+              type="text"
+              name="loadFromUsername"
+              placeholder="admin"
+            />
+            <input
+              id="loadFromPassword"
+              class="w-full p-2"
+              type="password"
+              name="loadFromPassword"
+              placeholder="*****"
+            />
+            </div>
+            <div id="IndexErrorMessage"></div>
+          </div>
 
-
-    <div id="LoadConfigInput">
-        <h3>Load Config From:</h3>
-        <input id="loadFromIpAddress"type="text" name="loadFromIpAddress" placeholder="10.0.0.1" oninput="ValidateIndexInput()">
-        <input id="loadFromUsername" type="text" name="loadFromUsername" placeholder="admin">
-        <input id="loadFromPassword" type="password" name="loadFromPassword" placeholder="*****">
-        <div id="IndexErrorMessage"></div>
+          <button
+            id="IndexSubmitButton"
+            class="btn btn-neutral mt-4"
+            type="button"
+            onclick="submitForm()"
+          >
+            Start Configuring
+          </button>
+        </form>
+      </div>
     </div>
-    
-    <br><br>
-    <button id="IndexSubmitButton" type="button" onclick="submitForm()">Start Configuring</button>
-</form>
 
-<script>
+    <script>
+      document.getElementById("LoadConfigInput").style.display = "none";
 
-    document.getElementById('LoadConfigInput').style.display = 'none';
-
-    function submitForm() {
+      function submitForm() {
         let deviceType = document.getElementById("deviceType").value;
         let configType = document.getElementById("configType").value;
-        document.getElementById("configForm").action = "{% url 'get_inputs_route' device_type='router' config_mode='new' %}".replace('router', deviceType).replace('new', configType);
-        
-        document.getElementById("configForm").submit();
-    }
+        document.getElementById("configForm").action =
+          "{% url 'get_inputs_route' device_type='router' config_mode='new' %}"
+            .replace("router", deviceType)
+            .replace("new", configType);
 
-    function ifLoadConfig(){
-        if(document.getElementById('configType').value == 'load'){
-            document.getElementById('LoadConfigInput').style.display = 'block';
-            document.getElementById('IndexSubmitButton').disabled  = true;
-        }else{
-            document.getElementById('LoadConfigInput').style.display = 'none';
-            document.getElementById('IndexSubmitButton').disabled  = false;
+        document.getElementById("configForm").submit();
+      }
+
+      function ifLoadConfig() {
+        if (document.getElementById("configType").value == "load") {
+          document.getElementById("LoadConfigInput").style.display = "block";
+          document.getElementById("IndexSubmitButton").disabled = true;
+        } else {
+          document.getElementById("LoadConfigInput").style.display = "none";
+          document.getElementById("IndexSubmitButton").disabled = false;
         }
-    }
-</script>
+      }
+    </script>
+
+    <style>
+      .grid-box-design {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.06)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+      }
+
+      .shadow-popup {
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+          rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+          rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+      }
+    </style>
+  </body>
+</html>
