@@ -654,7 +654,7 @@ def get_inputs(request, device_type, config_mode):
                 i = i.split(',')
 
 
-                interface = SwitchInterface(vlanInt='Etherchannel'+i[0],ip=i[1],sm=i[2])
+                interface = SwitchInterface(vlanInt='Port-channel'+i[0])
 
                 cm.writeSwitchInterface(interface)
 

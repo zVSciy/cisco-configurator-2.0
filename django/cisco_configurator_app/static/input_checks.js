@@ -643,16 +643,15 @@ let etherchannel_list = [];
 // add Channel Groups
 function addChannelGroup() {
   let channel_id = document.getElementById('etherchannel_id').value;
-  let etherchannel_ip = document.getElementById('etherchannel_ip').value;
-  let etherchannel_sm = document.getElementById('etherchannel_sm').value;
+
 
 
   etherchannel_list.push(channel_id);
 
-  let etherchannelInfo = "<b>ID: </b>" + channel_id +  "<b> IP: </b>" + etherchannel_ip + "<b> SM: </b>" + etherchannel_sm +'<br><br>';
+  let etherchannelInfo = "<b>ID: </b>" + channel_id +'<br><br>';
 
   document.getElementById('etherchannel_info').innerHTML += etherchannelInfo;
-  document.getElementById('etherchannel_info_for_transfer').value += channel_id + ',' + etherchannel_ip + ',' + etherchannel_sm + ';';
+  document.getElementById('etherchannel_info_for_transfer').value += channel_id + ',' + '1.1.1.1' + ',' + '1.1.1.1' + ';';
 
   document.getElementById("add_etherchannel_button").disabled = true;
   console.log(etherchannel_list)
@@ -681,18 +680,17 @@ function isValidEtherchannelid(id){
 }
 
 
-function checkNewLacpGroup(Int_ip, Int_sm, Int_result, channel_id) {
+function checkNewLacpGroup(Int_result, channel_id) {
   let id = document.getElementById(channel_id);
-  let ip = document.getElementById(Int_ip);
-  let sm = document.getElementById(Int_sm);
+
   let resultElement = document.getElementById(Int_result);
   let TButton = document.getElementById("add_etherchannel_button");
 
-  if (isValidIpAddress(ip.value) && isValidSm(sm.value) && isValidEtherchannelid(id.value)) {
+  if ( isValidEtherchannelid(id.value)) {
     resultElement.textContent = "";
     TButton.disabled = false;
     enableNavigation();
-  } else if (ip.value === "" && sm.value === "" && id.value == ''){
+  } else if (id.value == ''){
     TButton.disabled = true;
     resultElement.textContent = "";
   } else {

@@ -22,45 +22,12 @@
         size="15"
         id="etherchannel_id"
         name="etherchannel_id"
-        oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')"
+        oninput="checkNewLacpGroup('result_etherchannel', 'etherchannel_id')"
       />
       <span id="etherchannel_id_info"></span>
-    </div>
 
-    <div class="relative" id="ip-form">
-      <label for="input" class="absolute -top-6 left-0 px-2 text-neutral-500">
-        IP address:
-      </label>
-      <input
-        placeholder="ip address"
-        class="w-full p-2 mb-1"
-        type="text"
-        id="etherchannel_ip"
-        name="etherchannel_ip"
-        oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')"
-      />
-    </div>
-
-    <div class="relative" id="ip-form">
-      <label
-        class="absolute -top-6 left-0 px-2 text-neutral-500"
-        for="subnetMask"
-        >Subnet mask:</label
-      >
-      <input
-        class="w-full p-2 mb-1"
-        type="text"
-        name="etherchannel_sm"
-        id="etherchannel_sm"
-        placeholder="e.g. 255.255.255.0"
-        oninput="checkNewLacpGroup('etherchannel_ip', 'etherchannel_sm', 'result_etherchannel', 'etherchannel_id')"
-      />
       <div id="result_etherchannel"></div>
     </div>
-  </div>
-</div>
-
-<br />
 
 <button
   type="button"
