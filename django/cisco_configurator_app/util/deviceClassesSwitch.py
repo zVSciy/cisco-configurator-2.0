@@ -117,10 +117,10 @@ class SwitchInterface:
         elif len (self.vlans) == 0 and len(self.channelGroups) > 0:
             config.append(f'interface {self.vlanInt}\n')
             config.append(f' channel-group {self.channelID} mode {self.channelMode}\n')
+            config.append(f" channel-protocol lacp\n")
             config.append(f' description {self.description}\n')
             config.append(shutdown)
             config.append('!\n')
-
 
         elif len (self.vlans) > 0 and len(self.channelGroups) > 0 and self.vlanMode == 'trunk':
             config.append(f"interface {self.vlanInt}\n")
@@ -128,6 +128,7 @@ class SwitchInterface:
             config.append(f" switchport {self.vlanMode} native vlan {self.vlanNative}\n")
             config.append(f" switchport {self.vlanMode} allowed vlan {self.vlanAllowed}\n")
             config.append(f" channel-group {self.channelID} mode {self.channelMode}\n")
+            config.append(f" channel-protocol lacp\n")
             config.append(f" description {self.description}\n")
             config.append(shutdown)
             config.append('!\n')
@@ -137,6 +138,7 @@ class SwitchInterface:
             config.append(f" switchport mode {self.vlanMode}\n")
             config.append(f" switchport {self.vlanMode} vlan {self.vlanAllowed}\n")
             config.append(f" channel-group {self.channelID} mode {self.channelMode}\n")
+            config.append(f" channel-protocol lacp\n")
             config.append(f" description {self.description}\n")
             config.append(shutdown)
             config.append('!\n')
